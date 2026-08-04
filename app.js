@@ -309,10 +309,17 @@ function applyUserRolePermissions() {
   // Header action button (+ New Workflow)
   const headerNewBtn = document.getElementById('btn-header-new-wf');
 
+  // Dashboard admin-only widgets (4 Metric cards & Progress Wheel)
+  const adminMetrics = document.getElementById('admin-dashboard-metrics');
+  const adminWheel = document.getElementById('admin-progress-wheel');
+
   if (navWorkflows) navWorkflows.style.display = isAdmin ? 'block' : 'none';
   if (navHr) navHr.style.display = isAdmin ? 'block' : 'none';
   if (navLegal) navLegal.style.display = isAdmin ? 'block' : 'none';
   if (headerNewBtn) headerNewBtn.style.display = isAdmin ? 'inline-flex' : 'none';
+
+  if (adminMetrics) adminMetrics.style.display = isAdmin ? 'grid' : 'none';
+  if (adminWheel) adminWheel.style.display = isAdmin ? 'flex' : 'none';
 }
 
 function handleGoogleLogin() {
