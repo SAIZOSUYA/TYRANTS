@@ -1406,6 +1406,9 @@ function updateRolePermissions() {
 const GOOGLE_CLIENT_ID = "842949964836-v9650tbm470mbpt17kj8fkkneju956kg.apps.googleusercontent.com";
 
 function initGoogleSignInButton() {
+  const container = document.getElementById('google-button-container');
+  if (!container) return;
+
   if (window.google && window.google.accounts && window.google.accounts.id) {
     try {
       window.google.accounts.id.initialize({
@@ -1413,21 +1416,27 @@ function initGoogleSignInButton() {
         callback: handleGoogleCredentialResponse
       });
 
-      const container = document.getElementById('google-button-container');
-      if (container) {
-        container.innerHTML = '';
-        window.google.accounts.id.renderButton(container, {
-          theme: 'outline',
-          size: 'large',
-          width: 320,
-          text: 'signin_with',
-          shape: 'rectangular'
-        });
-      }
+      container.innerHTML = '';
+      window.google.accounts.id.renderButton(container, {
+        theme: 'outline',
+        size: 'large',
+        width: 320,
+        text: 'signin_with',
+        shape: 'rectangular'
+      });
+      return;
     } catch (e) {
       console.warn("Google GIS Init error", e);
     }
   }
+
+  // Fallback single button if GIS script is offline or delayed
+  container.innerHTML = `
+    <button type="button" class="btn-google-login" onclick="simulateGoogleOAuth()">
+      <iconify-icon icon="logos:google-icon" style="font-size: 20px;"></iconify-icon>
+      Sign in with Google
+    </button>
+  `;
 }
 
 function switchAuthTab(tabType) {
