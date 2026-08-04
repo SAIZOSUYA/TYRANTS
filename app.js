@@ -1,0 +1,670 @@
+/* ==========================================================================
+   PRAGATI WORKFLOW SYSTEM (PWS) - APPLICATION CORE LOGIC
+   ========================================================================== */
+
+// 1. DATA CONFIGURATION FOR 4 COMPANY TYPES & SPECIFIC HR ROLES
+const COMPANY_CONFIG = {
+  marketing: {
+    id: 'marketing',
+    name: 'Digital Marketing',
+    icon: 'tabler:speakerphone',
+    color: '#0ea5e9',
+    desc: 'Ad campaigns, social media copy, design assets & client sign-offs.',
+    hrRoles: [
+      { id: 'hr-1', name: 'Campaign Director', dept: 'Strategy & Leads', access: 'Final Approver', avatar: 'CD', email: 'director@agency.com' },
+      { id: 'hr-2', name: 'Creative Manager', dept: 'Design & Visuals', access: 'Reviewer', avatar: 'CM', email: 'creative@agency.com' },
+      { id: 'hr-3', name: 'Copywriter Lead', dept: 'Content Team', access: 'Creator', avatar: 'CL', email: 'copy@agency.com' },
+      { id: 'hr-4', name: 'Client Relations Specialist', dept: 'Account Mgmt', access: 'Client Liaison', avatar: 'CR', email: 'client.rel@agency.com' }
+    ],
+    sampleWorkflows: [
+      { id: 'WF-101', title: 'Q3 Brand Rebrand Campaign', client: 'Apex Global', stage: 'Client Approval', status: 'pending', date: 'Today, 2:30 PM', hr: 'Campaign Director', hash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855' },
+      { id: 'WF-102', title: 'Social Media Banner Sets', client: 'Horizon Tech', stage: 'Legally Approved', status: 'approved', date: 'Yesterday', hr: 'Creative Manager', hash: 'f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2' },
+      { id: 'WF-103', title: 'SEO Content Pitch Deck', client: 'Luminary Inc', stage: 'Internal Review', status: 'review', date: 'Aug 2, 2026', hr: 'Copywriter Lead', hash: '4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a' }
+    ],
+    certificates: [
+      { certId: 'CERT-8841', project: 'Social Media Banner Sets', client: 'Horizon Tech', date: '2026-08-03 16:42 UTC', hash: 'f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2', signee: 'VP of Marketing (Horizon Tech)' }
+    ]
+  },
+  it: {
+    id: 'it',
+    name: 'IT Company',
+    icon: 'tabler:code-asterisk',
+    color: '#10b981',
+    desc: 'Software sprints, release builds, QA testing & client UAT verification.',
+    hrRoles: [
+      { id: 'hr-5', name: 'Project Manager (PM)', dept: 'Scrum & Agile', access: 'Sprint Admin', avatar: 'PM', email: 'pm@itcorp.com' },
+      { id: 'hr-6', name: 'Lead Software Architect', dept: 'Engineering', access: 'Code Approver', avatar: 'LA', email: 'architect@itcorp.com' },
+      { id: 'hr-7', name: 'QA & Compliance Lead', dept: 'Quality Assurance', access: 'UAT Checker', avatar: 'QA', email: 'qa@itcorp.com' },
+      { id: 'hr-8', name: 'Technical Support Lead', dept: 'Operations', access: 'Deploy Sign-off', avatar: 'TS', email: 'support@itcorp.com' }
+    ],
+    sampleWorkflows: [
+      { id: 'WF-201', title: 'Enterprise Portal v2.4 Release', client: 'FinCorp Bank', stage: 'Client UAT', status: 'pending', date: 'Today, 11:15 AM', hr: 'Lead Architect', hash: '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08' },
+      { id: 'WF-202', title: 'Payment Gateway Integration', client: 'ShopSwift', stage: 'Legally Approved', status: 'approved', date: 'Aug 3, 2026', hr: 'QA Lead', hash: '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8' },
+      { id: 'WF-203', title: 'Security Audit & Compliance', client: 'HealthCore', stage: 'Internal Review', status: 'review', date: 'Aug 1, 2026', hr: 'Project Manager', hash: '3a7bd3e2360a3421685ce8ee93dd14697a3ec074d0f779e51e70c53d0e9140c4' }
+    ],
+    certificates: [
+      { certId: 'CERT-9102', project: 'Payment Gateway Integration', client: 'ShopSwift', date: '2026-08-03 10:15 UTC', hash: '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', signee: 'Chief Technology Officer (ShopSwift)' }
+    ]
+  },
+  production: {
+    id: 'production',
+    name: 'Production Company',
+    icon: 'tabler:movie',
+    color: '#8b5cf6',
+    desc: 'Storyboards, film rough cuts, color grading & distributor delivery.',
+    hrRoles: [
+      { id: 'hr-9', name: 'Executive Producer', dept: 'Production Mgmt', access: 'Budget & Final', avatar: 'EP', email: 'producer@studios.com' },
+      { id: 'hr-10', name: 'Creative Director', dept: 'Directing Team', access: 'Artistic Sign-off', avatar: 'CD', email: 'director@studios.com' },
+      { id: 'hr-11', name: 'Lead Editor', dept: 'Post-Production', access: 'Cut Reviewer', avatar: 'LE', email: 'editor@studios.com' },
+      { id: 'hr-12', name: 'Sound & Audio Supervisor', dept: 'Audio Dept', access: 'Audio Check', avatar: 'SA', email: 'audio@studios.com' }
+    ],
+    sampleWorkflows: [
+      { id: 'WF-301', title: 'Commercial TV Cut (30s)', client: 'RedBull Energy', stage: 'Final Cut Review', status: 'pending', date: 'Today, 4:00 PM', hr: 'Executive Producer', hash: '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b' },
+      { id: 'WF-302', title: 'Documentary Storyboard v2', client: 'National Geo', stage: 'Legally Approved', status: 'approved', date: 'Aug 2, 2026', hr: 'Creative Director', hash: 'd4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35' },
+      { id: 'WF-303', title: 'Color Grading & Audio Sync', client: 'Sony Music', stage: 'Internal Review', status: 'review', date: 'Jul 30, 2026', hr: 'Lead Editor', hash: '4e07408562bedb8b60ce05c1decfe3ad16b72230967de06c6d273c2592fc6ed3' }
+    ],
+    certificates: [
+      { certId: 'CERT-7043', project: 'Documentary Storyboard v2', client: 'National Geo', date: '2026-08-02 18:20 UTC', hash: 'd4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35', signee: 'Head of Programming (NatGeo)' }
+    ]
+  },
+  decoration: {
+    id: 'decoration',
+    name: 'Decoration Company',
+    icon: 'tabler:palette',
+    color: '#f59e0b',
+    desc: 'Venue floorplans, decor mockups, vendor sourcing & client sign-offs.',
+    hrRoles: [
+      { id: 'hr-13', name: 'Senior Event Architect', dept: 'Design & Planning', access: 'Master Approver', avatar: 'EA', email: 'architect@decor.com' },
+      { id: 'hr-14', name: 'Floral & Decor Specialist', dept: 'Aesthetics', access: 'Theme Reviewer', avatar: 'FD', email: 'floral@decor.com' },
+      { id: 'hr-15', name: 'Vendor Procurement Head', dept: 'Logistics', access: 'Vendor Sign-off', avatar: 'VP', email: 'vendor@decor.com' },
+      { id: 'hr-16', name: 'On-site Operations Manager', dept: 'Execution', access: 'Safety Check', avatar: 'OM', email: 'ops@decor.com' }
+    ],
+    sampleWorkflows: [
+      { id: 'WF-401', title: 'Grand Hyatt Gala Floorplan', client: 'Standard Chartered', stage: 'Client Sign-off', status: 'pending', date: 'Today, 10:00 AM', hr: 'Senior Event Architect', hash: 'ef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d' },
+      { id: 'WF-402', title: 'Wedding Theme Visualizations', client: 'Sharma Family', stage: 'Legally Approved', status: 'approved', date: 'Aug 1, 2026', hr: 'Floral Specialist', hash: 'e7f6c011776e8db7cd330b54174fd76f7d0216b61238a6a92ae8dd0e6f949256' },
+      { id: 'WF-403', title: 'Stage Lighting & Backdrop', client: 'Tech Summit 2026', stage: 'Internal Review', status: 'review', date: 'Jul 29, 2026', hr: 'Procurement Head', hash: '7902699be42c8a8e46fbbb4501726517e86b22c56a189f7625a6da49081b2451' }
+    ],
+    certificates: [
+      { certId: 'CERT-6501', project: 'Wedding Theme Visualizations', client: 'Sharma Family', date: '2026-08-01 14:00 UTC', hash: 'e7f6c011776e8db7cd330b54174fd76f7d0216b61238a6a92ae8dd0e6f949256', signee: 'Client Representative (Sharma Family)' }
+    ]
+  }
+};
+
+// 2. STATE MANAGEMENT
+let currentState = {
+  activeTab: 'tab-dashboard',
+  selectedUserType: 'company',
+  selectedCompanyType: 'marketing',
+  user: null,
+  workflows: [...COMPANY_CONFIG.marketing.sampleWorkflows],
+  certificates: [...COMPANY_CONFIG.marketing.certificates],
+  hrList: [...COMPANY_CONFIG.marketing.hrRoles],
+  adminToken: 'pws_admin_secure_token_9941'
+};
+
+// 3. INITIALIZATION ON DOM LOAD
+document.addEventListener('DOMContentLoaded', () => {
+  initUrlTokenCheck();
+  renderCompanyCategories();
+  renderHrRoles();
+  setupEventListeners();
+});
+
+function initUrlTokenCheck() {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has('admin_token') || urlParams.get('role') === 'admin') {
+    selectUserType('admin');
+    showToast('🔑 Admin Security Link Token Verified!');
+  }
+}
+
+// 4. AUTH & SELECTION FUNCTIONS
+function selectUserType(type) {
+  currentState.selectedUserType = type;
+
+  const btnCompany = document.getElementById('btn-type-company');
+  const btnAdmin = document.getElementById('btn-type-admin');
+  const googleBtn = document.getElementById('google-auth-container');
+  const adminNotice = document.getElementById('admin-security-notice');
+
+  if (type === 'admin') {
+    btnCompany.classList.remove('active');
+    btnAdmin.classList.add('active');
+    googleBtn.style.display = 'none';
+    adminNotice.style.display = 'block';
+    showToast('🔒 Google Login disabled for Admin. Security Link required.');
+  } else {
+    btnAdmin.classList.remove('active');
+    btnCompany.classList.add('active');
+    googleBtn.style.display = 'block';
+    adminNotice.style.display = 'none';
+  }
+}
+
+function selectCompanyCategory(catKey) {
+  currentState.selectedCompanyType = catKey;
+  currentState.workflows = [...COMPANY_CONFIG[catKey].sampleWorkflows];
+  currentState.certificates = [...COMPANY_CONFIG[catKey].certificates];
+  currentState.hrList = [...COMPANY_CONFIG[catKey].hrRoles];
+
+  document.querySelectorAll('.company-card').forEach(card => card.classList.remove('selected'));
+  const selectedCard = document.getElementById(`company-card-${catKey}`);
+  if (selectedCard) selectedCard.classList.add('selected');
+
+  renderHrRoles();
+}
+
+function renderCompanyCategories() {
+  const container = document.getElementById('company-grid-container');
+  if (!container) return;
+
+  container.innerHTML = Object.keys(COMPANY_CONFIG).map(key => {
+    const item = COMPANY_CONFIG[key];
+    const isSelected = key === currentState.selectedCompanyType ? 'selected' : '';
+    return `
+      <div class="company-card ${isSelected}" id="company-card-${key}" onclick="selectCompanyCategory('${key}')">
+        <div class="company-icon-box">
+          <iconify-icon icon="${item.icon}" style="color: ${item.color};"></iconify-icon>
+        </div>
+        <div>
+          <div class="company-title">${item.name}</div>
+          <div class="company-desc">${item.desc}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderHrRoles() {
+  const container = document.getElementById('hr-roles-container');
+  const company = COMPANY_CONFIG[currentState.selectedCompanyType];
+  if (!container || !company) return;
+
+  const hrHtml = currentState.hrList.map(role => `
+    <div class="hr-tag">
+      <iconify-icon icon="tabler:user-check" style="color: var(--brand-teal);"></iconify-icon>
+      <span>${role.name}</span>
+    </div>
+  `).join('');
+
+  container.innerHTML = `
+    <div class="hr-tag admin-badge">
+      <iconify-icon icon="tabler:shield-check"></iconify-icon>
+      <span>Company Admin</span>
+    </div>
+    ${hrHtml}
+  `;
+}
+
+// 5. LOGIN HANDLERS
+function handleGoogleLogin() {
+  const company = COMPANY_CONFIG[currentState.selectedCompanyType];
+  currentState.user = {
+    name: 'Kritan Pradhan',
+    email: `kritan@${currentState.selectedCompanyType}agency.com`,
+    role: `Company User (${company.name})`,
+    isAdmin: false,
+    avatar: 'KP'
+  };
+
+  showToast(`Welcome back, ${currentState.user.name}! Signed in via Google.`);
+  switchScreen('dashboard-screen');
+  renderDashboard();
+}
+
+function handleAdminLinkLogin() {
+  const company = COMPANY_CONFIG[currentState.selectedCompanyType];
+  currentState.user = {
+    name: 'System Admin (SAIZOSUYA)',
+    email: `admin@${currentState.selectedCompanyType}.pragati.io`,
+    role: `Master Admin (${company.name})`,
+    isAdmin: true,
+    avatar: 'SA'
+  };
+
+  history.replaceState(null, '', `?admin_token=${currentState.adminToken}`);
+  showToast('🔑 Unique Admin Token Verified! Full Control Granted.');
+  switchScreen('dashboard-screen');
+  renderDashboard();
+}
+
+function handleLogout() {
+  currentState.user = null;
+  history.replaceState(null, '', window.location.pathname);
+  switchScreen('auth-screen');
+  showToast('🔒 Logged out successfully. Returned to login page.');
+}
+
+function switchScreen(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById(screenId);
+  if (target) target.classList.add('active');
+}
+
+// 6. DASHBOARD & TAB VIEW SWITCHING SYSTEM
+function switchTab(tabId) {
+  currentState.activeTab = tabId;
+
+  // Update active sidebar link styling
+  document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+  const activeNavItem = document.getElementById(`nav-${tabId}`);
+  if (activeNavItem) activeNavItem.classList.add('active');
+
+  // Show active tab container
+  document.querySelectorAll('.dashboard-tab').forEach(tab => tab.classList.remove('active'));
+  const targetTab = document.getElementById(tabId);
+  if (targetTab) targetTab.classList.add('active');
+
+  // Render tab content
+  if (tabId === 'tab-dashboard') renderDashboard();
+  if (tabId === 'tab-workflows') renderWorkflowsTab();
+  if (tabId === 'tab-approvals') renderApprovalQueueTab();
+  if (tabId === 'tab-hr') renderHrTab();
+  if (tabId === 'tab-legal') renderLegalTab();
+  if (tabId === 'tab-settings') renderSettingsTab();
+}
+
+// 7. TAB RENDERERS
+
+function renderDashboard() {
+  const company = COMPANY_CONFIG[currentState.selectedCompanyType];
+
+  document.getElementById('display-user-name').innerText = currentState.user ? currentState.user.name : 'User';
+  document.getElementById('display-user-role').innerText = currentState.user ? currentState.user.role : 'Member';
+  document.getElementById('display-user-avatar').innerText = currentState.user ? currentState.user.avatar : 'U';
+  document.getElementById('display-company-pill').innerHTML = `
+    <iconify-icon icon="${company.icon}" style="color: ${company.color}; font-size: 18px;"></iconify-icon>
+    <span>${company.name} Workflow</span>
+  `;
+
+  renderWorkflowTable();
+  renderDashboardHrList();
+}
+
+function renderWorkflowTable() {
+  const tbody = document.getElementById('workflow-table-body');
+  if (!tbody) return;
+
+  tbody.innerHTML = currentState.workflows.map(wf => `
+    <tr>
+      <td>
+        <div class="project-cell">
+          <div class="project-icon">
+            <iconify-icon icon="tabler:briefcase"></iconify-icon>
+          </div>
+          <div>
+            <div class="project-name">${wf.title}</div>
+            <div class="project-client">Client: ${wf.client}</div>
+          </div>
+        </div>
+      </td>
+      <td>
+        <span class="status-badge ${wf.status}">
+          <iconify-icon icon="tabler:circle-dot"></iconify-icon>
+          ${wf.stage}
+        </span>
+      </td>
+      <td>
+        <div style="font-weight: 600; font-size: 13px; color: var(--brand-navy);">${wf.hr}</div>
+        <div style="font-size: 11px; color: var(--text-muted);">Assigned HR</div>
+      </td>
+      <td>${wf.date}</td>
+      <td>
+        <button class="btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="openApprovalModal('${wf.id}')">
+          View & Approve
+        </button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function renderDashboardHrList() {
+  const container = document.getElementById('dashboard-hr-list');
+  if (!container) return;
+
+  container.innerHTML = currentState.hrList.map(hr => `
+    <div class="hr-item">
+      <div class="hr-user-box">
+        <div class="hr-avatar">${hr.avatar}</div>
+        <div>
+          <div class="hr-role-title">${hr.name}</div>
+          <div class="hr-role-dept">${hr.dept}</div>
+        </div>
+      </div>
+      <span class="permission-pill">${hr.access}</span>
+    </div>
+  `).join('');
+}
+
+// 8. DEDICATED WORKFLOWS TAB
+function renderWorkflowsTab(filter = 'all') {
+  const container = document.getElementById('full-workflows-container');
+  if (!container) return;
+
+  let filtered = currentState.workflows;
+  if (filter !== 'all') {
+    filtered = currentState.workflows.filter(w => w.status === filter);
+  }
+
+  container.innerHTML = filtered.map(wf => `
+    <div class="card-section" style="margin-bottom: 16px;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="project-cell">
+          <div class="project-icon">
+            <iconify-icon icon="tabler:file-check"></iconify-icon>
+          </div>
+          <div>
+            <div class="project-name" style="font-size: 16px;">${wf.title}</div>
+            <div class="project-client">Client: ${wf.client} • ID: ${wf.id}</div>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <span class="status-badge ${wf.status}">${wf.stage}</span>
+          <button class="btn-secondary" style="font-size: 12px; padding: 6px 12px;" onclick="copyApprovalLink('${wf.id}')">
+            <iconify-icon icon="tabler:link"></iconify-icon>
+            Copy Approval Link
+          </button>
+          <button class="btn-primary" style="font-size: 12px; padding: 6px 14px;" onclick="openApprovalModal('${wf.id}')">
+            Manage Approval
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterWorkflows(status) {
+  renderWorkflowsTab(status);
+  showToast(`Filtered workflows by status: ${status.toUpperCase()}`);
+}
+
+// 9. DEDICATED APPROVAL QUEUE TAB
+function renderApprovalQueueTab() {
+  const container = document.getElementById('approval-queue-container');
+  if (!container) return;
+
+  const pendingList = currentState.workflows.filter(w => w.status === 'pending');
+
+  if (pendingList.length === 0) {
+    container.innerHTML = `
+      <div class="card-section" style="text-align: center; padding: 48px;">
+        <iconify-icon icon="tabler:circle-check-filled" style="font-size: 48px; color: var(--brand-green); margin-bottom: 12px;"></iconify-icon>
+        <h3 style="margin-bottom: 6px;">All Approvals Clear!</h3>
+        <p style="color: var(--text-muted); font-size: 14px;">No pending client sign-offs remaining in queue.</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = pendingList.map(wf => `
+    <div class="card-section" style="margin-bottom: 20px;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+        <div>
+          <span class="status-badge pending" style="margin-bottom: 8px;">Stage 3: Pending Client Approval</span>
+          <h3 style="font-size: 18px; color: var(--brand-navy);">${wf.title}</h3>
+          <p style="font-size: 13px; color: var(--text-muted);">Client: <strong>${wf.client}</strong> | Assigned HR: <strong>${wf.hr}</strong></p>
+        </div>
+        <span style="font-size: 12px; color: var(--text-light); font-weight: 600;">Submitted ${wf.date}</span>
+      </div>
+
+      <div style="background: #f8fafc; border: 1px solid var(--border-color); padding: 14px; border-radius: var(--radius-md); margin-bottom: 16px; font-size: 13px;">
+        <div style="display: flex; items-center; gap: 8px; font-weight: 700; color: var(--brand-navy); margin-bottom: 4px;">
+          <iconify-icon icon="tabler:paperclip" style="color: var(--brand-teal);"></iconify-icon>
+          Attached Deliverable Asset:
+        </div>
+        <div style="color: var(--text-muted);">pragati_deliverable_${wf.id.toLowerCase()}_v2.pdf (Timestamped Hash Verification)</div>
+      </div>
+
+      <div style="display: flex; gap: 12px; justify-content: flex-end;">
+        <button class="btn-secondary" style="color: var(--status-rejected);" onclick="rejectWorkflow('${wf.id}')">
+          <iconify-icon icon="tabler:x"></iconify-icon>
+          Request Revisions
+        </button>
+        <button class="btn-primary" onclick="approveWorkflow('${wf.id}')">
+          <iconify-icon icon="tabler:check"></iconify-icon>
+          Approve & Seal Deliverable
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// 10. HR & PERSONNEL MANAGEMENT TAB
+function renderHrTab() {
+  const container = document.getElementById('full-hr-container');
+  if (!container) return;
+
+  container.innerHTML = currentState.hrList.map(hr => `
+    <div class="card-section" style="margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
+      <div class="hr-user-box">
+        <div class="hr-avatar" style="width: 48px; height: 48px; font-size: 18px;">${hr.avatar}</div>
+        <div>
+          <div class="hr-role-title" style="font-size: 16px;">${hr.name}</div>
+          <div class="hr-role-dept" style="font-size: 13px;">${hr.dept} • ${hr.email}</div>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <span class="permission-pill" style="font-size: 12px; padding: 6px 14px;">${hr.access}</span>
+        <button class="btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="showToast('Updated permissions for ${hr.name}')">
+          Edit Role
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openAddHrModal() {
+  document.getElementById('hr-modal').classList.add('active');
+}
+
+function submitNewHr(e) {
+  e.preventDefault();
+  const name = document.getElementById('input-hr-name').value;
+  const dept = document.getElementById('input-hr-dept').value;
+  const email = document.getElementById('input-hr-email').value;
+  const role = document.getElementById('input-hr-role').value;
+
+  const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
+
+  const newHr = {
+    id: 'hr-' + Math.floor(Math.random() * 1000),
+    name: name,
+    dept: dept,
+    access: role,
+    avatar: initials,
+    email: email
+  };
+
+  currentState.hrList.push(newHr);
+  renderHrRoles();
+  renderHrTab();
+  closeModal('hr-modal');
+  showToast(`👤 New Personnel "${name}" added to company HR list!`);
+}
+
+// 11. LEGAL AGREEMENTS & COMPLIANCE TAB
+function renderLegalTab() {
+  const container = document.getElementById('legal-certificates-container');
+  if (!container) return;
+
+  container.innerHTML = currentState.certificates.map(cert => `
+    <div class="certificate-card">
+      <div class="cert-header">
+        <div>
+          <div class="cert-title">${cert.project}</div>
+          <div style="font-size: 12px; color: var(--text-muted);">Client: ${cert.client}</div>
+        </div>
+        <span class="status-badge approved">Official Legal Seal</span>
+      </div>
+
+      <div style="font-size: 12px; color: var(--text-muted);">
+        <div>Signed by: <strong>${cert.signee}</strong></div>
+        <div>Timestamp: <strong>${cert.date}</strong></div>
+      </div>
+
+      <div>
+        <div style="font-size: 11px; font-weight: 700; color: var(--brand-navy); margin-bottom: 4px;">SHA-256 Cryptographic Lock Hash:</div>
+        <div class="cert-hash">${cert.hash}</div>
+      </div>
+
+      <button class="btn-secondary" style="font-size: 12px; margin-top: 8px; justify-content: center;" onclick="downloadCertificate('${cert.certId}')">
+        <iconify-icon icon="tabler:download"></iconify-icon>
+        Download Compliance Certificate PDF
+      </button>
+    </div>
+  `).join('');
+}
+
+function downloadCertificate(certId) {
+  showToast(`📜 Compliance Certificate [${certId}] downloaded.`);
+}
+
+// 12. SETTINGS TAB
+function renderSettingsTab() {
+  const tokenDisplay = document.getElementById('display-admin-token');
+  if (tokenDisplay) tokenDisplay.value = `${window.location.origin}${window.location.pathname}?admin_token=${currentState.adminToken}`;
+}
+
+function generateNewAdminToken() {
+  currentState.adminToken = 'pws_admin_token_' + Math.random().toString(36).substr(2, 10);
+  renderSettingsTab();
+  showToast('🔑 New Unique Admin Security Link generated!');
+}
+
+function copyAdminTokenLink() {
+  const input = document.getElementById('display-admin-token');
+  if (input) {
+    input.select();
+    navigator.clipboard.writeText(input.value);
+    showToast('📋 Unique Admin Link copied to clipboard!');
+  }
+}
+
+// 13. WORKFLOW ACTIONS (CREATE, APPROVE, REJECT, LINK COPY)
+function openCreateModal() {
+  const select = document.getElementById('input-wf-hr');
+  if (select) {
+    select.innerHTML = currentState.hrList.map(r => `<option value="${r.name}">${r.name} (${r.dept})</option>`).join('');
+  }
+  document.getElementById('create-modal').classList.add('active');
+}
+
+function closeModal(modalId) {
+  const el = document.getElementById(modalId);
+  if (el) el.classList.remove('active');
+}
+
+function submitNewWorkflow(e) {
+  e.preventDefault();
+  const title = document.getElementById('input-wf-title').value;
+  const client = document.getElementById('input-wf-client').value;
+  const hrSelect = document.getElementById('input-wf-hr').value;
+
+  const mockHash = Array.from({length: 64}, () => Math.floor(Math.random()*16).toString(16)).join('');
+
+  const newWf = {
+    id: 'WF-' + Math.floor(100 + Math.random() * 900),
+    title: title,
+    client: client,
+    stage: 'Client Approval',
+    status: 'pending',
+    date: 'Just now',
+    hr: hrSelect || 'Company Admin',
+    hash: mockHash
+  };
+
+  currentState.workflows.unshift(newWf);
+  renderWorkflowTable();
+  if (currentState.activeTab === 'tab-workflows') renderWorkflowsTab();
+  if (currentState.activeTab === 'tab-approvals') renderApprovalQueueTab();
+
+  closeModal('create-modal');
+  showToast(`🎉 New Workflow "${title}" created and routed to client!`);
+}
+
+function openApprovalModal(wfId) {
+  const wf = currentState.workflows.find(w => w.id === wfId);
+  if (!wf) return;
+
+  document.getElementById('modal-wf-title').innerText = wf.title;
+  document.getElementById('modal-wf-client').innerText = `Client: ${wf.client} | ID: ${wf.id}`;
+  document.getElementById('modal-wf-hr').innerText = wf.hr;
+
+  document.getElementById('btn-modal-approve').onclick = () => approveWorkflow(wf.id);
+  document.getElementById('btn-modal-reject').onclick = () => rejectWorkflow(wf.id);
+
+  document.getElementById('approval-modal').classList.add('active');
+}
+
+function approveWorkflow(wfId) {
+  const wf = currentState.workflows.find(w => w.id === wfId);
+  if (wf) {
+    wf.status = 'approved';
+    wf.stage = 'Legally Approved';
+
+    // Add to certificates
+    const newCert = {
+      certId: 'CERT-' + Math.floor(1000 + Math.random() * 9000),
+      project: wf.title,
+      client: wf.client,
+      date: new Date().toISOString().replace('T', ' ').substr(0, 19) + ' UTC',
+      hash: wf.hash,
+      signee: `Official Approver (${wf.client})`
+    };
+    currentState.certificates.unshift(newCert);
+
+    renderWorkflowTable();
+    if (currentState.activeTab === 'tab-workflows') renderWorkflowsTab();
+    if (currentState.activeTab === 'tab-approvals') renderApprovalQueueTab();
+    if (currentState.activeTab === 'tab-legal') renderLegalTab();
+
+    closeModal('approval-modal');
+    showToast(`✅ "${wf.title}" officially approved by client! Legal Certificate sealed.`);
+  }
+}
+
+function rejectWorkflow(wfId) {
+  const wf = currentState.workflows.find(w => w.id === wfId);
+  if (wf) {
+    wf.status = 'review';
+    wf.stage = 'Revisions Requested';
+
+    renderWorkflowTable();
+    if (currentState.activeTab === 'tab-workflows') renderWorkflowsTab();
+    if (currentState.activeTab === 'tab-approvals') renderApprovalQueueTab();
+
+    closeModal('approval-modal');
+    showToast(`⚠️ Revisions requested for "${wf.title}". Returned to internal team.`);
+  }
+}
+
+function copyApprovalLink(wfId) {
+  const link = `${window.location.origin}${window.location.pathname}?workflow_id=${wfId}`;
+  navigator.clipboard.writeText(link);
+  showToast(`📋 Client Approval Link copied for ${wfId}`);
+}
+
+function setupEventListeners() {}
+
+// 14. TOAST NOTIFICATIONS
+function showToast(message) {
+  const container = document.getElementById('toast-container');
+  if (!container) return;
+
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerHTML = `
+    <iconify-icon icon="tabler:info-circle-filled" style="color: var(--brand-teal); font-size: 20px;"></iconify-icon>
+    <span>${message}</span>
+  `;
+
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(100%)';
+    setTimeout(() => toast.remove(), 300);
+  }, 4000);
+}

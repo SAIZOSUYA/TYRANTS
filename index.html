@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pragati Workflow System (PWS) | Client Approval Platform</title>
+  
+  <!-- SEO & Meta -->
+  <meta name="description" content="Pragati Workflow System eliminates friction between clients and creative agencies with legally secure, streamlined approval workflows.">
+  
+  <!-- CSS & Fonts -->
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       SCREEN 1: AUTHENTICATION & ONBOARDING (LOGIN / ROLE SELECTOR)
+       ========================================================================== -->
+  <div id="auth-screen" class="screen active">
+    <div class="auth-wrapper">
+      
+      <!-- Left Hero Banner -->
+      <div class="auth-left">
+        <div class="auth-brand">
+          <img src="pragati-logo.png" alt="Pragati Logo" class="auth-logo-img">
+          <div class="auth-brand-text">
+            <h2>Pragati Workflow</h2>
+            <p>PWS • Approval Platform</p>
+          </div>
+        </div>
+
+        <div class="auth-hero-content">
+          <h1>Bridge your finished work to official <span>Client Approval</span></h1>
+          <p>Eliminate friction between clients and creative agencies with automated multi-layer approvals, compliance protection, and instant legal verification.</p>
+          
+          <div class="auth-feature-pills">
+            <div class="feature-pill">
+              <iconify-icon icon="tabler:shield-check" style="color: #4ade80;"></iconify-icon>
+              Legal & Compliance Protection
+            </div>
+            <div class="feature-pill">
+              <iconify-icon icon="tabler:users" style="color: #38bdf8;"></iconify-icon>
+              Multi-Layer HR & Committee Approvals
+            </div>
+            <div class="feature-pill">
+              <iconify-icon icon="tabler:bolt" style="color: #facc15;"></iconify-icon>
+              Instant Client Verification Link
+            </div>
+          </div>
+        </div>
+
+        <div style="font-size: 12px; opacity: 0.7;">
+          © 2026 Pragati Workflow System (PWS). All Rights Reserved.
+        </div>
+      </div>
+
+      <!-- Right Auth Card -->
+      <div class="auth-right">
+        <div class="auth-card-header">
+          <h2>Welcome to Pragati</h2>
+          <p>Configure your company type & sign in to launch your workflow</p>
+        </div>
+
+        <!-- User Type Switcher -->
+        <div class="user-type-selector">
+          <button id="btn-type-company" class="user-type-btn active" onclick="selectUserType('company')">
+            <iconify-icon icon="tabler:building"></iconify-icon>
+            Company Account
+          </button>
+          <button id="btn-type-admin" class="user-type-btn" onclick="selectUserType('admin')">
+            <iconify-icon icon="tabler:shield-lock"></iconify-icon>
+            Admin Security Portal
+          </button>
+        </div>
+
+        <!-- 4 Company Categories -->
+        <span class="company-categories-label">Select Your Company Sector (4 Types):</span>
+        <div class="company-grid" id="company-grid-container">
+          <!-- Dynamically populated in app.js -->
+        </div>
+
+        <!-- Tailored HR Personnel Roles Box -->
+        <div class="hr-roles-box">
+          <div class="hr-roles-header">
+            <span>Included HR & Personnel Roles</span>
+            <iconify-icon icon="tabler:info-circle" style="color: var(--brand-teal);"></iconify-icon>
+          </div>
+          <div class="hr-role-tags" id="hr-roles-container">
+            <!-- Dynamically populated based on company type selection -->
+          </div>
+        </div>
+
+        <!-- Admin Security Link Notice (Hidden for company users) -->
+        <div id="admin-security-notice" class="admin-login-notice" style="display: none;">
+          <div class="admin-notice-header">
+            <iconify-icon icon="tabler:lock-code" style="font-size: 20px;"></iconify-icon>
+            <span>Admin Unique Link Security Protocol</span>
+          </div>
+          <div class="admin-notice-text">
+            Standard Google Sign-In is disabled for System Admin accounts. Admins must log in using their unique encrypted token link provided by the system.
+          </div>
+        </div>
+
+        <!-- Authentication CTA Buttons -->
+        <div id="google-auth-container">
+          <button class="btn-google" onclick="handleGoogleLogin()">
+            <svg width="20" height="20" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+            Sign in with Google
+          </button>
+        </div>
+
+        <div class="divider" style="margin: 16px 0;">
+          <span>OR ADMIN ACCESS</span>
+        </div>
+
+        <button class="btn-admin-link" onclick="handleAdminLinkLogin()">
+          <iconify-icon icon="tabler:key"></iconify-icon>
+          Log In via Unique Admin Token Link
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       SCREEN 2: MAIN WORKFLOW DASHBOARD (DRIBBBLE INSPIRED DESIGN)
+       ========================================================================== -->
+  <div id="dashboard-screen" class="screen">
+    <div class="app-container">
+
+      <!-- Left Sidebar Navigation -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <img src="pragati-logo.png" alt="Logo" class="sidebar-logo">
+          <div class="sidebar-brand-name">
+            <h3>Pragati</h3>
+            <span>Workflow Platform</span>
+          </div>
+        </div>
+
+        <div class="nav-section-title">Main Menu</div>
+        <ul class="nav-menu">
+          <li class="nav-item active" id="nav-tab-dashboard">
+            <a onclick="switchTab('tab-dashboard')">
+              <div class="nav-item-content">
+                <iconify-icon icon="tabler:layout-dashboard"></iconify-icon>
+                <span>Dashboard</span>
+              </div>
+            </a>
+          </li>
+          <li class="nav-item" id="nav-tab-workflows">
+            <a onclick="switchTab('tab-workflows')">
+              <div class="nav-item-content">
+                <iconify-icon icon="tabler:git-pull-request"></iconify-icon>
+                <span>Workflows</span>
+              </div>
+              <span class="nav-badge">3</span>
+            </a>
+          </li>
+          <li class="nav-item" id="nav-tab-approvals">
+            <a onclick="switchTab('tab-approvals')">
+              <div class="nav-item-content">
+                <iconify-icon icon="tabler:checks"></iconify-icon>
+                <span>Approval Queue</span>
+              </div>
+            </a>
+          </li>
+          <li class="nav-item" id="nav-tab-hr">
+            <a onclick="switchTab('tab-hr')">
+              <div class="nav-item-content">
+                <iconify-icon icon="tabler:users-group"></iconify-icon>
+                <span>HR & Personnel</span>
+              </div>
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">System & Legal</div>
+        <ul class="nav-menu">
+          <li class="nav-item" id="nav-tab-legal">
+            <a onclick="switchTab('tab-legal')">
+              <div class="nav-item-content">
+                <iconify-icon icon="tabler:file-certificate"></iconify-icon>
+                <span>Legal Agreements</span>
+              </div>
+            </a>
+          </li>
+          <li class="nav-item" id="nav-tab-settings">
+            <a onclick="switchTab('tab-settings')">
+              <div class="nav-item-content">
+                <iconify-icon icon="tabler:settings"></iconify-icon>
+                <span>Settings</span>
+              </div>
+            </a>
+          </li>
+        </ul>
+
+        <!-- Sidebar User Footer -->
+        <div class="sidebar-user">
+          <div class="user-info-box">
+            <div class="user-avatar" id="display-user-avatar">KP</div>
+            <div class="user-details">
+              <h4 id="display-user-name">User Name</h4>
+              <span id="display-user-role">Company User</span>
+            </div>
+          </div>
+          <button class="btn-secondary" style="padding: 8px 12px; font-size: 12px; gap: 6px;" onclick="handleLogout()" title="Log out of system">
+            <iconify-icon icon="tabler:logout" style="font-size: 18px; color: var(--status-rejected);"></iconify-icon>
+            <span>Exit</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="main-content">
+
+        <!-- Top Header Bar -->
+        <header class="top-bar">
+          <div class="top-welcome">
+            <h1>Pragati Workflow Dashboard</h1>
+            <p>Seamless bridge between your agency deliverables & official client sign-offs</p>
+          </div>
+
+          <div class="top-actions">
+            <!-- Active Company Category Tag -->
+            <div class="company-type-pill" id="display-company-pill">
+              <iconify-icon icon="tabler:building"></iconify-icon>
+              <span>Digital Marketing Workflow</span>
+            </div>
+
+            <!-- Search input -->
+            <div class="search-box">
+              <iconify-icon icon="tabler:search" class="search-icon"></iconify-icon>
+              <input type="text" placeholder="Search workflows, clients...">
+            </div>
+
+            <!-- Create New Workflow CTA -->
+            <button class="btn-primary" onclick="openCreateModal()">
+              <iconify-icon icon="tabler:plus"></iconify-icon>
+              New Workflow
+            </button>
+
+            <!-- Header Logout Button -->
+            <button class="btn-secondary" style="color: var(--status-rejected); border-color: rgba(239, 68, 68, 0.3);" onclick="handleLogout()">
+              <iconify-icon icon="tabler:power" style="font-size: 18px;"></iconify-icon>
+              Log Out
+            </button>
+          </div>
+        </header>
+
+        <!-- ==========================================
+             TAB 1: MAIN DASHBOARD OVERVIEW
+             ========================================== -->
+        <div id="tab-dashboard" class="dashboard-tab active">
+          
+          <!-- 4 Metric Cards (Dribbble Modern Style) -->
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-top">
+                <div class="metric-icon-box teal">
+                  <iconify-icon icon="tabler:git-commit"></iconify-icon>
+                </div>
+                <span class="trend-tag up">
+                  <iconify-icon icon="tabler:trending-up"></iconify-icon>
+                  +14%
+                </span>
+              </div>
+              <div class="metric-value">28</div>
+              <div class="metric-title">Active Workflows</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-top">
+                <div class="metric-icon-box amber">
+                  <iconify-icon icon="tabler:clock-hour-4"></iconify-icon>
+                </div>
+                <span class="trend-tag down">
+                  <iconify-icon icon="tabler:clock"></iconify-icon>
+                  -25% time
+                </span>
+              </div>
+              <div class="metric-value">4</div>
+              <div class="metric-title">Pending Client Sign-offs</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-top">
+                <div class="metric-icon-box green">
+                  <iconify-icon icon="tabler:shield-check-filled"></iconify-icon>
+                </div>
+                <span class="trend-tag up">
+                  <iconify-icon icon="tabler:trending-up"></iconify-icon>
+                  99.4%
+                </span>
+              </div>
+              <div class="metric-value">142</div>
+              <div class="metric-title">Approved Deliverables</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-top">
+                <div class="metric-icon-box navy">
+                  <iconify-icon icon="tabler:users"></iconify-icon>
+                </div>
+                <span class="trend-tag up">
+                  <iconify-icon icon="tabler:check"></iconify-icon>
+                  100% active
+                </span>
+              </div>
+              <div class="metric-value">12</div>
+              <div class="metric-title">Assigned HR Personnel</div>
+            </div>
+          </div>
+
+          <!-- Quick Navigation Panel -->
+          <div class="card-section" style="margin-top: 24px; padding: 32px; text-align: center; background: linear-gradient(135deg, rgba(15, 41, 66, 0.03) 0%, rgba(14, 165, 233, 0.06) 100%);">
+            <h2 style="font-size: 22px; color: var(--brand-navy); margin-bottom: 8px;">Pragati System Operational Overview</h2>
+            <p style="color: var(--text-muted); font-size: 14px; max-width: 600px; margin: 0 auto 24px auto;">
+              Use the sidebar navigation to access specialized management systems for your workflows, pending approval queue, HR team personnel, legal certificates, and settings.
+            </p>
+
+            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+              <button class="btn-primary" onclick="switchTab('tab-approvals')">
+                <iconify-icon icon="tabler:checks"></iconify-icon>
+                Open Approval Queue
+              </button>
+              <button class="btn-secondary" onclick="switchTab('tab-workflows')">
+                <iconify-icon icon="tabler:git-pull-request"></iconify-icon>
+                View All Workflows
+              </button>
+              <button class="btn-secondary" onclick="switchTab('tab-hr')">
+                <iconify-icon icon="tabler:users-group"></iconify-icon>
+                Manage HR Personnel
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             TAB 2: FULL WORKFLOWS MANAGEMENT
+             ========================================== -->
+        <div id="tab-workflows" class="dashboard-tab">
+          <div class="card-section" style="margin-bottom: 20px;">
+            <div class="section-header" style="margin-bottom: 0;">
+              <h2 class="section-title">
+                <iconify-icon icon="tabler:git-pull-request" style="color: var(--brand-teal);"></iconify-icon>
+                All Workflows Management
+              </h2>
+
+              <div style="display: flex; gap: 10px;">
+                <button class="btn-secondary" style="font-size: 13px; padding: 8px 16px;" onclick="filterWorkflows('all')">All</button>
+                <button class="btn-secondary" style="font-size: 13px; padding: 8px 16px;" onclick="filterWorkflows('pending')">Pending</button>
+                <button class="btn-secondary" style="font-size: 13px; padding: 8px 16px;" onclick="filterWorkflows('approved')">Approved</button>
+                <button class="btn-secondary" style="font-size: 13px; padding: 8px 16px;" onclick="filterWorkflows('review')">In Review</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="full-workflows-container">
+            <!-- Populated dynamically in app.js -->
+          </div>
+        </div>
+
+        <!-- ==========================================
+             TAB 3: APPROVAL QUEUE
+             ========================================== -->
+        <div id="tab-approvals" class="dashboard-tab">
+          <div class="card-section" style="margin-bottom: 20px;">
+            <div class="section-header">
+              <h2 class="section-title">
+                <iconify-icon icon="tabler:checks" style="color: var(--brand-teal);"></iconify-icon>
+                Pending Client Approval Queue
+              </h2>
+              <span style="font-size: 12px; color: var(--status-pending); font-weight: 700; background: var(--status-pending-bg); padding: 4px 12px; border-radius: 20px;">
+                ACTION REQUIRED
+              </span>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 0;">
+              Review deliverables awaiting client committee consensus or digital signature.
+            </p>
+          </div>
+
+          <div id="approval-queue-container">
+            <!-- Populated dynamically in app.js -->
+          </div>
+        </div>
+
+        <!-- ==========================================
+             TAB 4: HR & PERSONNEL MANAGEMENT
+             ========================================== -->
+        <div id="tab-hr" class="dashboard-tab">
+          <div class="card-section" style="margin-bottom: 20px;">
+            <div class="section-header">
+              <h2 class="section-title">
+                <iconify-icon icon="tabler:users-group" style="color: var(--brand-teal);"></iconify-icon>
+                Human Resources & Department Personnel
+              </h2>
+              <button class="btn-primary" style="font-size: 13px; padding: 8px 16px;" onclick="openAddHrModal()">
+                <iconify-icon icon="tabler:user-plus"></iconify-icon>
+                Add HR Personnel
+              </button>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted);">
+              Manage approval authorities, department leads, and reviewers for your company sector.
+            </p>
+          </div>
+
+          <div id="full-hr-container">
+            <!-- Populated dynamically in app.js -->
+          </div>
+        </div>
+
+        <!-- ==========================================
+             TAB 5: LEGAL AGREEMENTS & COMPLIANCE VAULT
+             ========================================== -->
+        <div id="tab-legal" class="dashboard-tab">
+          <div class="card-section" style="margin-bottom: 20px;">
+            <div class="section-header">
+              <h2 class="section-title">
+                <iconify-icon icon="tabler:file-certificate" style="color: var(--brand-teal);"></iconify-icon>
+                Legal Compliance & Certificate Vault
+              </h2>
+              <span class="status-badge approved">PROTECTED & SECURED</span>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted);">
+              Cryptographically timestamped approval seals generated upon client sign-off to protect against legal disputes.
+            </p>
+          </div>
+
+          <div class="certificate-grid" id="legal-certificates-container">
+            <!-- Populated dynamically in app.js -->
+          </div>
+        </div>
+
+        <!-- ==========================================
+             TAB 6: SETTINGS & UNIQUE ADMIN LINK GENERATOR
+             ========================================== -->
+        <div id="tab-settings" class="dashboard-tab">
+          <div class="card-section" style="margin-bottom: 20px;">
+            <h2 class="section-title">
+              <iconify-icon icon="tabler:settings" style="color: var(--brand-teal);"></iconify-icon>
+              Company Settings & Security Tokens
+            </h2>
+          </div>
+
+          <div class="settings-grid">
+            <div class="settings-card">
+              <h3 style="font-size: 16px; margin-bottom: 16px; color: var(--brand-navy);">Unique Admin Security Link</h3>
+              <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.4;">
+                As specified, standard Google sign-in is disabled for System Admins. Use this encrypted security link to access Admin controls.
+              </p>
+
+              <div class="form-group">
+                <label>Active Admin Security Token URL:</label>
+                <input type="text" id="display-admin-token" readonly value="http://localhost:3000/?admin_token=pws_admin_secure_token_9941">
+              </div>
+
+              <div style="display: flex; gap: 10px;">
+                <button class="btn-secondary" style="font-size: 13px;" onclick="copyAdminTokenLink()">
+                  <iconify-icon icon="tabler:copy"></iconify-icon>
+                  Copy Link
+                </button>
+                <button class="btn-primary" style="font-size: 13px;" onclick="generateNewAdminToken()">
+                  <iconify-icon icon="tabler:key"></iconify-icon>
+                  Regenerate Token
+                </button>
+              </div>
+            </div>
+
+            <div class="settings-card">
+              <h3 style="font-size: 16px; margin-bottom: 16px; color: var(--brand-navy);">Company Profile Preferences</h3>
+              
+              <div class="form-group">
+                <label>Company Display Name</label>
+                <input type="text" value="Pragati Enterprise Agency">
+              </div>
+
+              <div class="form-group">
+                <label>Notification Preference</label>
+                <select>
+                  <option>Instant Email & Toast Alert on Client Sign-off</option>
+                  <option>Daily Digest Only</option>
+                </select>
+              </div>
+
+              <button class="btn-primary" onclick="showToast('Saved settings preferences successfully.')">
+                Save Preferences
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODALS & OVERLAYS
+       ========================================================================== -->
+
+  <!-- Modal 1: Create New Workflow -->
+  <div id="create-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Create New Workflow</h3>
+        <button class="close-btn" onclick="closeModal('create-modal')">✕</button>
+      </div>
+
+      <form onsubmit="submitNewWorkflow(event)">
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Deliverable Title</label>
+          <input type="text" id="input-wf-title" required placeholder="e.g. Brand Design System v1" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Client / Enterprise Name</label>
+          <input type="text" id="input-wf-client" required placeholder="e.g. Acme Corporation" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="margin-bottom: 24px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Assign Department Lead / HR</label>
+          <select id="input-wf-hr" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button type="button" class="btn-secondary" onclick="closeModal('create-modal')">Cancel</button>
+          <button type="submit" class="btn-primary">Launch & Generate Link</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: View & Approve Workflow -->
+  <div id="approval-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Client Approval Portal</h3>
+        <button class="close-btn" onclick="closeModal('approval-modal')">✕</button>
+      </div>
+
+      <div style="margin-bottom: 20px; background: #f8fafc; padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+        <h4 id="modal-wf-title" style="font-size: 16px; margin-bottom: 4px;">Deliverable Title</h4>
+        <p id="modal-wf-client" style="font-size: 12px; color: var(--text-muted);">Client Name</p>
+        <div style="margin-top: 10px; font-size: 12px; display: flex; gap: 12px;">
+          <span>Reviewer HR: <strong id="modal-wf-hr">Lead</strong></span>
+          <span style="color: var(--brand-green); font-weight: 700;">Status: Pending Client Sign-off</span>
+        </div>
+      </div>
+
+      <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 24px;">
+        By clicking <strong>Approve & Seal</strong>, you verify that this deliverable satisfies all multi-layered committee requirements and is locked against future legal modifications.
+      </p>
+
+      <div style="display: flex; gap: 12px; justify-content: flex-end;">
+        <button id="btn-modal-reject" class="btn-secondary" style="color: var(--status-rejected);">Request Revisions</button>
+        <button id="btn-modal-approve" class="btn-primary">Approve & Seal Deliverable</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Add HR Personnel -->
+  <div id="hr-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Add HR & Personnel Member</h3>
+        <button class="close-btn" onclick="closeModal('hr-modal')">✕</button>
+      </div>
+
+      <form onsubmit="submitNewHr(event)">
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Full Name</label>
+          <input type="text" id="input-hr-name" required placeholder="e.g. Sarah Jenkins" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Department</label>
+          <input type="text" id="input-hr-dept" required placeholder="e.g. Quality Assurance" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Email Address</label>
+          <input type="email" id="input-hr-email" required placeholder="sarah@agency.com" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="margin-bottom: 24px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Approval Authority Role</label>
+          <select id="input-hr-role" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+            <option value="Final Approver">Final Approver</option>
+            <option value="Reviewer">Reviewer</option>
+            <option value="Department Lead">Department Lead</option>
+            <option value="Client Liaison">Client Liaison</option>
+          </select>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button type="button" class="btn-secondary" onclick="closeModal('hr-modal')">Cancel</button>
+          <button type="submit" class="btn-primary">Add Personnel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Live Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- JS App Script -->
+  <script src="app.js"></script>
+
+</body>
+</html>
