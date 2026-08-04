@@ -191,6 +191,14 @@
               </div>
             </a>
           </li>
+          <li class="nav-item" id="nav-tab-team">
+            <a onclick="switchTab('tab-team')">
+              <div class="nav-item-content">
+                <iconify-icon icon="tabler:users"></iconify-icon>
+                <span>Team & Squads</span>
+              </div>
+            </a>
+          </li>
           <li class="nav-item" id="nav-tab-messages">
             <a onclick="switchTab('tab-messages')">
               <div class="nav-item-content">
@@ -686,6 +694,33 @@
         </div>
 
         <!-- ==========================================
+             TAB: COMPANY TEAMS & EMPLOYEE SQUADS
+             ========================================== -->
+        <div id="tab-team" class="dashboard-tab">
+          <div class="card-section" style="margin-bottom: 20px;">
+            <div class="section-header">
+              <h2 class="section-title">
+                <iconify-icon icon="tabler:users" style="color: var(--brand-teal);"></iconify-icon>
+                Company Teams & Employee Squads
+              </h2>
+
+              <!-- Add Team Member Button (Admin Only) -->
+              <button class="btn-primary" id="btn-admin-add-team" onclick="openAddTeamModal()" style="font-size: 13px; padding: 8px 16px;">
+                <iconify-icon icon="tabler:user-plus"></iconify-icon>
+                + Add Team Member
+              </button>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted);">
+              Specialized employee teams and assigned project squads across your company sector.
+            </p>
+          </div>
+
+          <div id="company-teams-container">
+            <!-- Populated dynamically in app.js -->
+          </div>
+        </div>
+
+        <!-- ==========================================
              TAB 5: LEGAL AGREEMENTS & COMPLIANCE VAULT
              ========================================== -->
         <div id="tab-legal" class="dashboard-tab">
@@ -966,6 +1001,55 @@
           Send via WhatsApp Web / App
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- Modal 6: Add New Team Member (Admin Only) -->
+  <div id="team-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><iconify-icon icon="tabler:user-plus" style="color: var(--brand-teal); vertical-align: middle;"></iconify-icon> Add New Team Member</h3>
+        <button class="close-btn" onclick="closeModal('team-modal')">✕</button>
+      </div>
+
+      <div style="background: #e0f2fe; padding: 14px; border-radius: var(--radius-md); border: 1px solid #bae6fd; margin-bottom: 20px; font-size: 13px; color: #0369a1;">
+        <iconify-icon icon="tabler:shield-check" style="font-size: 18px; vertical-align: middle; margin-right: 6px;"></iconify-icon>
+        Admin Control: Register a new employee and assign them to an official company team & project squad.
+      </div>
+
+      <form onsubmit="submitNewTeamMember(event)">
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Employee Full Name</label>
+          <input type="text" id="input-team-name" required placeholder="e.g. Anish Maharjan" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Assigned Team / Squad</label>
+          <select id="input-team-squad" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Job Role / Designation</label>
+          <input type="text" id="input-team-role" required placeholder="e.g. Senior Brand Strategist" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Email Address</label>
+          <input type="email" id="input-team-email" required placeholder="employee@company.com" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="margin-bottom: 24px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Assigned Project Deliverable</label>
+          <input type="text" id="input-team-project" placeholder="e.g. Q3 Brand Rebrand Campaign" value="Q3 Brand Rebrand Campaign" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button type="button" class="btn-secondary" onclick="closeModal('team-modal')">Cancel</button>
+          <button type="submit" class="btn-primary">Add Team Member</button>
+        </div>
+      </form>
     </div>
   </div>
 

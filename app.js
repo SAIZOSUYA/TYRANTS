@@ -23,6 +23,11 @@ const COMPANY_CONFIG = {
     ],
     certificates: [
       { certId: 'CERT-8841', project: 'Social Media Banner Sets', client: 'Horizon Tech', date: '2026-08-03 16:42 UTC', hash: 'f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2', signee: 'VP of Marketing (Horizon Tech)' }
+    ],
+    teams: [
+      { id: 'tm-1', squad: 'Creative & Brand Design Team', name: 'Sarah Jenkins', role: 'Senior Brand Designer', email: 'sarah@agency.com', project: 'Q3 Brand Rebrand Campaign', avatar: 'SJ' },
+      { id: 'tm-2', squad: 'Digital Campaign Ops Squad', name: 'Kritan Pradhan', role: 'Ad Ops Lead', email: 'kritan@agency.com', project: 'Social Media Banner Sets', avatar: 'KP' },
+      { id: 'tm-3', squad: 'Content & Social Copy Team', name: 'Aarati Sharma', role: 'Content Lead', email: 'aarati@agency.com', project: 'SEO Content Pitch Deck', avatar: 'AS' }
     ]
   },
   it: {
@@ -44,6 +49,11 @@ const COMPANY_CONFIG = {
     ],
     certificates: [
       { certId: 'CERT-9102', project: 'Payment Gateway Integration', client: 'ShopSwift', date: '2026-08-03 10:15 UTC', hash: '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', signee: 'Chief Technology Officer (ShopSwift)' }
+    ],
+    teams: [
+      { id: 'tm-4', squad: 'Core Software Engineering Squad', name: 'David Chen', role: 'Principal Architect', email: 'david@itcorp.com', project: 'Enterprise Portal v2.4 Release', avatar: 'DC' },
+      { id: 'tm-5', squad: 'Scrum & Agile Delivery Team', name: 'Maya Patel', role: 'Scrum Master', email: 'maya@itcorp.com', project: 'Security Audit & Compliance', avatar: 'MP' },
+      { id: 'tm-6', squad: 'QA & DevOps Infrastructure Team', name: 'Samir Shrestha', role: 'Lead QA Engineer', email: 'samir@itcorp.com', project: 'Payment Gateway Integration', avatar: 'SS' }
     ]
   },
   production: {
@@ -65,6 +75,11 @@ const COMPANY_CONFIG = {
     ],
     certificates: [
       { certId: 'CERT-7043', project: 'Documentary Storyboard v2', client: 'National Geo', date: '2026-08-02 18:20 UTC', hash: 'd4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35', signee: 'Head of Programming (NatGeo)' }
+    ],
+    teams: [
+      { id: 'tm-7', squad: 'Post-Production & Editing Team', name: 'Alex Vance', role: 'Senior Lead Editor', email: 'alex@studios.com', project: 'Commercial TV Cut (30s)', avatar: 'AV' },
+      { id: 'tm-8', squad: 'Directing & Storyboard Team', name: 'Elena Rostova', role: 'Artistic Director', email: 'elena@studios.com', project: 'Documentary Storyboard v2', avatar: 'ER' },
+      { id: 'tm-9', squad: 'Audio & Sound Engineering Squad', name: 'Pooja Thapa', role: 'Sound Supervisor', email: 'pooja@studios.com', project: 'Color Grading & Audio Sync', avatar: 'PT' }
     ]
   },
   decoration: {
@@ -86,6 +101,11 @@ const COMPANY_CONFIG = {
     ],
     certificates: [
       { certId: 'CERT-6501', project: 'Wedding Theme Visualizations', client: 'Sharma Family', date: '2026-08-01 14:00 UTC', hash: 'e7f6c011776e8db7cd330b54174fd76f7d0216b61238a6a92ae8dd0e6f949256', signee: 'Client Representative (Sharma Family)' }
+    ],
+    teams: [
+      { id: 'tm-10', squad: 'Event Architecture & Planning Team', name: "Liam O'Connor", role: 'Lead Event Planner', email: 'liam@decor.com', project: 'Grand Hyatt Gala Floorplan', avatar: 'LO' },
+      { id: 'tm-11', squad: 'Floral & Aesthetics Design Squad', name: 'Sita Gurung', role: 'Senior Floral Designer', email: 'sita@decor.com', project: 'Wedding Theme Visualizations', avatar: 'SG' },
+      { id: 'tm-12', squad: 'Vendor Procurement & Logistics Team', name: 'Rohan Joshi', role: 'Logistics Manager', email: 'rohan@decor.com', project: 'Stage Lighting & Backdrop', avatar: 'RJ' }
     ]
   }
 };
@@ -99,6 +119,7 @@ let currentState = {
   workflows: [...COMPANY_CONFIG.marketing.sampleWorkflows],
   certificates: [...COMPANY_CONFIG.marketing.certificates],
   hrList: [...COMPANY_CONFIG.marketing.hrRoles],
+  teamList: [...COMPANY_CONFIG.marketing.teams],
   adminId: 'admin',
   adminPass: 'admin123'
 };
@@ -193,6 +214,7 @@ function selectCompanyCategory(catKey) {
   currentState.workflows = [...COMPANY_CONFIG[catKey].sampleWorkflows];
   currentState.certificates = [...COMPANY_CONFIG[catKey].certificates];
   currentState.hrList = [...COMPANY_CONFIG[catKey].hrRoles];
+  currentState.teamList = [...COMPANY_CONFIG[catKey].teams];
   currentState.selectedRole = 'Company Admin';
 
   document.querySelectorAll('.company-card').forEach(card => card.classList.remove('selected'));
@@ -307,8 +329,9 @@ function applyUserRolePermissions() {
   const navHr = document.getElementById('nav-tab-hr');
   const navLegal = document.getElementById('nav-tab-legal');
   
-  // Header action button (+ New Workflow)
+  // Admin action buttons (+ New Workflow, + Add Team Member)
   const headerNewBtn = document.getElementById('btn-header-new-wf');
+  const addTeamBtn = document.getElementById('btn-admin-add-team');
 
   // Dashboard admin-only widgets (4 Metric cards & Progress Wheel)
   const adminMetrics = document.getElementById('admin-dashboard-metrics');
@@ -321,6 +344,7 @@ function applyUserRolePermissions() {
   if (navHr) navHr.style.display = isAdmin ? 'block' : 'none';
   if (navLegal) navLegal.style.display = isAdmin ? 'block' : 'none';
   if (headerNewBtn) headerNewBtn.style.display = isAdmin ? 'inline-flex' : 'none';
+  if (addTeamBtn) addTeamBtn.style.display = isAdmin ? 'inline-flex' : 'none';
 
   if (adminMetrics) adminMetrics.style.display = isAdmin ? 'grid' : 'none';
   if (adminWheel) adminWheel.style.display = isAdmin ? 'flex' : 'none';
@@ -498,6 +522,7 @@ function switchTab(tabId) {
   if (tabId === 'tab-workflows') renderWorkflowsTab();
   if (tabId === 'tab-approvals') renderApprovalQueueTab();
   if (tabId === 'tab-hr') renderHrTab();
+  if (tabId === 'tab-team') renderTeamTab();
   if (tabId === 'tab-legal') renderLegalTab();
   if (tabId === 'tab-settings') renderSettingsTab();
 }
@@ -740,6 +765,128 @@ function submitNewHr(e) {
   renderHrTab();
   closeModal('hr-modal');
   showToast(`👤 New Personnel "${name}" added to company HR list!`);
+}
+
+// 10B. TEAM & EMPLOYEE SQUADS MANAGEMENT TAB
+function renderTeamTab() {
+  const container = document.getElementById('company-teams-container');
+  if (!container) return;
+
+  const company = COMPANY_CONFIG[currentState.selectedCompanyType];
+  const teamsData = currentState.teamList || (company ? company.teams : []);
+
+  if (teamsData.length === 0) {
+    container.innerHTML = `
+      <div class="card-section" style="text-align: center; padding: 48px;">
+        <iconify-icon icon="tabler:users-group" style="font-size: 48px; color: var(--brand-teal); margin-bottom: 12px;"></iconify-icon>
+        <h3>No Team Members Registered Yet</h3>
+        <p style="color: var(--text-muted); font-size: 14px;">Use "+ Add Team Member" to populate your company employee squads.</p>
+      </div>
+    `;
+    return;
+  }
+
+  // Group members by squad
+  const squadsMap = {};
+  teamsData.forEach(member => {
+    const squadName = member.squad || 'General Employee Squad';
+    if (!squadsMap[squadName]) squadsMap[squadName] = [];
+    squadsMap[squadName].push(member);
+  });
+
+  const isAdmin = currentState.user && currentState.user.isAdmin;
+
+  container.innerHTML = Object.keys(squadsMap).map(squadName => `
+    <div class="card-section" style="margin-bottom: 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+        <h3 style="font-size: 16px; color: var(--brand-navy); font-weight: 700; display: flex; align-items: center; gap: 8px;">
+          <iconify-icon icon="tabler:user-star" style="color: var(--brand-teal); font-size: 20px;"></iconify-icon>
+          ${squadName}
+        </h3>
+        <span class="status-badge approved" style="font-size: 11px;">${squadsMap[squadName].length} ACTIVE MEMBERS</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;">
+        ${squadsMap[squadName].map(m => `
+          <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; display: flex; align-items: center; gap: 14px;">
+            <div class="hr-avatar" style="width: 44px; height: 44px; font-size: 16px; flex-shrink: 0; background: var(--brand-navy); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800;">${m.avatar || 'EM'}</div>
+            <div style="flex: 1;">
+              <h4 style="font-size: 15px; color: var(--brand-navy); font-weight: 700; margin-bottom: 2px;">${m.name}</h4>
+              <div style="font-size: 12px; font-weight: 700; color: var(--brand-teal); margin-bottom: 4px;">${m.role}</div>
+              <div style="font-size: 11px; color: var(--text-muted);">${m.email}</div>
+              <div style="font-size: 11px; color: var(--brand-navy); font-weight: 600; margin-top: 4px;">Assigned Project: ${m.project || 'Active Workflow'}</div>
+            </div>
+            ${isAdmin ? `
+              <button class="btn-secondary" style="padding: 6px 8px; font-size: 12px; color: var(--status-rejected); border-color: rgba(239, 68, 68, 0.3);" onclick="removeTeamMember('${m.id}')" title="Remove member">
+                <iconify-icon icon="tabler:trash"></iconify-icon>
+              </button>
+            ` : ''}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function openAddTeamModal() {
+  if (!currentState.user || !currentState.user.isAdmin) {
+    showToast('🔒 Access Denied: Only Admin accounts can add team members.');
+    return;
+  }
+  const company = COMPANY_CONFIG[currentState.selectedCompanyType];
+  const squads = company ? company.teams.map(t => t.squad) : ['General Team Squad'];
+  const uniqueSquads = [...new Set(squads)];
+
+  const select = document.getElementById('input-team-squad');
+  if (select) {
+    select.innerHTML = uniqueSquads.map(s => `<option value="${s}">${s}</option>`).join('');
+  }
+
+  document.getElementById('team-modal').classList.add('active');
+}
+
+function submitNewTeamMember(e) {
+  e.preventDefault();
+  if (!currentState.user || !currentState.user.isAdmin) {
+    showToast('🔒 Access Denied: Only Admin accounts can add team members.');
+    closeModal('team-modal');
+    return;
+  }
+
+  const name = document.getElementById('input-team-name').value;
+  const squad = document.getElementById('input-team-squad').value;
+  const role = document.getElementById('input-team-role').value;
+  const email = document.getElementById('input-team-email').value;
+  const project = document.getElementById('input-team-project').value || 'Assigned Workflow';
+
+  const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().substr(0, 2) || 'EM';
+
+  const newMember = {
+    id: 'tm-' + Math.floor(100 + Math.random() * 900),
+    squad: squad,
+    name: name,
+    role: role,
+    email: email,
+    project: project,
+    avatar: initials
+  };
+
+  if (!currentState.teamList) currentState.teamList = [];
+  currentState.teamList.push(newMember);
+
+  renderTeamTab();
+  closeModal('team-modal');
+  showToast(`🎉 New Team Member "${name}" registered into ${squad}!`);
+}
+
+function removeTeamMember(id) {
+  if (!currentState.user || !currentState.user.isAdmin) {
+    showToast('🔒 Access Denied: Only Admin accounts can remove team members.');
+    return;
+  }
+  currentState.teamList = currentState.teamList.filter(m => m.id !== id);
+  renderTeamTab();
+  showToast(`🗑️ Team member removed successfully.`);
 }
 
 // 11. LEGAL AGREEMENTS & COMPLIANCE TAB
