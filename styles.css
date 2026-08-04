@@ -1289,7 +1289,11 @@ a {
 }
 
 /* Strict Role-Based Access Control (RBAC) Hide Rules */
-body:not(.user-is-admin) .admin-only {
+body:not(.user-is-admin) .admin-only,
+body:not(.user-is-admin) #btn-clear-all-data,
+body:not(.user-is-admin) #nav-settings,
+body:not(.user-is-admin) #view-settings,
+body:not(.user-is-admin) #modal-clear-data {
   display: none !important;
 }
 

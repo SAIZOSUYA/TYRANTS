@@ -1377,7 +1377,7 @@ function updateRolePermissions() {
   }
 
   // Toggle .admin-only elements (Add buttons, Quick Actions, Settings tab, Clear Data)
-  document.querySelectorAll('.admin-only').forEach(el => {
+  document.querySelectorAll('.admin-only, #btn-clear-all-data, #nav-settings, #view-settings, #modal-clear-data').forEach(el => {
     if (!isAdmin) {
       el.style.setProperty('display', 'none', 'important');
     } else {
@@ -1397,9 +1397,11 @@ function updateRolePermissions() {
   });
 
   // Redirect to Dashboard if non-admin is currently viewing Settings
-  const settingsTab = document.getElementById('view-settings');
-  if (!isAdmin && settingsTab && settingsTab.classList.contains('active')) {
-    switchTab('view-dashboard');
+  if (!isAdmin) {
+    const settingsTab = document.getElementById('view-settings');
+    if (settingsTab && settingsTab.classList.contains('active')) {
+      switchTab('view-dashboard');
+    }
   }
 }
 
