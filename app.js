@@ -30,7 +30,12 @@ let appState = loadState();
 function loadState() {
   const saved = localStorage.getItem('pragati_studio_state');
   if (saved) {
-    try { return JSON.parse(saved); } catch (e) { console.error('Failed to parse state', e); }
+    try {
+      const parsed = JSON.parse(saved);
+      if (parsed && parsed.projects && parsed.projects.length > 0) {
+        return parsed;
+      }
+    } catch (e) { console.error('Failed to parse state', e); }
   }
   return JSON.parse(JSON.stringify(DEFAULT_STATE));
 }
@@ -50,12 +55,17 @@ document.addEventListener('DOMContentLoaded', () => {
   renderClientsTable();
   renderCrewTable();
   
-  // Render Canvas Charts
+  // Render Canvas Charts with resize listener
+  renderCharts();
+  window.addEventListener('resize', renderCharts);
+});
+
+function renderCharts() {
   setTimeout(() => {
     renderProjectVolumeChart();
     renderProjectDistributionChart();
-  }, 100);
-});
+  }, 50);
+}
 
 // Navigation Tab Switching
 function switchTab(viewId) {
@@ -70,10 +80,7 @@ function switchTab(viewId) {
   if (targetNav) targetNav.classList.add('active');
 
   if (viewId === 'view-dashboard') {
-    setTimeout(() => {
-      renderProjectVolumeChart();
-      renderProjectDistributionChart();
-    }, 50);
+    renderCharts();
   }
 }
 
@@ -191,7 +198,7 @@ function renderProjectVolumeChart() {
 
   // Y-axis gridlines & labels (0, 9, 18, 27, 36)
   const yLabels = [0, 9, 18, 27, 36];
-  const chartBottom = height - 30;
+  const chartBottom = height - 35;
   const chartTop = 20;
   const chartHeight = chartBottom - chartTop;
 
@@ -211,12 +218,13 @@ function renderProjectVolumeChart() {
     ctx.fillText(val.toString(), 10, y + 4);
   });
 
-  // Monthly Bar Heights
+  // Monthly Bar Heights & Month Labels
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const data = [4, 6, 8, 12, 10, 14, 11, 16, 18, 27, 36, 32];
-  const barWidth = (width - 50) / data.length - 12;
+  const barWidth = (width - 50) / data.length - 10;
 
   data.forEach((val, i) => {
-    const x = 50 + i * (barWidth + 12);
+    const x = 45 + i * (barWidth + 10);
     const barH = (val / 36) * chartHeight;
     const y = chartBottom - barH;
 
@@ -234,6 +242,11 @@ function renderProjectVolumeChart() {
     ctx.beginPath();
     ctx.roundRect(x, y, barWidth, barH, [4, 4, 0, 0]);
     ctx.fill();
+
+    // Draw Month Label below bar
+    ctx.fillStyle = '#64748b';
+    ctx.font = '10px Plus Jakarta Sans';
+    ctx.fillText(months[i], x + (barWidth / 2) - 9, chartBottom + 16);
   });
 }
 
@@ -252,10 +265,6 @@ function renderProjectDistributionChart() {
 
   const width = rect.width;
   const height = rect.height;
-  const centerX = width / 2;
-  const centerY = height / 2 - 10;
-  const outerRadius = 85;
-  const innerRadius = 55;
 
   ctx.clearRect(0, 0, width, height);
 
@@ -265,6 +274,12 @@ function renderProjectDistributionChart() {
     { label: 'Music Video', value: 18, color: '#0f2744' },
     { label: 'Corporate', value: 12, color: '#14b8a6' }
   ];
+
+  // Adjust Donut Center & Radius to leave ample space for legend below
+  const centerX = width / 2;
+  const centerY = (height - 40) / 2;
+  const outerRadius = Math.min(centerX, centerY) - 15;
+  const innerRadius = outerRadius * 0.62;
 
   const total = segments.reduce((sum, s) => sum + s.value, 0);
   let startAngle = -Math.PI / 2;
@@ -284,20 +299,21 @@ function renderProjectDistributionChart() {
     startAngle = endAngle;
   });
 
-  // Legend at bottom
-  const legendY = height - 20;
-  let legendX = 20;
+  // Legend cleanly placed at bottom with balanced horizontal positioning
+  const legendY = height - 14;
+  const totalLegendWidth = segments.reduce((acc, s) => acc + (s.label.length * 7 + 22), 0);
+  let legendX = Math.max(10, (width - totalLegendWidth) / 2);
 
   ctx.font = '11px Plus Jakarta Sans';
-  segments.slice(0, 3).forEach(seg => {
+  segments.forEach(seg => {
     ctx.fillStyle = seg.color;
     ctx.beginPath();
     ctx.arc(legendX, legendY - 3, 5, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = '#94a3b8';
+    ctx.fillStyle = '#5a6a85';
     ctx.fillText(seg.label, legendX + 10, legendY);
-    legendX += 105;
+    legendX += (seg.label.length * 7 + 22);
   });
 }
 
