@@ -84,10 +84,6 @@
 
       <!-- Top Header Bar -->
       <header class="top-header">
-        <button type="button" class="mobile-nav-toggle" id="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle navigation menu">
-          <iconify-icon icon="tabler:menu-2" style="font-size: 24px; color: var(--brand-navy);"></iconify-icon>
-        </button>
-
         <div class="header-search">
           <iconify-icon icon="tabler:search"></iconify-icon>
           <input type="text" id="global-search-input" placeholder="Search projects, clients, crew..." onkeyup="handleGlobalSearch(event)" onfocus="handleGlobalSearch(event)">
@@ -249,24 +245,22 @@
               </button>
             </div>
             
-            <div class="table-responsive">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Project Name</th>
-                    <th>Client</th>
-                    <th>Category</th>
-                    <th>Assigned Crew</th>
-                    <th>Dates (Start / Shoot / Completion)</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody id="table-dashboard-projects">
-                  <!-- Dynamically Populated in app.js -->
-                </tbody>
-              </table>
-            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Project Name</th>
+                  <th>Client</th>
+                  <th>Category</th>
+                  <th>Assigned Crew</th>
+                  <th>Dates (Start / Shoot / Completion)</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="table-dashboard-projects">
+                <!-- Dynamically Populated in app.js -->
+              </tbody>
+            </table>
           </div>
 
         </section>
@@ -286,24 +280,22 @@
               </button>
             </div>
 
-            <div class="table-responsive">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Project Name</th>
-                    <th>Client</th>
-                    <th>Category</th>
-                    <th>Assigned Crew</th>
-                    <th>Dates (Start / Shoot / Completion)</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody id="table-all-projects">
-                  <!-- Dynamically Populated in app.js -->
-                </tbody>
-              </table>
-            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Project Name</th>
+                  <th>Client</th>
+                  <th>Category</th>
+                  <th>Assigned Crew</th>
+                  <th>Dates (Start / Shoot / Completion)</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="table-all-projects">
+                <!-- Dynamically Populated in app.js -->
+              </tbody>
+            </table>
           </div>
         </section>
 
@@ -343,24 +335,22 @@
               </button>
             </div>
 
-            <div class="table-responsive">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Client Name</th>
-                    <th>Company / Brand</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Projects</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="table-clients">
-                  <!-- Dynamically Populated in app.js -->
-                </tbody>
-              </table>
-            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Client Name</th>
+                  <th>Company / Brand</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Projects</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="table-clients">
+                <!-- Dynamically Populated in app.js -->
+              </tbody>
+            </table>
           </div>
         </section>
 
@@ -379,24 +369,22 @@
               </button>
             </div>
 
-            <div class="table-responsive">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Primary Role</th>
-                    <th>Contact Email</th>
-                    <th>Phone / WhatsApp</th>
-                    <th id="crew-header-rate">Day Rate</th>
-                    <th>Availability</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="table-crew">
-                  <!-- Dynamically Populated in app.js -->
-                </tbody>
-              </table>
-            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Primary Role</th>
+                  <th>Contact Email</th>
+                  <th>Phone / WhatsApp</th>
+                  <th id="crew-header-rate">Day Rate</th>
+                  <th>Availability</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="table-crew">
+                <!-- Dynamically Populated in app.js -->
+              </tbody>
+            </table>
           </div>
         </section>
 
@@ -887,8 +875,7 @@
     </div>
   </div>
 
-  <div id="mobile-menu-overlay" class="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
-
+  <script src="app.js"></script>
   <!-- Mandatory Authentication Screen Overlay -->
   <div id="auth-overlay" class="auth-overlay active">
     <div class="auth-card">

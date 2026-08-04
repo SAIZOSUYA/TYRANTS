@@ -87,8 +87,6 @@ function renderCharts() {
 
 // Navigation Tab Switching
 function switchTab(viewId) {
-  closeMobileMenu();
-
   document.querySelectorAll('.view-tab').forEach(tab => tab.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
 
@@ -104,21 +102,6 @@ function switchTab(viewId) {
   } else if (viewId === 'view-progress') {
     renderProgressTracker();
   }
-}
-
-// Mobile Slide-Out Sidebar Controls
-function toggleMobileMenu() {
-  const sidebar = document.querySelector('.sidebar');
-  const overlay = document.getElementById('mobile-menu-overlay');
-  if (sidebar) sidebar.classList.toggle('mobile-open');
-  if (overlay) overlay.classList.toggle('active');
-}
-
-function closeMobileMenu() {
-  const sidebar = document.querySelector('.sidebar');
-  const overlay = document.getElementById('mobile-menu-overlay');
-  if (sidebar) sidebar.classList.remove('mobile-open');
-  if (overlay) overlay.classList.remove('active');
 }
 
 // Update KPI Metrics in Dashboard Header
@@ -1360,19 +1343,12 @@ function checkAuthState() {
   const user = appState.user;
 
   if (!user) {
-    if (overlay) {
-      overlay.classList.add('active');
-      overlay.style.display = 'flex';
-    }
-    updateRolePermissions();
+    if (overlay) overlay.classList.add('active');
     return;
   }
 
   // User is authenticated
-  if (overlay) {
-    overlay.classList.remove('active');
-    overlay.style.display = 'none';
-  }
+  if (overlay) overlay.classList.remove('active');
 
   // Update top header user profile
   const avatarEl = document.getElementById('user-avatar');
@@ -1513,20 +1489,21 @@ function handleClientLogin() {
 }
 
 function handleAdminLogin(e) {
-  if (e) e.preventDefault();
-  const userEl = document.getElementById('auth-admin-user');
-  const passEl = document.getElementById('auth-admin-pass');
+  e.preventDefault();
+  const userInput = document.getElementById('auth-admin-user').value.trim();
+  const passInput = document.getElementById('auth-admin-pass').value.trim();
   const errorEl = document.getElementById('auth-admin-error');
 
-  const userInput = userEl ? userEl.value.trim() : '';
-  const passInput = passEl ? passEl.value.trim() : '';
+  // Admin credentials verification
+  const validUsers = ['admin@pragati.com', 'admin'];
+  const validPasses = ['Pragati@2026', 'admin123'];
 
-  if (userInput.length > 0 && passInput.length > 0) {
+  if (validUsers.includes(userInput.toLowerCase()) && validPasses.includes(passInput)) {
     if (errorEl) errorEl.style.display = 'none';
 
     appState.user = {
       name: 'Admin User',
-      email: userInput.includes('@') ? userInput : 'admin@pragati.com',
+      email: userInput,
       role: 'Admin',
       avatar: 'A'
     };
@@ -1535,7 +1512,7 @@ function handleAdminLogin(e) {
     checkAuthState();
   } else {
     if (errorEl) {
-      errorEl.textContent = 'Please enter your Admin username and password.';
+      errorEl.textContent = 'Invalid Admin username or password.';
       errorEl.style.display = 'block';
     }
   }
