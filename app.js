@@ -715,15 +715,15 @@ function showToast(message) {
   const toast = document.createElement('div');
   toast.className = 'toast';
   toast.innerHTML = `
-    <iconify-icon icon="tabler:info-circle-filled" style="color: var(--brand-teal); font-size: 20px;"></iconify-icon>
-    <span>${message}</span>
+    <iconify-icon icon="tabler:info-circle-filled" style="color: var(--brand-teal); font-size: 16px; flex-shrink: 0;"></iconify-icon>
+    <span style="line-height: 1.3;">${message}</span>
   `;
 
   container.appendChild(toast);
 
+  // Disappear after half a second (500ms) with slide-out transition
   setTimeout(() => {
-    toast.style.opacity = '0';
-    toast.style.transform = 'translateX(100%)';
-    setTimeout(() => toast.remove(), 300);
-  }, 4000);
+    toast.classList.add('hiding');
+    setTimeout(() => toast.remove(), 250);
+  }, 500);
 }
