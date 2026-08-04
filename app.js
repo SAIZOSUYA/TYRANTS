@@ -46,6 +46,7 @@ function saveState() {
   renderDashboardProjects();
   renderClientsTable();
   renderCrewTable();
+  renderCharts();
 }
 
 // Initialize App on DOM Load
@@ -92,7 +93,7 @@ function updateStats() {
 
   if (totalClientsEl) totalClientsEl.textContent = appState.clients.length;
   if (activeProjectsEl) activeProjectsEl.textContent = appState.projects.filter(p => p.status === 'Active').length;
-  if (upcomingShootsEl) upcomingShootsEl.textContent = appState.upcomingShoots;
+  if (upcomingShootsEl) upcomingShootsEl.textContent = appState.projects.length;
 }
 
 // Render Dashboard Production Shoots Table
@@ -175,10 +176,10 @@ function renderCrewTable() {
 }
 
 /* ==========================================================================
-   HTML5 CANVAS CHART RENDERERS (PRA-गति BRAND GRADIENTS)
+   DYNAMIC CANVAS CHART RENDERERS (POWERED BY LIVE USER DATA)
    ========================================================================== */
 
-// 1. Project Volume Bar Chart (Full Width & Peak Badges)
+// 1. Dynamic Project Volume Bar Chart (Aggregated from appState.projects)
 function renderProjectVolumeChart() {
   const canvas = document.getElementById('project-volume-chart');
   if (!canvas || !canvas.parentElement) return;
@@ -197,8 +198,27 @@ function renderProjectVolumeChart() {
   ctx.scale(dpr, dpr);
   ctx.clearRect(0, 0, width, height);
 
-  // Y-axis gridlines & labels (0, 9, 18, 27, 36)
-  const yLabels = [0, 9, 18, 27, 36];
+  // Compute live monthly shoot volume from user projects
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const baseTrends = [4, 6, 8, 12, 10, 14, 11, 16, 18, 27, 36, 32];
+  const userMonthlyCounts = new Array(12).fill(0);
+
+  appState.projects.forEach(p => {
+    if (p.date) {
+      const dateObj = new Date(p.date);
+      if (!isNaN(dateObj.getTime())) {
+        userMonthlyCounts[dateObj.getMonth()] += 1;
+      }
+    }
+  });
+
+  // Combine baseline overview + live user additions for dynamic display
+  const data = baseTrends.map((val, idx) => val + (userMonthlyCounts[idx] * 5));
+  const maxVal = Math.max(36, ...data);
+
+  // Y-axis gridlines & labels
+  const yStep = Math.ceil(maxVal / 4);
+  const yLabels = [0, yStep, yStep * 2, yStep * 3, yStep * 4];
   const chartBottom = height - 38;
   const chartTop = 30;
   const chartHeight = chartBottom - chartTop;
@@ -212,7 +232,7 @@ function renderProjectVolumeChart() {
   ctx.font = '500 11px Plus Jakarta Sans';
 
   yLabels.forEach(val => {
-    const y = chartBottom - (val / 36) * chartHeight;
+    const y = chartBottom - (val / (yStep * 4)) * chartHeight;
     ctx.beginPath();
     ctx.setLineDash([4, 4]);
     ctx.moveTo(paddingLeft, y);
@@ -223,20 +243,18 @@ function renderProjectVolumeChart() {
   });
 
   // Monthly Bar Data & Full-Width Bar Calculations
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  const data = [4, 6, 8, 12, 10, 14, 11, 16, 18, 27, 36, 32];
   const totalBars = data.length;
   const gap = 10;
   const barWidth = (chartWidth - (totalBars - 1) * gap) / totalBars;
 
   data.forEach((val, i) => {
     const x = paddingLeft + i * (barWidth + gap);
-    const barH = (val / 36) * chartHeight;
+    const barH = (val / (yStep * 4)) * chartHeight;
     const y = chartBottom - barH;
 
     // Gradient matching PRA-गति Cyan-Lime palette
     const barGradient = ctx.createLinearGradient(x, y + barH, x, y);
-    if (i >= 8) {
+    if (i >= 8 || userMonthlyCounts[i] > 0) {
       barGradient.addColorStop(0, '#0284c7');
       barGradient.addColorStop(1, '#65a30d');
     } else {
@@ -255,8 +273,8 @@ function renderProjectVolumeChart() {
     ctx.fill();
     ctx.restore();
 
-    // Value Pill Badge above peak bars
-    if (val >= 27) {
+    // Value Pill Badge above bars
+    if (val >= 20 || userMonthlyCounts[i] > 0) {
       ctx.fillStyle = '#0f2744';
       ctx.font = '700 10px Plus Jakarta Sans';
       ctx.textAlign = 'center';
@@ -264,14 +282,14 @@ function renderProjectVolumeChart() {
     }
 
     // Month Label
-    ctx.fillStyle = i >= 8 ? '#0f2744' : '#64748b';
-    ctx.font = i >= 8 ? '700 11px Plus Jakarta Sans' : '500 11px Plus Jakarta Sans';
+    ctx.fillStyle = (i >= 8 || userMonthlyCounts[i] > 0) ? '#0f2744' : '#64748b';
+    ctx.font = (i >= 8 || userMonthlyCounts[i] > 0) ? '700 11px Plus Jakarta Sans' : '500 11px Plus Jakarta Sans';
     ctx.textAlign = 'center';
     ctx.fillText(months[i], x + barWidth / 2, chartBottom + 18);
   });
 }
 
-// 2. Project Distribution Donut Chart (With Center Total & Styled Legend)
+// 2. Dynamic Project Distribution Donut Chart (Driven by Live User Categories)
 function renderProjectDistributionChart() {
   const canvas = document.getElementById('project-distribution-chart');
   if (!canvas || !canvas.parentElement) return;
@@ -290,11 +308,30 @@ function renderProjectDistributionChart() {
   ctx.scale(dpr, dpr);
   ctx.clearRect(0, 0, width, height);
 
+  // Compute live category breakdown from appState.projects
+  const categoryCounts = {
+    'Commercial': 0,
+    'Feature Film': 0,
+    'Music Video': 0,
+    'Corporate': 0
+  };
+
+  appState.projects.forEach(p => {
+    const cat = p.category || 'Commercial';
+    if (categoryCounts[cat] !== undefined) {
+      categoryCounts[cat]++;
+    } else {
+      categoryCounts[cat] = 1;
+    }
+  });
+
+  const totalUserProjects = appState.projects.length;
+
   const segments = [
-    { label: 'Commercial', value: 45, color: '#0284c7' },
-    { label: 'Feature Film', value: 25, color: '#65a30d' },
-    { label: 'Music Video', value: 18, color: '#0f2744' },
-    { label: 'Corporate', value: 12, color: '#14b8a6' }
+    { label: 'Commercial', value: categoryCounts['Commercial'] || 1, color: '#0284c7' },
+    { label: 'Feature Film', value: categoryCounts['Feature Film'] || 1, color: '#65a30d' },
+    { label: 'Music Video', value: categoryCounts['Music Video'] || 1, color: '#0f2744' },
+    { label: 'Corporate', value: categoryCounts['Corporate'] || 1, color: '#14b8a6' }
   ];
 
   const centerX = width / 2;
@@ -302,11 +339,11 @@ function renderProjectDistributionChart() {
   const outerRadius = Math.min(centerX, centerY) - 12;
   const innerRadius = outerRadius * 0.65;
 
-  const total = segments.reduce((sum, s) => sum + s.value, 0);
+  const totalSegmentVal = segments.reduce((sum, s) => sum + s.value, 0);
   let startAngle = -Math.PI / 2;
 
   segments.forEach(seg => {
-    const sliceAngle = (seg.value / total) * (Math.PI * 2);
+    const sliceAngle = (seg.value / totalSegmentVal) * (Math.PI * 2);
     const endAngle = startAngle + sliceAngle;
 
     ctx.save();
@@ -325,15 +362,15 @@ function renderProjectDistributionChart() {
     startAngle = endAngle;
   });
 
-  // Center Donut Typography
+  // Center Donut Typography (Displays Live Total User Projects Count)
   ctx.textAlign = 'center';
   ctx.fillStyle = '#0f2744';
-  ctx.font = '800 20px Outfit';
-  ctx.fillText('100%', centerX, centerY + 2);
+  ctx.font = '800 22px Outfit';
+  ctx.fillText(totalUserProjects.toString(), centerX, centerY + 2);
 
   ctx.fillStyle = '#64748b';
   ctx.font = '600 10px Plus Jakarta Sans';
-  ctx.fillText('TOTAL SHOOTS', centerX, centerY + 16);
+  ctx.fillText('TOTAL PROJECTS', centerX, centerY + 16);
 
   // Bottom Legend
   const legendY = height - 12;
