@@ -300,6 +300,7 @@ function renderHrRoles() {
 // 5. LOGIN HANDLERS
 function applyUserRolePermissions() {
   const isAdmin = currentState.user && currentState.user.isAdmin;
+  const isClient = currentState.user && currentState.user.isClient;
 
   // Sidebar navigation elements
   const navWorkflows = document.getElementById('nav-tab-workflows');
@@ -313,6 +314,9 @@ function applyUserRolePermissions() {
   const adminMetrics = document.getElementById('admin-dashboard-metrics');
   const adminWheel = document.getElementById('admin-progress-wheel');
 
+  // Dashboard client-only widget (Select Active Project Chooser Box)
+  const clientChooserBox = document.getElementById('client-project-chooser-box');
+
   if (navWorkflows) navWorkflows.style.display = isAdmin ? 'block' : 'none';
   if (navHr) navHr.style.display = isAdmin ? 'block' : 'none';
   if (navLegal) navLegal.style.display = isAdmin ? 'block' : 'none';
@@ -320,15 +324,16 @@ function applyUserRolePermissions() {
 
   if (adminMetrics) adminMetrics.style.display = isAdmin ? 'grid' : 'none';
   if (adminWheel) adminWheel.style.display = isAdmin ? 'flex' : 'none';
+  if (clientChooserBox) clientChooserBox.style.display = isClient ? 'block' : 'none';
 }
 
 function handleGoogleLogin() {
   const company = COMPANY_CONFIG[currentState.selectedCompanyType];
   
   if (currentState.selectedUserType === 'client') {
-    // Open Client Info Verification Modal for Name & Phone Number
+    // Open Client Info Verification Modal for Name, Phone Number & Active Project Selection
     document.getElementById('client-info-modal').classList.add('active');
-    showToast(`🔑 Google Auth Verified! Please enter your Client contact details.`);
+    showToast(`🔑 Google Auth Verified! Please enter your Client contact details & choose active project.`);
     return;
   }
 
@@ -340,6 +345,7 @@ function handleGoogleLogin() {
     email: roleObj ? roleObj.email : `user@${currentState.selectedCompanyType}agency.com`,
     role: `${roleName} (${company.name})`,
     isAdmin: false,
+    isClient: false,
     avatar: roleObj ? roleObj.avatar : 'KP'
   };
 
@@ -354,7 +360,7 @@ function submitClientInfo(e) {
   const fullName = document.getElementById('input-client-fullname').value;
   const phone = document.getElementById('input-client-phone').value;
   const org = document.getElementById('input-client-org').value || 'Client Enterprise';
-  const company = COMPANY_CONFIG[currentState.selectedCompanyType];
+  const selectedProject = document.getElementById('input-client-active-project')?.value || 'WF-101';
 
   const initials = fullName.split(' ').map(n => n[0]).join('').toUpperCase().substr(0, 2) || 'CL';
 
@@ -364,15 +370,21 @@ function submitClientInfo(e) {
     phone: phone,
     role: `Client Approver (${org})`,
     isAdmin: false,
+    isClient: true,
     avatar: initials
   };
 
+  const dropdown = document.getElementById('client-project-dropdown');
+  if (dropdown) dropdown.value = selectedProject;
+
   closeModal('client-info-modal');
   applyUserRolePermissions();
-  showToast(`✅ Profile Verified! Welcome ${fullName} (${phone}).`);
   switchScreen('dashboard-screen');
   renderDashboard();
-  switchTab('tab-approvals');
+
+  // Load selected project wheel & milestones
+  switchClientProject(selectedProject);
+  showToast(`🚀 Welcome ${fullName}! Loaded selected Project progress.`);
 }
 
 function sendFeedbackMessage(e) {
