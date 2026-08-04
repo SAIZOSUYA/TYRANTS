@@ -10,43 +10,51 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Brand Colors */
-  --brand-navy: #0f2942;
-  --brand-navy-light: #1e3a5f;
-  --brand-teal: #0ea5e9;
-  --brand-teal-dark: #0284c7;
+  /* PRA-गति Brand Colors (Extracted from Logo) */
+  --brand-navy: #0f2744;          /* Deep Blue from logo base */
+  --brand-navy-light: #183b66;    /* Soft Navy */
+  --brand-cyan: #0284c7;          /* Vibrant Cyan Blue */
+  --brand-teal: #0d9488;          /* Rich Cyan Teal */
   --brand-teal-light: #e0f2fe;
-  --brand-green: #10b981;
-  --brand-green-light: #d1fae5;
-  --brand-gradient: linear-gradient(135deg, #0f2942 0%, #1498b8 50%, #3eb86e 100%);
-  --brand-gradient-hover: linear-gradient(135deg, #163e63 0%, #0ea5e9 50%, #10b981 100%);
-  --brand-gradient-soft: linear-gradient(135deg, rgba(15, 41, 66, 0.05) 0%, rgba(20, 152, 184, 0.08) 50%, rgba(62, 184, 110, 0.05) 100%);
+  --brand-lime: #65a30d;          /* Dynamic Lime Green from top curve & गति */
+  --brand-lime-bright: #84cc16;   /* Electric Lime Green accent */
+  --brand-lime-light: #f7fee7;    /* Soft Lime Tint */
+  --brand-green: #16a34a;         /* Growth Green */
+  --brand-green-light: #dcfce7;
+  
+  /* PRA-गति Signature Gradients */
+  --brand-gradient: linear-gradient(135deg, #0f2744 0%, #0284c7 48%, #65a30d 100%);
+  --brand-gradient-hover: linear-gradient(135deg, #183b66 0%, #0369a1 48%, #84cc16 100%);
+  --brand-gradient-soft: linear-gradient(135deg, rgba(15, 39, 68, 0.05) 0%, rgba(2, 132, 199, 0.08) 50%, rgba(101, 163, 13, 0.08) 100%);
+  --brand-gradient-lime: linear-gradient(135deg, #0284c7 0%, #65a30d 100%);
+  --brand-gradient-badge: linear-gradient(90deg, #0284c7 0%, #65a30d 100%);
+  --brand-gradient-text: linear-gradient(90deg, #0284c7 0%, #84cc16 100%);
 
-  /* Neutrals */
-  --bg-main: #f4f7fa;
+  /* Neutrals & Surfaces */
+  --bg-main: #f5f8fb;
   --bg-card: #ffffff;
   --bg-sidebar: #ffffff;
-  --text-main: #0f172a;
-  --text-muted: #64748b;
-  --text-light: #94a3b8;
-  --border-color: #e2e8f0;
+  --text-main: #0e1726;
+  --text-muted: #5a6a85;
+  --text-light: #8e9bb0;
+  --border-color: #e1e8f0;
   --border-hover: #cbd5e1;
 
   /* Status Colors */
   --status-pending: #d97706;
-  --status-pending-bg: #fef3c7;
-  --status-approved: #059669;
-  --status-approved-bg: #d1fae5;
+  --status-pending-bg: #fffbeb;
+  --status-approved: #16a34a;
+  --status-approved-bg: #f0fdf4;
   --status-rejected: #dc2626;
-  --status-rejected-bg: #fee2e2;
-  --status-review: #7c3aed;
-  --status-review-bg: #ede9fe;
+  --status-rejected-bg: #fef2f2;
+  --status-review: #65a30d;
+  --status-review-bg: #f7fee7;
 
   /* Shadows & Effects */
-  --shadow-sm: 0 2px 4px rgba(15, 41, 66, 0.04);
-  --shadow-md: 0 8px 16px -4px rgba(15, 41, 66, 0.08);
-  --shadow-lg: 0 20px 30px -10px rgba(15, 41, 66, 0.12);
-  --shadow-glow: 0 0 25px rgba(14, 165, 233, 0.25);
+  --shadow-sm: 0 2px 6px rgba(15, 39, 68, 0.04);
+  --shadow-md: 0 10px 20px -5px rgba(15, 39, 68, 0.08);
+  --shadow-lg: 0 20px 35px -10px rgba(15, 39, 68, 0.14);
+  --shadow-glow: 0 0 25px rgba(132, 204, 22, 0.3);
   --radius-sm: 8px;
   --radius-md: 14px;
   --radius-lg: 20px;
@@ -208,7 +216,7 @@ a {
   display: flex;
   width: 100vw;
   min-height: 100vh;
-  background: linear-gradient(135deg, #0f2942 0%, #0d5f78 40%, #157e6c 100%);
+  background: var(--brand-gradient);
   position: relative;
   overflow: hidden;
 }
@@ -219,7 +227,7 @@ a {
   width: 500px;
   height: 500px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(14, 165, 233, 0.35) 0%, rgba(0, 0, 0, 0) 70%);
+  background: radial-gradient(circle, rgba(2, 132, 199, 0.4) 0%, rgba(0, 0, 0, 0) 70%);
   top: -150px;
   left: -150px;
   pointer-events: none;
@@ -228,10 +236,10 @@ a {
 .auth-wrapper::after {
   content: '';
   position: absolute;
-  width: 600px;
-  height: 600px;
+  width: 650px;
+  height: 650px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(62, 184, 110, 0.3) 0%, rgba(0, 0, 0, 0) 70%);
+  background: radial-gradient(circle, rgba(132, 204, 22, 0.35) 0%, rgba(0, 0, 0, 0) 70%);
   bottom: -200px;
   right: -100px;
   pointer-events: none;
@@ -256,10 +264,11 @@ a {
 .auth-logo-img {
   height: 64px;
   width: auto;
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.25));
   background: white;
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .auth-brand-text h2 {
@@ -269,7 +278,7 @@ a {
 }
 
 .auth-brand-text p {
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.85);
   font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 1.5px;
@@ -288,7 +297,7 @@ a {
 }
 
 .auth-hero-content h1 span {
-  background: linear-gradient(135deg, #38bdf8 0%, #4ade80 100%);
+  background: linear-gradient(90deg, #38bdf8 0%, #a3e635 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -631,8 +640,13 @@ a {
 }
 
 .sidebar-logo {
-  height: 38px;
+  height: 42px;
   width: auto;
+  filter: drop-shadow(0 2px 8px rgba(15, 39, 68, 0.12));
+  background: white;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
 }
 
 .sidebar-brand-name h3 {
@@ -689,14 +703,14 @@ a {
 }
 
 .nav-item a:hover {
-  background: rgba(14, 165, 233, 0.08);
+  background: rgba(2, 132, 199, 0.08);
   color: var(--brand-navy);
 }
 
 .nav-item.active a {
-  background: linear-gradient(135deg, #093754 0%, #0d7994 45%, #2bb673 100%);
+  background: var(--brand-gradient);
   color: white;
-  box-shadow: 0 8px 20px rgba(13, 121, 148, 0.28);
+  box-shadow: 0 8px 20px rgba(2, 132, 199, 0.28);
 }
 
 .nav-item.active a iconify-icon {
