@@ -1338,3 +1338,200 @@ body.user-is-admin li.admin-only {
   margin-bottom: 0px !important;
   border-color: transparent !important;
 }
+
+/* ==========================================================================
+   MOBILE & TABLET RESPONSIVE SYSTEM (320px to 1024px)
+   ========================================================================== */
+
+/* Mobile Nav Toggle Button */
+.mobile-nav-toggle {
+  display: none;
+  background: white;
+  border: 1px solid var(--border-color);
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+}
+
+/* Mobile Menu Backdrop Overlay */
+.mobile-menu-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 39, 68, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 199;
+}
+
+.mobile-menu-overlay.active {
+  display: block;
+}
+
+/* Responsive Table Scroll Container */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 16px;
+  border-radius: var(--radius-md);
+}
+
+/* Tablet Breakpoint (<= 1024px) */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 220px;
+    padding: 16px 12px;
+  }
+
+  .main-content {
+    padding: 20px 16px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 16px;
+  }
+
+  .charts-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .progress-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Mobile Breakpoint (<= 768px) */
+@media (max-width: 768px) {
+  .mobile-nav-toggle {
+    display: inline-flex;
+  }
+
+  .app-container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 260px;
+    height: 100vh;
+    z-index: 200;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .sidebar.mobile-open {
+    left: 0;
+  }
+
+  .main-content {
+    width: 100%;
+    padding: 16px 12px;
+  }
+
+  .top-header {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .header-search {
+    order: 3;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .header-right {
+    margin-left: auto;
+    gap: 8px;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+  }
+
+  .progress-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .modal-content {
+    width: 94% !important;
+    max-width: 94% !important;
+    padding: 20px 16px !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+  }
+
+  /* Touch Target Optimizations & Keyboard Auto-Zoom Prevention */
+  input[type="text"],
+  input[type="email"],
+  input[type="number"],
+  input[type="password"],
+  input[type="date"],
+  select,
+  textarea {
+    font-size: 16px !important;
+    min-height: 44px;
+  }
+
+  button, .btn-primary-amber, .btn-secondary, .btn-quick-action {
+    min-height: 44px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .user-details {
+    display: none;
+  }
+
+  .user-dropdown {
+    right: 0;
+    left: auto;
+    width: 240px;
+  }
+}
+
+/* Small Mobile Breakpoint (<= 414px / 320px) */
+@media (max-width: 414px) {
+  .top-header {
+    padding: 8px;
+  }
+
+  .main-content {
+    padding: 12px 8px;
+  }
+
+  .stat-card {
+    padding: 14px;
+  }
+
+  .progress-card {
+    padding: 14px;
+  }
+
+  .modal-header h3 {
+    font-size: 16px;
+  }
+
+  .auth-card {
+    padding: 24px 16px !important;
+    width: 95% !important;
+  }
+}

@@ -87,6 +87,8 @@ function renderCharts() {
 
 // Navigation Tab Switching
 function switchTab(viewId) {
+  closeMobileMenu();
+
   document.querySelectorAll('.view-tab').forEach(tab => tab.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
 
@@ -102,6 +104,21 @@ function switchTab(viewId) {
   } else if (viewId === 'view-progress') {
     renderProgressTracker();
   }
+}
+
+// Mobile Slide-Out Sidebar Controls
+function toggleMobileMenu() {
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.getElementById('mobile-menu-overlay');
+  if (sidebar) sidebar.classList.toggle('mobile-open');
+  if (overlay) overlay.classList.toggle('active');
+}
+
+function closeMobileMenu() {
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.getElementById('mobile-menu-overlay');
+  if (sidebar) sidebar.classList.remove('mobile-open');
+  if (overlay) overlay.classList.remove('active');
 }
 
 // Update KPI Metrics in Dashboard Header
