@@ -95,18 +95,22 @@
           </div>
         </div>
 
-        <!-- Admin Security Link & Unique Passkey Portal -->
+        <!-- Admin User ID & Password Login Portal -->
         <div id="admin-security-notice" class="admin-login-notice" style="display: none;">
           <div class="admin-notice-header">
             <iconify-icon icon="tabler:shield-lock" style="font-size: 20px; color: var(--brand-navy);"></iconify-icon>
-            <span>Admin Unique Pass Key & Control Portal</span>
+            <span>System Admin Authentication Portal</span>
           </div>
-          <div class="admin-notice-text" style="margin-bottom: 12px;">
-            Standard Google Sign-In is disabled for System Admin accounts. Enter your Unique Admin Pass Key or use your encrypted security link to gain full system master control.
+          <div class="admin-notice-text" style="margin-bottom: 14px;">
+            Enter your System Admin User ID and Password to unlock master system control.
+          </div>
+          <div style="margin-bottom: 10px;">
+            <label style="display: block; font-size: 11px; font-weight: 700; color: var(--brand-navy); margin-bottom: 4px; text-transform: uppercase;">Admin User ID</label>
+            <input type="text" id="input-admin-userid" placeholder="Enter Admin User ID" value="admin" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 13px; outline: none; background: white;">
           </div>
           <div style="margin-bottom: 12px;">
-            <label style="display: block; font-size: 11px; font-weight: 700; color: var(--brand-navy); margin-bottom: 4px; text-transform: uppercase;">Unique Admin Pass Code</label>
-            <input type="password" id="input-admin-passkey" placeholder="Enter Admin Unique Pass Key (e.g. admin123)" value="admin123" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 13px; outline: none; background: white;">
+            <label style="display: block; font-size: 11px; font-weight: 700; color: var(--brand-navy); margin-bottom: 4px; text-transform: uppercase;">Admin Password</label>
+            <input type="password" id="input-admin-passkey" placeholder="Enter Admin Password" value="admin123" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 13px; outline: none; background: white;">
           </div>
         </div>
 
@@ -575,26 +579,27 @@
 
           <div class="settings-grid">
             <div class="settings-card">
-              <h3 style="font-size: 16px; margin-bottom: 16px; color: var(--brand-navy);">Unique Admin Security Link</h3>
+              <h3 style="font-size: 16px; margin-bottom: 16px; color: var(--brand-navy);">System Admin Credentials</h3>
               <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.4;">
-                As specified, standard Google sign-in is disabled for System Admins. Use this encrypted security link to access Admin controls.
+                Configure your custom System Admin Username ID and Master Password to lock down system control.
               </p>
 
-              <div class="form-group">
-                <label>Active Admin Security Token URL:</label>
-                <input type="text" id="display-admin-token" readonly value="http://localhost:3000/?admin_token=pws_admin_secure_token_9941">
-              </div>
+              <form onsubmit="saveAdminCredentials(event)">
+                <div class="form-group">
+                  <label>Admin Username / User ID</label>
+                  <input type="text" id="setting-admin-id" value="admin" required placeholder="e.g. admin">
+                </div>
 
-              <div style="display: flex; gap: 10px;">
-                <button class="btn-secondary" style="font-size: 13px;" onclick="copyAdminTokenLink()">
-                  <iconify-icon icon="tabler:copy"></iconify-icon>
-                  Copy Link
+                <div class="form-group">
+                  <label>Admin Master Password</label>
+                  <input type="password" id="setting-admin-pass" value="admin123" required placeholder="Enter password">
+                </div>
+
+                <button type="submit" class="btn-primary" style="font-size: 13px;">
+                  <iconify-icon icon="tabler:shield-check"></iconify-icon>
+                  Save Admin Credentials
                 </button>
-                <button class="btn-primary" style="font-size: 13px;" onclick="generateNewAdminToken()">
-                  <iconify-icon icon="tabler:key"></iconify-icon>
-                  Regenerate Token
-                </button>
-              </div>
+              </form>
             </div>
 
             <div class="settings-card">

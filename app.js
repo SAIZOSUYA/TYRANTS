@@ -99,7 +99,8 @@ let currentState = {
   workflows: [...COMPANY_CONFIG.marketing.sampleWorkflows],
   certificates: [...COMPANY_CONFIG.marketing.certificates],
   hrList: [...COMPANY_CONFIG.marketing.hrRoles],
-  adminToken: 'pws_admin_secure_token_9941'
+  adminId: 'admin',
+  adminPass: 'admin123'
 };
 
 // 3. INITIALIZATION ON DOM LOAD
@@ -402,13 +403,19 @@ function sendFeedbackMessage(e) {
 
 function handleAdminLinkLogin() {
   const company = COMPANY_CONFIG[currentState.selectedCompanyType];
-  const roleName = currentState.selectedRole || 'Master System Admin';
+  const useridInput = document.getElementById('input-admin-userid');
   const passkeyInput = document.getElementById('input-admin-passkey');
 
-  const passkey = passkeyInput ? passkeyInput.value : 'admin123';
+  const inputId = useridInput ? useridInput.value.trim() : '';
+  const inputPass = passkeyInput ? passkeyInput.value.trim() : '';
+
+  if (inputId !== currentState.adminId || inputPass !== currentState.adminPass) {
+    showToast(`❌ Invalid Admin Credentials! Use ID: "${currentState.adminId}" & Password.`);
+    return;
+  }
 
   currentState.user = {
-    name: 'Master System Admin (Pass Authenticated)',
+    name: `System Admin (${inputId})`,
     email: `admin@${currentState.selectedCompanyType}.pragati.io`,
     role: `🔒 System Master Admin (${company.name})`,
     isAdmin: true,
@@ -416,10 +423,21 @@ function handleAdminLinkLogin() {
   };
 
   applyUserRolePermissions();
-  history.replaceState(null, '', `?admin_token=${currentState.adminToken}`);
-  showToast(`🔓 Master System Control Unlocked via Unique Admin Pass Key!`);
+  showToast(`🔓 System Master Control Unlocked for Admin ID: "${inputId}"!`);
   switchScreen('dashboard-screen');
   renderDashboard();
+}
+
+function saveAdminCredentials(e) {
+  e.preventDefault();
+  const newId = document.getElementById('setting-admin-id').value.trim();
+  const newPass = document.getElementById('setting-admin-pass').value.trim();
+
+  if (newId && newPass) {
+    currentState.adminId = newId;
+    currentState.adminPass = newPass;
+    showToast(`✅ Saved! System Admin User ID set to "${newId}".`);
+  }
 }
 
 function handleLogout() {
