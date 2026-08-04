@@ -596,6 +596,13 @@ function renderProjectDistributionChart() {
    MODAL DIALOG CONTROLS & FORMS
    ========================================================================== */
 function openModal(modalId) {
+  if (modalId === 'modal-clear-data') {
+    const user = appState.user;
+    if (!user || user.role !== 'Admin') {
+      alert('Permission Denied: Only Studio Admins can clear system data.');
+      return;
+    }
+  }
   const modal = document.getElementById(modalId);
   if (modal) modal.classList.add('active');
 }

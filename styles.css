@@ -1293,8 +1293,13 @@ body:not(.user-is-admin) .admin-only,
 body:not(.user-is-admin) #btn-clear-all-data,
 body:not(.user-is-admin) #nav-settings,
 body:not(.user-is-admin) #view-settings,
-body:not(.user-is-admin) #modal-clear-data {
+body:not(.user-is-admin) #modal-clear-data,
+body:not(.user-is-admin) button[onclick*="modal-clear-data"],
+body:not(.user-is-admin) button[onclick*="confirmClearAllData"] {
   display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 body.user-is-admin .admin-only {
