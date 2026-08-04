@@ -977,6 +977,9 @@ function handleSaveProjectProgress(e) {
   project.stage = document.getElementById('progress-project-stage').value;
   project.progress = parseInt(document.getElementById('progress-project-percent').value) || 0;
 
+  // Automatically dispatch WhatsApp notification to Client if project reaches >= 90% completion
+  checkAndSend90PercentWhatsAppNotification(project);
+
   saveState();
   closeModal('modal-update-progress');
 
@@ -985,6 +988,51 @@ function handleSaveProjectProgress(e) {
     title: 'Project Progress Update',
     message: `${appState.user ? appState.user.name : 'Crew'} updated ${project.title} progress to ${project.progress}% (${project.stage})`
   });
+}
+
+// Automated 90% Completion Client WhatsApp Dispatcher
+function checkAndSend90PercentWhatsAppNotification(project) {
+  if (!project || project.progress < 90) return;
+
+  // Prevent duplicate trigger if already notified for reaching >= 90%
+  if (project.notified90Percent) return;
+
+  project.notified90Percent = true;
+
+  // Locate matching client from roster
+  const clientObj = appState.clients.find(c => 
+    (c.name || '').toLowerCase() === (project.client || '').toLowerCase() ||
+    (c.company || '').toLowerCase() === (project.client || '').toLowerCase()
+  );
+
+  const clientName = clientObj ? clientObj.name : (project.client || 'Valued Client');
+  let rawPhone = clientObj ? (clientObj.phone || '') : '';
+
+  const messageText = `Hello ${clientName}! Your project "${project.title}" has reached ${project.progress}% completion at Pragati Studio and will be completed soon! Current Stage: ${project.stage}. Thank you for working with us.`;
+
+  if (!rawPhone) {
+    rawPhone = prompt(
+      `Project "${project.title}" reached ${project.progress}% completion!\nEnter Client WhatsApp phone number to send completion update:`,
+      "+15550199"
+    );
+  }
+
+  if (rawPhone) {
+    const cleanPhone = rawPhone.replace(/[^\d+]/g, '');
+    if (cleanPhone) {
+      const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(messageText)}`;
+      window.open(waUrl, '_blank');
+
+      if (!appState.notifications) appState.notifications = [];
+      appState.notifications.unshift({
+        id: 'notif_' + Date.now(),
+        title: '90% Completion WhatsApp Alert',
+        message: `Automated WhatsApp notice dispatched to ${clientName} (${cleanPhone}) for "${project.title}" (${project.progress}%)`,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        read: false
+      });
+    }
+  }
 }
 
 /* ==========================================================================
