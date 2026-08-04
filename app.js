@@ -17,9 +17,9 @@ const COMPANY_CONFIG = {
       { id: 'hr-4', name: 'Client Relations Specialist', dept: 'Account Mgmt', access: 'Client Liaison', avatar: 'CR', email: 'client.rel@agency.com' }
     ],
     sampleWorkflows: [
-      { id: 'WF-101', title: 'Q3 Brand Rebrand Campaign', client: 'Apex Global', stage: 'Client Approval', status: 'pending', date: 'Today, 2:30 PM', hr: 'Campaign Director', hash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855' },
-      { id: 'WF-102', title: 'Social Media Banner Sets', client: 'Horizon Tech', stage: 'Legally Approved', status: 'approved', date: 'Yesterday', hr: 'Creative Manager', hash: 'f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2' },
-      { id: 'WF-103', title: 'SEO Content Pitch Deck', client: 'Luminary Inc', stage: 'Internal Review', status: 'review', date: 'Aug 2, 2026', hr: 'Copywriter Lead', hash: '4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a' }
+      { id: 'WF-101', title: 'Q3 Brand Rebrand Campaign', client: 'Apex Global', stage: 'Brief ➔ Strategy ➔ Client Approval', status: 'pending', date: 'Today, 2:30 PM', hr: 'Campaign Director', hash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855' },
+      { id: 'WF-102', title: 'Social Media Banner Sets', client: 'Horizon Tech', stage: 'Scheduling ➔ Live Ads ➔ Reporting', status: 'approved', date: 'Yesterday', hr: 'Creative Manager', hash: 'f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2' },
+      { id: 'WF-103', title: 'SEO Content Pitch Deck', client: 'Luminary Inc', stage: 'Content Creation ➔ Internal Review', status: 'review', date: 'Aug 2, 2026', hr: 'Copywriter Lead', hash: '4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a' }
     ],
     certificates: [
       { certId: 'CERT-8841', project: 'Social Media Banner Sets', client: 'Horizon Tech', date: '2026-08-03 16:42 UTC', hash: 'f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2', signee: 'VP of Marketing (Horizon Tech)' }
@@ -43,9 +43,9 @@ const COMPANY_CONFIG = {
       { id: 'hr-8', name: 'Technical Support Lead', dept: 'Operations', access: 'Deploy Sign-off', avatar: 'TS', email: 'support@itcorp.com' }
     ],
     sampleWorkflows: [
-      { id: 'WF-201', title: 'Enterprise Portal v2.4 Release', client: 'FinCorp Bank', stage: 'Client UAT', status: 'pending', date: 'Today, 11:15 AM', hr: 'Lead Architect', hash: '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08' },
-      { id: 'WF-202', title: 'Payment Gateway Integration', client: 'ShopSwift', stage: 'Legally Approved', status: 'approved', date: 'Aug 3, 2026', hr: 'QA Lead', hash: '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8' },
-      { id: 'WF-203', title: 'Security Audit & Compliance', client: 'HealthCore', stage: 'Internal Review', status: 'review', date: 'Aug 1, 2026', hr: 'Project Manager', hash: '3a7bd3e2360a3421685ce8ee93dd14697a3ec074d0f779e51e70c53d0e9140c4' }
+      { id: 'WF-201', title: 'Enterprise Portal v2.4 Release', client: 'FinCorp Bank', stage: 'Triage ➔ Fix ➔ QA Verification', status: 'pending', date: 'Today, 11:15 AM', hr: 'Lead Architect', hash: '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08' },
+      { id: 'WF-202', title: 'Payment Gateway Integration', client: 'ShopSwift', stage: 'QA Verification ➔ Closure', status: 'approved', date: 'Aug 3, 2026', hr: 'QA Lead', hash: '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8' },
+      { id: 'WF-203', title: 'Security Audit & Compliance', client: 'HealthCore', stage: 'Ticket Intake ➔ Triage', status: 'review', date: 'Aug 1, 2026', hr: 'Project Manager', hash: '3a7bd3e2360a3421685ce8ee93dd14697a3ec074d0f779e51e70c53d0e9140c4' }
     ],
     certificates: [
       { certId: 'CERT-9102', project: 'Payment Gateway Integration', client: 'ShopSwift', date: '2026-08-03 10:15 UTC', hash: '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', signee: 'Chief Technology Officer (ShopSwift)' }
@@ -69,9 +69,9 @@ const COMPANY_CONFIG = {
       { id: 'hr-12', name: 'Sound & Audio Supervisor', dept: 'Audio Dept', access: 'Audio Check', avatar: 'SA', email: 'audio@studios.com' }
     ],
     sampleWorkflows: [
-      { id: 'WF-301', title: 'Commercial TV Cut (30s)', client: 'RedBull Energy', stage: 'Final Cut Review', status: 'pending', date: 'Today, 4:00 PM', hr: 'Executive Producer', hash: '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b' },
-      { id: 'WF-302', title: 'Documentary Storyboard v2', client: 'National Geo', stage: 'Legally Approved', status: 'approved', date: 'Aug 2, 2026', hr: 'Creative Director', hash: 'd4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35' },
-      { id: 'WF-303', title: 'Color Grading & Audio Sync', client: 'Sony Music', stage: 'Internal Review', status: 'review', date: 'Jul 30, 2026', hr: 'Lead Editor', hash: '4e07408562bedb8b60ce05c1decfe3ad16b72230967de06c6d273c2592fc6ed3' }
+      { id: 'WF-301', title: 'Commercial TV Cut (30s)', client: 'RedBull Energy', stage: 'Shoot ➔ Editing ➔ Cut Revisions', status: 'pending', date: 'Today, 4:00 PM', hr: 'Executive Producer', hash: '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b' },
+      { id: 'WF-302', title: 'Documentary Storyboard v2', client: 'National Geo', stage: 'Editing ➔ Master Cut Delivery', status: 'approved', date: 'Aug 2, 2026', hr: 'Creative Director', hash: 'd4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35' },
+      { id: 'WF-303', title: 'Color Grading & Audio Sync', client: 'Sony Music', stage: 'Pre-Production ➔ Shoot', status: 'review', date: 'Jul 30, 2026', hr: 'Lead Editor', hash: '4e07408562bedb8b60ce05c1decfe3ad16b72230967de06c6d273c2592fc6ed3' }
     ],
     certificates: [
       { certId: 'CERT-7043', project: 'Documentary Storyboard v2', client: 'National Geo', date: '2026-08-02 18:20 UTC', hash: 'd4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35', signee: 'Head of Programming (NatGeo)' }
@@ -95,9 +95,9 @@ const COMPANY_CONFIG = {
       { id: 'hr-16', name: 'On-site Operations Manager', dept: 'Execution', access: 'Safety Check', avatar: 'OM', email: 'ops@decor.com' }
     ],
     sampleWorkflows: [
-      { id: 'WF-401', title: 'Grand Hyatt Gala Floorplan', client: 'Standard Chartered', stage: 'Client Sign-off', status: 'pending', date: 'Today, 10:00 AM', hr: 'Senior Event Architect', hash: 'ef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d' },
-      { id: 'WF-402', title: 'Wedding Theme Visualizations', client: 'Sharma Family', stage: 'Legally Approved', status: 'approved', date: 'Aug 1, 2026', hr: 'Floral Specialist', hash: 'e7f6c011776e8db7cd330b54174fd76f7d0216b61238a6a92ae8dd0e6f949256' },
-      { id: 'WF-403', title: 'Stage Lighting & Backdrop', client: 'Tech Summit 2026', stage: 'Internal Review', status: 'review', date: 'Jul 29, 2026', hr: 'Procurement Head', hash: '7902699be42c8a8e46fbbb4501726517e86b22c56a189f7625a6da49081b2451' }
+      { id: 'WF-401', title: 'Grand Hyatt Gala Floorplan', client: 'Standard Chartered', stage: 'Survey ➔ Concept ➔ Client Approval', status: 'pending', date: 'Today, 10:00 AM', hr: 'Senior Event Architect', hash: 'ef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d' },
+      { id: 'WF-402', title: 'Wedding Theme Visualizations', client: 'Sharma Family', stage: 'Procurement ➔ Installation ➔ Handover', status: 'approved', date: 'Aug 1, 2026', hr: 'Floral Specialist', hash: 'e7f6c011776e8db7cd330b54174fd76f7d0216b61238a6a92ae8dd0e6f949256' },
+      { id: 'WF-403', title: 'Stage Lighting & Backdrop', client: 'Tech Summit 2026', stage: 'Site Survey ➔ Concept Design', status: 'review', date: 'Jul 29, 2026', hr: 'Procurement Head', hash: '7902699be42c8a8e46fbbb4501726517e86b22c56a189f7625a6da49081b2451' }
     ],
     certificates: [
       { certId: 'CERT-6501', project: 'Wedding Theme Visualizations', client: 'Sharma Family', date: '2026-08-01 14:00 UTC', hash: 'e7f6c011776e8db7cd330b54174fd76f7d0216b61238a6a92ae8dd0e6f949256', signee: 'Client Representative (Sharma Family)' }
