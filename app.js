@@ -1512,7 +1512,7 @@ function handleAdminLogin(e) {
     checkAuthState();
   } else {
     if (errorEl) {
-      errorEl.textContent = 'Invalid Admin credentials. Default: admin@pragati.com / Pragati@2026';
+      errorEl.textContent = 'Invalid Admin username or password.';
       errorEl.style.display = 'block';
     }
   }
