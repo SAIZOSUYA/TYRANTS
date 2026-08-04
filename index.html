@@ -664,7 +664,7 @@
             <span>Completion Percentage</span>
             <span id="progress-percentage-label" style="color: var(--brand-cyan); font-weight: 800;">50%</span>
           </label>
-          <input type="range" id="progress-project-percent" min="0" max="100" value="50" oninput="document.getElementById('progress-percentage-label').textContent = this.value + '%'">
+          <input type="range" id="progress-project-percent" min="0" max="100" value="50" oninput="updateProgressSlider(this.value)">
         </div>
 
         <div class="form-actions">

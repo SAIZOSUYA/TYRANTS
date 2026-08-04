@@ -804,6 +804,16 @@ function renderProgressTracker(customList) {
   }).join('');
 }
 
+function updateProgressSlider(val) {
+  const percent = parseInt(val) || 0;
+  const slider = document.getElementById('progress-project-percent');
+  const label = document.getElementById('progress-percentage-label');
+  if (label) label.textContent = percent + '%';
+  if (slider) {
+    slider.style.background = `linear-gradient(to right, #0284c7 0%, #65a30d ${percent}%, #e2e8f0 ${percent}%, #e2e8f0 100%)`;
+  }
+}
+
 function openUpdateProgressModal(id) {
   const project = appState.projects.find(p => p.id === id);
   if (!project) return;
@@ -814,7 +824,7 @@ function openUpdateProgressModal(id) {
 
   const percent = project.progress !== undefined ? project.progress : 25;
   document.getElementById('progress-project-percent').value = percent;
-  document.getElementById('progress-percentage-label').textContent = percent + '%';
+  updateProgressSlider(percent);
 
   openModal('modal-update-progress');
 }
