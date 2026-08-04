@@ -1020,30 +1020,40 @@
       <form onsubmit="submitNewTeamMember(event)">
         <div style="margin-bottom: 14px;">
           <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Employee Full Name</label>
-          <input type="text" id="input-team-name" required placeholder="e.g. Anish Maharjan" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+          <input type="text" id="input-team-name" required placeholder="Type employee name e.g. Anish Maharjan" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
         </div>
 
         <div style="margin-bottom: 14px;">
-          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Assigned Team / Squad</label>
-          <select id="input-team-squad" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
-            <!-- Populated dynamically -->
-          </select>
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Team / Squad Name (Type custom name or select)</label>
+          <input type="text" id="input-team-squad" list="squad-suggestions" required placeholder="Type team name e.g. Core AI Engineering Squad" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+          <datalist id="squad-suggestions">
+            <!-- Populated dynamically in app.js -->
+          </datalist>
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
           <div>
-            <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Custom Role Name / Title</label>
-            <input type="text" id="input-team-role" required placeholder="e.g. Lead Brand Strategist" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+            <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Typeable Role Name / Title</label>
+            <input type="text" id="input-team-role" list="role-suggestions" required placeholder="Type role name e.g. Senior AI Engineer" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+            <datalist id="role-suggestions">
+              <option value="Campaign Director">
+              <option value="Senior Brand Strategist">
+              <option value="Lead Software Architect">
+              <option value="QA & Compliance Specialist">
+              <option value="Executive Producer">
+              <option value="Senior Event Planner">
+            </datalist>
           </div>
           <div>
-            <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Role Authority Level</label>
-            <select id="input-team-authority" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
-              <option value="Final Approver">Final Approver</option>
-              <option value="Sprint / Team Lead">Sprint / Team Lead</option>
-              <option value="Reviewer & Quality Assurance">Reviewer & QA</option>
-              <option value="Deliverable Creator">Deliverable Creator</option>
-              <option value="Client Liaison">Client Liaison</option>
-            </select>
+            <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Typeable Role Authority</label>
+            <input type="text" id="input-team-authority" list="authority-suggestions" placeholder="Type authority level e.g. Final Approver" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+            <datalist id="authority-suggestions">
+              <option value="Final Approver">
+              <option value="Sprint / Team Lead">
+              <option value="Reviewer & Quality Assurance">
+              <option value="Deliverable Creator">
+              <option value="Client Liaison">
+            </datalist>
           </div>
         </div>
 

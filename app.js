@@ -840,9 +840,9 @@ function openAddTeamModal() {
   const squads = company ? company.teams.map(t => t.squad) : ['General Team Squad'];
   const uniqueSquads = [...new Set(squads)];
 
-  const select = document.getElementById('input-team-squad');
-  if (select) {
-    select.innerHTML = uniqueSquads.map(s => `<option value="${s}">${s}</option>`).join('');
+  const datalist = document.getElementById('squad-suggestions');
+  if (datalist) {
+    datalist.innerHTML = uniqueSquads.map(s => `<option value="${s}">`).join('');
   }
 
   document.getElementById('team-modal').classList.add('active');
