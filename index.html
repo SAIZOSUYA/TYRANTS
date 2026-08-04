@@ -40,6 +40,12 @@
             <span>Projects</span>
           </a>
         </li>
+        <li class="nav-item" id="nav-progress">
+          <a onclick="switchTab('view-progress')">
+            <iconify-icon icon="tabler:chart-bar"></iconify-icon>
+            <span>Project Progress</span>
+          </a>
+        </li>
         <li class="nav-item" id="nav-clients">
           <a onclick="switchTab('view-clients')">
             <iconify-icon icon="tabler:users-group"></iconify-icon>
@@ -262,6 +268,27 @@
                 <!-- Dynamically Populated in app.js -->
               </tbody>
             </table>
+          </div>
+        </section>
+
+        <!-- ==========================================================================
+             TAB: PROJECT PROGRESS TRACKER
+             ========================================================================== -->
+        <section id="view-progress" class="view-tab">
+          <div class="section-card">
+            <div class="section-header">
+              <div>
+                <h2>Project Progress Tracker</h2>
+                <p style="color: var(--text-muted); font-size: 13px;">Track real-time production stages, shoot milestones, and completion percentages</p>
+              </div>
+              <button class="btn-primary-amber" onclick="openAddProjectModal()">
+                <iconify-icon icon="tabler:plus"></iconify-icon> Add Project
+              </button>
+            </div>
+
+            <div id="progress-cards-container" class="progress-grid">
+              <!-- Dynamically Populated in app.js -->
+            </div>
           </div>
         </section>
 
@@ -589,6 +616,49 @@
           <button type="submit" class="btn-primary-amber" style="background: #10b981; color: white;">
             <iconify-icon icon="tabler:brand-whatsapp"></iconify-icon> Send WhatsApp Message
           </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Update Project Progress Modal -->
+  <div id="modal-update-progress" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Update Project Progress</h3>
+        <button class="btn-close" onclick="closeModal('modal-update-progress')">&times;</button>
+      </div>
+      <form onsubmit="handleSaveProjectProgress(event)">
+        <input type="hidden" id="progress-project-id">
+        
+        <div class="form-group">
+          <label>Project Title</label>
+          <input type="text" id="progress-project-title" readonly style="background: var(--bg-input);">
+        </div>
+
+        <div class="form-group">
+          <label>Production Stage</label>
+          <select id="progress-project-stage">
+            <option value="Pre-Production">Pre-Production</option>
+            <option value="Shoot / Production">Shoot / Production</option>
+            <option value="Post-Production Editing">Post-Production Editing</option>
+            <option value="Color Grading & Audio">Color Grading & Audio</option>
+            <option value="Final Review">Final Review</option>
+            <option value="Delivered & Completed">Delivered & Completed</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label style="display: flex; justify-content: space-between;">
+            <span>Completion Percentage</span>
+            <span id="progress-percentage-label" style="color: var(--brand-cyan); font-weight: 800;">50%</span>
+          </label>
+          <input type="range" id="progress-project-percent" min="0" max="100" value="50" oninput="document.getElementById('progress-percentage-label').textContent = this.value + '%'">
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" onclick="closeModal('modal-update-progress')">Cancel</button>
+          <button type="submit" class="btn-primary-amber">Save Progress</button>
         </div>
       </form>
     </div>

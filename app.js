@@ -52,6 +52,7 @@ function saveState() {
   renderDashboardProjects();
   renderClientsTable();
   renderCrewTable();
+  renderProgressTracker();
   renderCharts();
 }
 
@@ -65,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderDashboardProjects();
   renderClientsTable();
   renderCrewTable();
+  renderProgressTracker();
   
   // Render Canvas Charts with resize listener
   renderCharts();
@@ -92,6 +94,8 @@ function switchTab(viewId) {
 
   if (viewId === 'view-dashboard') {
     renderCharts();
+  } else if (viewId === 'view-progress') {
+    renderProgressTracker();
   }
 }
 
@@ -535,7 +539,9 @@ function handleAddProject(e) {
     category,
     date,
     crew: checkedCrew.length > 0 ? checkedCrew : ['Unassigned'],
-    status: 'Active'
+    status: 'Active',
+    stage: 'Pre-Production',
+    progress: 25
   });
 
   saveState();
@@ -658,6 +664,88 @@ function handleSaveEditProject(e) {
 
   saveState();
   closeModal('modal-edit-project');
+}
+
+/* ==========================================================================
+   PROJECT PROGRESS TRACKER HANDLERS
+   ========================================================================== */
+
+function renderProgressTracker() {
+  const container = document.getElementById('progress-cards-container');
+  if (!container) return;
+
+  if (appState.projects.length === 0) {
+    container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 36px; background: white; border: 1px solid var(--border-color); border-radius: var(--radius-lg);">No production projects active. Click "Add Project" to begin tracking progress.</div>`;
+    return;
+  }
+
+  container.innerHTML = appState.projects.map(p => {
+    const percent = p.progress !== undefined ? p.progress : 25;
+    const stage = p.stage || 'Pre-Production';
+    const crewPills = (p.crew && p.crew.length > 0)
+      ? p.crew.map(cr => `<span class="crew-tag-pill">${escapeHtml(cr)}</span>`).join('')
+      : `<span style="font-size: 11px; color: var(--text-muted);">Unassigned</span>`;
+
+    return `
+      <div class="progress-card">
+        <div class="progress-card-header">
+          <div>
+            <div class="progress-card-title">${escapeHtml(p.title)}</div>
+            <div class="progress-card-client">Client: ${escapeHtml(p.client)}</div>
+          </div>
+          <span class="progress-stage-badge">${escapeHtml(stage)}</span>
+        </div>
+
+        <div class="progress-bar-container">
+          <div class="progress-bar-header">
+            <span>Overall Progress</span>
+            <span style="color: var(--brand-cyan); font-weight: 800;">${percent}%</span>
+          </div>
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" style="width: ${percent}%;"></div>
+          </div>
+        </div>
+
+        <div class="progress-crew-list">
+          <div>
+            <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">ASSIGNED CREW</span>
+            ${crewPills}
+          </div>
+          <button class="btn-primary-amber" style="padding: 6px 12px; font-size: 12px;" onclick="openUpdateProgressModal('${p.id}')">
+            <iconify-icon icon="tabler:adjustments"></iconify-icon> Update
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openUpdateProgressModal(id) {
+  const project = appState.projects.find(p => p.id === id);
+  if (!project) return;
+
+  document.getElementById('progress-project-id').value = project.id;
+  document.getElementById('progress-project-title').value = project.title;
+  document.getElementById('progress-project-stage').value = project.stage || 'Pre-Production';
+
+  const percent = project.progress !== undefined ? project.progress : 25;
+  document.getElementById('progress-project-percent').value = percent;
+  document.getElementById('progress-percentage-label').textContent = percent + '%';
+
+  openModal('modal-update-progress');
+}
+
+function handleSaveProjectProgress(e) {
+  e.preventDefault();
+  const id = document.getElementById('progress-project-id').value;
+  const project = appState.projects.find(p => p.id === id);
+  if (!project) return;
+
+  project.stage = document.getElementById('progress-project-stage').value;
+  project.progress = parseInt(document.getElementById('progress-project-percent').value) || 0;
+
+  saveState();
+  closeModal('modal-update-progress');
 }
 
 /* ==========================================================================
