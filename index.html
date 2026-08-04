@@ -456,35 +456,8 @@
 
             <div style="display: flex; flex-direction: column; gap: 16px;">
               
-              <!-- Project Progress Item 1 (Wheel) -->
-              <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; display: flex; align-items: center; gap: 20px;">
-                <div class="wheel-container" style="width: 80px; height: 80px; flex-shrink: 0;">
-                  <svg class="wheel-svg" viewBox="0 0 140 140">
-                    <circle class="wheel-bg-circle" cx="70" cy="70" r="60"></circle>
-                    <circle class="wheel-progress-circle" cx="70" cy="70" r="60" style="stroke-dashoffset: 94;"></circle>
-                  </svg>
-                  <div class="wheel-center-text">
-                    <div class="wheel-percentage" style="font-size: 16px;">75%</div>
-                  </div>
-                </div>
-
-                <div style="flex: 1;">
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <h4 style="font-size: 15px; color: var(--brand-navy); font-weight: 700;">Q3 Brand Rebrand Campaign</h4>
-                    <span class="status-badge pending">IN PROGRESS</span>
-                  </div>
-                  <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Client: Apex Global • Lead: Campaign Director</div>
-                  <div style="display: flex; gap: 10px; font-size: 11px; font-weight: 700; flex-wrap: wrap;">
-                    <span style="color: var(--brand-green);">✓ Phase 1: Drafts</span>
-                    <span style="color: var(--brand-green);">✓ Phase 2: Internal HR</span>
-                    <span style="color: var(--brand-teal);">⚡ Phase 3: Client Review</span>
-                    <span style="color: var(--text-muted);">🔒 Phase 4: Legal SHA</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Project Progress Item 2 (Wheel) -->
-              <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; display: flex; align-items: center; gap: 20px;">
+              <!-- Priority 1: Most Completed Project (100%) -->
+              <div style="background: #f8fafc; border: 2px solid #10b981; border-radius: var(--radius-md); padding: 18px; display: flex; align-items: center; gap: 20px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.08);">
                 <div class="wheel-container" style="width: 80px; height: 80px; flex-shrink: 0;">
                   <svg class="wheel-svg" viewBox="0 0 140 140">
                     <circle class="wheel-bg-circle" cx="70" cy="70" r="60"></circle>
@@ -496,8 +469,11 @@
                 </div>
 
                 <div style="flex: 1;">
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <h4 style="font-size: 15px; color: var(--brand-navy); font-weight: 700;">Social Media Banner Sets</h4>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span style="font-size: 11px; font-weight: 800; color: white; background: #10b981; padding: 2px 8px; border-radius: 10px;">TOP PRIORITY 1</span>
+                      <h4 style="font-size: 15px; color: var(--brand-navy); font-weight: 700;">Social Media Banner Sets</h4>
+                    </div>
                     <span class="status-badge approved">100% COMPLETED</span>
                   </div>
                   <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Client: Horizon Tech • Lead: Creative Manager</div>
@@ -510,7 +486,37 @@
                 </div>
               </div>
 
-              <!-- Project Progress Item 3 (Wheel) -->
+              <!-- Priority 2: In Progress Project (75%) -->
+              <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; display: flex; align-items: center; gap: 20px;">
+                <div class="wheel-container" style="width: 80px; height: 80px; flex-shrink: 0;">
+                  <svg class="wheel-svg" viewBox="0 0 140 140">
+                    <circle class="wheel-bg-circle" cx="70" cy="70" r="60"></circle>
+                    <circle class="wheel-progress-circle" cx="70" cy="70" r="60" style="stroke-dashoffset: 94;"></circle>
+                  </svg>
+                  <div class="wheel-center-text">
+                    <div class="wheel-percentage" style="font-size: 16px;">75%</div>
+                  </div>
+                </div>
+
+                <div style="flex: 1;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span style="font-size: 11px; font-weight: 800; color: white; background: var(--brand-teal); padding: 2px 8px; border-radius: 10px;">PRIORITY 2</span>
+                      <h4 style="font-size: 15px; color: var(--brand-navy); font-weight: 700;">Q3 Brand Rebrand Campaign</h4>
+                    </div>
+                    <span class="status-badge pending">IN PROGRESS</span>
+                  </div>
+                  <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Client: Apex Global • Lead: Campaign Director</div>
+                  <div style="display: flex; gap: 10px; font-size: 11px; font-weight: 700; flex-wrap: wrap;">
+                    <span style="color: var(--brand-green);">✓ Phase 1: Drafts</span>
+                    <span style="color: var(--brand-green);">✓ Phase 2: Internal HR</span>
+                    <span style="color: var(--brand-teal);">⚡ Phase 3: Client Review</span>
+                    <span style="color: var(--text-muted);">🔒 Phase 4: Legal SHA</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Priority 3: Internal Review Project (45%) -->
               <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; display: flex; align-items: center; gap: 20px;">
                 <div class="wheel-container" style="width: 80px; height: 80px; flex-shrink: 0;">
                   <svg class="wheel-svg" viewBox="0 0 140 140">
@@ -523,8 +529,11 @@
                 </div>
 
                 <div style="flex: 1;">
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <h4 style="font-size: 15px; color: var(--brand-navy); font-weight: 700;">SEO Content Pitch Deck</h4>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span style="font-size: 11px; font-weight: 800; color: #78350f; background: #fef3c7; padding: 2px 8px; border-radius: 10px;">PRIORITY 3</span>
+                      <h4 style="font-size: 15px; color: var(--brand-navy); font-weight: 700;">SEO Content Pitch Deck</h4>
+                    </div>
                     <span class="status-badge review">INTERNAL REVIEW</span>
                   </div>
                   <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Client: Luminary Inc • Lead: Copywriter Lead</div>
