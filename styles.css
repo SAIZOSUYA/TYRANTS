@@ -704,12 +704,13 @@ a {
   background: white;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  width: 100%;
-  max-width: 520px;
+  width: 90%;
+  max-width: 580px;
   padding: 28px;
   box-shadow: var(--shadow-lg);
   transform: scale(0.95);
   transition: var(--transition-fast);
+  box-sizing: border-box;
 }
 
 .modal-overlay.active .modal-content {
@@ -739,6 +740,38 @@ a {
 
 .form-group {
   margin-bottom: 16px;
+}
+
+.form-group-dates {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 16px;
+}
+
+.form-group-dates > div {
+  min-width: 0;
+}
+
+.form-group-dates label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--brand-navy);
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.form-group-dates input[type="date"] {
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 12px;
+  padding: 8px 6px;
 }
 
 .form-group label {
