@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pragati Workflow System (PWS) | Client Approval Platform</title>
+  
+  <!-- SEO & Meta -->
+  <meta name="description" content="Pragati Workflow System eliminates friction between clients and creative agencies with legally secure, streamlined approval workflows.">
+  <meta name="keywords" content="Pragati Workflow, Client Approval Platform, Agency Workflow, Legal Compliance, Cryptographic Seal">
+  <meta name="author" content="Pragati Enterprise Team">
+  <meta name="theme-color" content="#0f2942">
+
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Pragati Workflow System (PWS) | Client Approval Platform">
+  <meta property="og:description" content="Streamline agency deliverables, multi-layer HR reviews, and instant WhatsApp client approvals with cryptographic seals.">
+  <meta property="og:image" content="pragati-logo.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Pragati Workflow System (PWS)">
+  <meta name="twitter:description" content="Legally secure, streamlined client approval workflows for agencies, IT, production, and decoration companies.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230ea5e9'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>">
+
+  <!-- Performance & Fonts Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       SCREEN 1: AUTHENTICATION & ONBOARDING (LOGIN / ROLE SELECTOR)
+       ========================================================================== -->
+  <div id="auth-screen" class="screen active">
+    <div class="auth-wrapper">
+      
+      <!-- Left Hero Banner -->
+      <div class="auth-left">
+        <div class="auth-brand">
+          <img src="pragati-logo.png" alt="Pragati Logo" class="auth-logo-img">
+          <div class="auth-brand-text">
+            <h2>Pragati Workflow</h2>
+            <p>PWS • Approval Platform</p>
+          </div>
+        </div>
+
+        <div class="auth-hero-content">
+          <h1>Bridge your finished work to official <span>Client Approval</span></h1>
+          <p>Eliminate friction between clients and creative agencies with automated multi-layer approvals, compliance protection, and instant legal verification.</p>
+          
+          <div class="auth-feature-pills">
+            <div class="feature-pill">
+              <iconify-icon icon="tabler:shield-check" style="color: #4ade80;"></iconify-icon>
+              Legal & Compliance Protection
+            </div>
+            <div class="feature-pill">
+              <iconify-icon icon="tabler:users" style="color: #38bdf8;"></iconify-icon>
+              Multi-Layer HR & Committee Approvals
+            </div>
+            <div class="feature-pill">
+              <iconify-icon icon="tabler:bolt" style="color: #facc15;"></iconify-icon>
+              Instant Client Verification Link
+            </div>
+          </div>
+        </div>
+
+        <div style="font-size: 12px; opacity: 0.7;">
+          © 2026 Pragati Workflow System (PWS). All Rights Reserved.
+        </div>
+      </div>
+
+      <!-- Right Auth Card -->
+      <div class="auth-right">
+        <div class="auth-card-header">
+          <h2>Welcome to Pragati</h2>
+          <p>Configure your company type & sign in to launch your workflow</p>
+        </div>
+
+        <!-- User Type Switcher (Company, Client, Admin) -->
+        <div class="user-type-selector">
+          <button id="btn-type-company" class="user-type-btn active" onclick="selectUserType('company')">
+            <iconify-icon icon="tabler:building"></iconify-icon>
+            Company
+          </button>
+          <button id="btn-type-client" class="user-type-btn" onclick="selectUserType('client')">
+            <iconify-icon icon="tabler:user-check"></iconify-icon>
+            Client Login
+          </button>
+          <button id="btn-type-admin" class="user-type-btn" onclick="selectUserType('admin')">
+            <iconify-icon icon="tabler:shield-lock"></iconify-icon>
+            Admin Portal
+          </button>
+        </div>
+
+        <!-- 4 Company Categories -->
+        <span class="company-categories-label">Select Your Company Sector (4 Types):</span>
+        <div class="company-grid" id="company-grid-container">
+          <!-- Dynamically populated in app.js -->
+        </div>
+
+        <!-- Tailored HR Personnel Roles Box -->
+        <div class="hr-roles-box">
+          <div class="hr-roles-header">
+            <span>Select Active HR & Personnel Role (Click to Choose)</span>
+            <iconify-icon icon="tabler:pointer" style="color: var(--brand-teal); font-size: 16px;"></iconify-icon>
+          </div>
+          <div class="hr-role-tags" id="hr-roles-container">
+            <!-- Dynamically populated based on company type selection -->
+          </div>
+        </div>
+
+        <!-- Admin User ID & Password Login Portal -->
+        <div id="admin-security-notice" class="admin-login-notice" style="display: none;">
+          <div class="admin-notice-header">
+            <iconify-icon icon="tabler:shield-lock" style="font-size: 20px; color: var(--brand-navy);"></iconify-icon>
+            <span>Company Admin Authentication Portal</span>
+          </div>
+          <div class="admin-notice-text" style="margin-bottom: 14px;">
+            Enter your Company Admin User ID and Password to unlock master system control.
+          </div>
+          <div style="margin-bottom: 10px;">
+            <label style="display: block; font-size: 11px; font-weight: 700; color: var(--brand-navy); margin-bottom: 4px; text-transform: uppercase;">Admin User ID</label>
+            <input type="text" id="input-admin-userid" placeholder="Enter Admin User ID" value="" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 13px; outline: none; background: white;">
+          </div>
+          <div style="margin-bottom: 12px;">
+            <label style="display: block; font-size: 11px; font-weight: 700; color: var(--brand-navy); margin-bottom: 4px; text-transform: uppercase;">Admin Password</label>
+            <input type="password" id="input-admin-passkey" placeholder="Enter Admin Password" value="" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 13px; outline: none; background: white;">
+          </div>
+        </div>
+
+        <!-- Authentication CTA Buttons -->
+        <div id="google-auth-container">
+          <button class="btn-google" onclick="handleGoogleLogin()">
+            <svg width="20" height="20" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+            <span id="google-btn-label">Sign in with Google</span>
+          </button>
+        </div>
+
+        <div class="divider" style="margin: 16px 0;">
+          <span>OR ADMIN ACCESS</span>
+        </div>
+
+        <button class="btn-admin-link" onclick="handleAdminLinkLogin()">
+          <iconify-icon icon="tabler:key"></iconify-icon>
+          <span id="admin-btn-label">Log In as Company Admin</span>
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       SCREEN 2: MAIN WORKFLOW DASHBOARD (DRIBBBLE INSPIRED DESIGN)
+       ========================================================================== -->
+  <div id="dashboard-screen" class="screen">
+    <div class="app-container">
+
+      <!-- Left Sidebar Navigation -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <img src="pragati-logo.png" alt="Logo" class="sidebar-logo">
+          <div class="sidebar-brand-name">
+            <h3>Pragati</h3>
+            <span>Workflow Platform</span>
+          </div>
+        </div>
+
+        <div class="nav-section-title">Main Menu</div>
+        <ul class="nav-menu">
+          <li class="nav-item active" id="nav-tab-dashboard">
+            <a onclick="switchTab('tab-dashboard')">
+              <div class="nav-item-content">
+                <iconify-icon icon="tabler:layout-dashboard"></iconify-icon>
+                <span>Dashboard</span>
+              </div>
+            </a>
+          </li>
+          <li class="nav-item" id="nav-tab-workflows">
+            <a onclick="switchTab('tab-workflows')">
+              <div class="nav-item-content">
+                <iconify-icon icon="tabler:git-pull-request"></iconify-icon>
+                <span>Workflows</span>
+              </div>
+              <span class="nav-badge">3</span>
+            </a>
+          </li>
+          <li class="nav-item" id="nav-tab-approvals">
+            <a onclick="switchTab('tab-approvals')">
+              <div class="nav-item-content">
+                <iconify-icon icon="tabler:checks"></iconify-icon>
+                <span>Approval Queue</span>
+              </div>
+            </a>
+          </li>
+          <li class="nav-item" id="nav-tab-hr">
+            <a onclick="switchTab('tab-hr')">
+              <div class="nav-item-content">
+                <iconify-icon icon="tabler:users-group"></iconify-icon>
+                <span>HR & Personnel</span>
+              </div>
+            </a>
+          </li>
+          <li class="nav-item" id="nav-tab-team">
+            <a onclick="switchTab('tab-team')">
+              <div class="nav-item-content">
+                <iconify-icon icon="tabler:users"></iconify-icon>
+                <span>Team & Squads</span>
+              </div>
+            </a>
+          </li>
+          <li class="nav-item" id="nav-tab-messages">
+            <a onclick="switchTab('tab-messages')">
+              <div class="nav-item-content">
+                <iconify-icon icon="tabler:message-dots"></iconify-icon>
+                <span>Feedback & Messages</span>
+              </div>
+              <span class="nav-badge" style="background: var(--brand-green);">New</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title">System & Legal</div>
+        <ul class="nav-menu">
+          <li class="nav-item" id="nav-tab-legal">
+            <a onclick="switchTab('tab-legal')">
+              <div class="nav-item-content">
+                <iconify-icon icon="tabler:file-certificate"></iconify-icon>
+                <span>Legal Agreements</span>
+              </div>
+            </a>
+          </li>
+          <li class="nav-item" id="nav-tab-settings">
+            <a onclick="switchTab('tab-settings')">
+              <div class="nav-item-content">
+                <iconify-icon icon="tabler:settings"></iconify-icon>
+                <span>Settings</span>
+              </div>
+            </a>
+          </li>
+        </ul>
+
+        <!-- Sidebar User Footer -->
+        <div class="sidebar-user">
+          <div class="user-info-box">
+            <div class="user-avatar" id="display-user-avatar">KP</div>
+            <div class="user-details">
+              <h4 id="display-user-name">User Name</h4>
+              <span id="display-user-role">Company User</span>
+            </div>
+          </div>
+          <button class="btn-secondary" style="padding: 8px 12px; font-size: 12px; gap: 6px;" onclick="handleLogout()" title="Log out of system">
+            <iconify-icon icon="tabler:logout" style="font-size: 18px; color: var(--status-rejected);"></iconify-icon>
+            <span>Exit</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="main-content">
+
+        <!-- Top Header Bar -->
+        <header class="top-bar">
+          <div class="top-welcome">
+            <h1>Pragati Workflow Dashboard</h1>
+            <p>Seamless bridge between your agency deliverables & official client sign-offs</p>
+          </div>
+
+          <div class="top-actions">
+            <!-- Active Company Category Tag -->
+            <div class="company-type-pill" id="display-company-pill">
+              <iconify-icon icon="tabler:building"></iconify-icon>
+              <span>Digital Marketing Workflow</span>
+            </div>
+
+            <!-- Search input -->
+            <div class="search-box">
+              <iconify-icon icon="tabler:search" class="search-icon"></iconify-icon>
+              <input type="text" id="top-search-input" placeholder="Search workflows, clients..." aria-label="Search workflows and clients" oninput="handleSearchInput(this.value)">
+            </div>
+
+            <!-- Create New Workflow CTA (Admin Only) -->
+            <button class="btn-primary" id="btn-header-new-wf" onclick="openCreateModal()">
+              <iconify-icon icon="tabler:plus"></iconify-icon>
+              New Workflow
+            </button>
+
+            <!-- Header Logout Button -->
+            <button class="btn-secondary" style="color: var(--status-rejected); border-color: rgba(239, 68, 68, 0.3);" onclick="handleLogout()">
+              <iconify-icon icon="tabler:power" style="font-size: 18px;"></iconify-icon>
+              Log Out
+            </button>
+          </div>
+        </header>
+
+        <!-- ==========================================
+             TAB 1: MAIN DASHBOARD OVERVIEW
+             ========================================== -->
+        <div id="tab-dashboard" class="dashboard-tab active">
+          
+          <!-- 4 Metric Cards (Admin Only View) -->
+          <div class="metrics-grid" id="admin-dashboard-metrics">
+            <div class="metric-card">
+              <div class="metric-top">
+                <div class="metric-icon-box teal">
+                  <iconify-icon icon="tabler:git-commit"></iconify-icon>
+                </div>
+                <span class="trend-tag up">
+                  <iconify-icon icon="tabler:trending-up"></iconify-icon>
+                  +14%
+                </span>
+              </div>
+              <div class="metric-value">28</div>
+              <div class="metric-title">Active Workflows</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-top">
+                <div class="metric-icon-box amber">
+                  <iconify-icon icon="tabler:clock-hour-4"></iconify-icon>
+                </div>
+                <span class="trend-tag down">
+                  <iconify-icon icon="tabler:clock"></iconify-icon>
+                  -25% time
+                </span>
+              </div>
+              <div class="metric-value">4</div>
+              <div class="metric-title">Pending Client Sign-offs</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-top">
+                <div class="metric-icon-box green">
+                  <iconify-icon icon="tabler:shield-check-filled"></iconify-icon>
+                </div>
+                <span class="trend-tag up">
+                  <iconify-icon icon="tabler:trending-up"></iconify-icon>
+                  99.4%
+                </span>
+              </div>
+              <div class="metric-value">142</div>
+              <div class="metric-title">Approved Deliverables</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-top">
+                <div class="metric-icon-box navy">
+                  <iconify-icon icon="tabler:users"></iconify-icon>
+                </div>
+                <span class="trend-tag up">
+                  <iconify-icon icon="tabler:check"></iconify-icon>
+                  100% active
+                </span>
+              </div>
+              <div class="metric-value">12</div>
+              <div class="metric-title">Assigned HR Personnel</div>
+            </div>
+          </div>
+
+          <!-- SVG Gradient Definitions for Wheel Chart -->
+          <svg width="0" height="0" style="position: absolute;">
+            <defs>
+              <linearGradient id="brand-gradient-stroke" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#0ea5e9"/>
+                <stop offset="100%" stop-color="#10b981"/>
+              </linearGradient>
+            </defs>
+          </svg>
+
+          <!-- Circular Progress Wheel Chart Card (Admin Only View) -->
+          <div class="progress-wheel-card" id="admin-progress-wheel" style="margin-top: 24px;">
+            <div class="wheel-container">
+              <svg class="wheel-svg" viewBox="0 0 140 140">
+                <circle class="wheel-bg-circle" cx="70" cy="70" r="60"></circle>
+                <circle class="wheel-progress-circle" cx="70" cy="70" r="60"></circle>
+              </svg>
+              <div class="wheel-center-text">
+                <div class="wheel-percentage">78%</div>
+                <div class="wheel-label">Progress</div>
+              </div>
+            </div>
+
+            <div style="flex: 1;">
+              <h3 style="font-size: 18px; margin-bottom: 6px; color: var(--brand-navy);">Project Deliverables Completion Wheel</h3>
+              <p style="font-size: 13px; color: var(--text-muted); line-height: 1.4; margin-bottom: 14px;">
+                Overall completion tracking across active enterprise deliverables, client committee sign-offs, and SHA-256 legal cryptographic seals.
+              </p>
+
+              <div style="display: flex; gap: 20px;">
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--brand-navy);">
+                  <span style="width: 10px; height: 10px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
+                  142 Approved (78%)
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--brand-navy);">
+                  <span style="width: 10px; height: 10px; border-radius: 50%; background: #f59e0b; display: inline-block;"></span>
+                  4 Pending Reviews (14%)
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--brand-navy);">
+                  <span style="width: 10px; height: 10px; border-radius: 50%; background: #0ea5e9; display: inline-block;"></span>
+                  6 In Progress (8%)
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Client Project Selector & Progress Chooser Box -->
+          <div class="card-section" id="client-project-chooser-box" style="margin-top: 24px; background: linear-gradient(135deg, rgba(14, 165, 233, 0.04) 0%, rgba(16, 185, 129, 0.06) 100%);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+              <div>
+                <h3 style="font-size: 16px; color: var(--brand-navy); margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
+                  <iconify-icon icon="tabler:folder-search" style="color: var(--brand-teal); font-size: 20px;"></iconify-icon>
+                  Select Active Project to View Progress
+                </h3>
+                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">
+                  Choose your ongoing project below to track real-time milestone progress & WhatsApp alerts:
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <label style="font-size: 13px; font-weight: 700; color: var(--brand-navy);">Choose Project:</label>
+                <select id="client-project-dropdown" onchange="switchClientProject(this.value)" style="padding: 10px 16px; border-radius: var(--radius-md); border: 2px solid var(--brand-teal); font-size: 13px; font-weight: 700; color: var(--brand-navy); background: white; outline: none; cursor: pointer;">
+                  <option value="WF-101">Q3 Brand Rebrand Campaign (75% In Progress)</option>
+                  <option value="WF-102">Social Media Banner Sets (100% Completed)</option>
+                  <option value="WF-103">SEO Content Pitch Deck (45% Review)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project Progress Tracking Section -->
+          <div class="card-section" style="margin-top: 24px;">
+            <div class="section-header">
+              <h2 class="section-title">
+                <iconify-icon icon="tabler:chart-arrows" style="color: var(--brand-teal);"></iconify-icon>
+                Active Project Progress Tracking & Wheel
+              </h2>
+              <span class="status-badge pending">3 ACTIVE PROJECTS</span>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+              Real-time project completion wheel & milestone tracking across active deliverables and client sign-offs.
+            </p>
+
+            <!-- Selected Project Progress Wheel Widget Card -->
+            <div class="progress-wheel-card" id="project-progress-wheel-card" style="margin-bottom: 20px; background: #f8fafc; border: 1px solid var(--border-color);">
+              <div class="wheel-container">
+                <svg class="wheel-svg" viewBox="0 0 140 140">
+                  <circle class="wheel-bg-circle" cx="70" cy="70" r="60"></circle>
+                  <circle class="wheel-progress-circle" id="project-wheel-circle" cx="70" cy="70" r="60" style="stroke-dashoffset: 94;"></circle>
+                </svg>
+                <div class="wheel-center-text">
+                  <div class="wheel-percentage" id="project-wheel-percent">75%</div>
+                  <div class="wheel-label">Completed</div>
+                </div>
+              </div>
+
+              <div style="flex: 1;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+                  <h3 style="font-size: 18px; color: var(--brand-navy);" id="project-wheel-name">Q3 Brand Rebrand Campaign</h3>
+                  <span class="status-badge pending" id="project-wheel-status">IN PROGRESS</span>
+                </div>
+                <p style="font-size: 13px; color: var(--text-muted); line-height: 1.4; margin-bottom: 12px;" id="project-wheel-desc">
+                  Current Stage: Phase 3 • Client Committee Sign-off & Milestone Review
+                </p>
+
+                <!-- Phase Stepper Badges -->
+                <div style="display: flex; gap: 8px; font-size: 11px; font-weight: 700; flex-wrap: wrap;" id="project-wheel-phases">
+                  <span style="color: var(--brand-green); background: #dcfce7; padding: 4px 10px; border-radius: 12px;">✓ Phase 1: Drafts</span>
+                  <span style="color: var(--brand-green); background: #dcfce7; padding: 4px 10px; border-radius: 12px;">✓ Phase 2: Internal HR</span>
+                  <span style="color: var(--brand-teal); background: #e0f2fe; padding: 4px 10px; border-radius: 12px;">⚡ Phase 3: Client Review</span>
+                  <span style="color: var(--text-muted); background: #f1f5f9; padding: 4px 10px; border-radius: 12px;">🔒 Phase 4: Legal SHA</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              
+              <!-- Priority 1: Most Completed Project (100%) -->
+              <div style="background: #f8fafc; border: 2px solid #10b981; border-radius: var(--radius-md); padding: 18px; display: flex; align-items: center; gap: 20px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.08);">
+                <div class="wheel-container" style="width: 80px; height: 80px; flex-shrink: 0;">
+                  <svg class="wheel-svg" viewBox="0 0 140 140">
+                    <circle class="wheel-bg-circle" cx="70" cy="70" r="60"></circle>
+                    <circle class="wheel-progress-circle" cx="70" cy="70" r="60" style="stroke-dashoffset: 0; stroke: #10b981;"></circle>
+                  </svg>
+                  <div class="wheel-center-text">
+                    <div class="wheel-percentage" style="font-size: 16px; color: #10b981;">100%</div>
+                  </div>
+                </div>
+
+                <div style="flex: 1;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span style="font-size: 11px; font-weight: 800; color: white; background: #10b981; padding: 2px 8px; border-radius: 10px;">TOP PRIORITY 1</span>
+                      <h4 style="font-size: 15px; color: var(--brand-navy); font-weight: 700;">Social Media Banner Sets</h4>
+                    </div>
+                    <span class="status-badge approved">100% COMPLETED</span>
+                  </div>
+                  <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Client: Horizon Tech • Lead: Creative Manager</div>
+                  <div style="display: flex; gap: 10px; font-size: 11px; font-weight: 700; flex-wrap: wrap;">
+                    <span style="color: var(--brand-green);">✓ Phase 1: Drafts</span>
+                    <span style="color: var(--brand-green);">✓ Phase 2: Internal HR</span>
+                    <span style="color: var(--brand-green);">✓ Phase 3: Client Sign-off</span>
+                    <span style="color: var(--brand-green);">✓ Phase 4: Legal SHA Sealed</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Priority 2: In Progress Project (75%) -->
+              <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; display: flex; align-items: center; gap: 20px;">
+                <div class="wheel-container" style="width: 80px; height: 80px; flex-shrink: 0;">
+                  <svg class="wheel-svg" viewBox="0 0 140 140">
+                    <circle class="wheel-bg-circle" cx="70" cy="70" r="60"></circle>
+                    <circle class="wheel-progress-circle" cx="70" cy="70" r="60" style="stroke-dashoffset: 94;"></circle>
+                  </svg>
+                  <div class="wheel-center-text">
+                    <div class="wheel-percentage" style="font-size: 16px;">75%</div>
+                  </div>
+                </div>
+
+                <div style="flex: 1;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span style="font-size: 11px; font-weight: 800; color: white; background: var(--brand-teal); padding: 2px 8px; border-radius: 10px;">PRIORITY 2</span>
+                      <h4 style="font-size: 15px; color: var(--brand-navy); font-weight: 700;">Q3 Brand Rebrand Campaign</h4>
+                    </div>
+                    <span class="status-badge pending">IN PROGRESS</span>
+                  </div>
+                  <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Client: Apex Global • Lead: Campaign Director</div>
+                  <div style="display: flex; gap: 10px; font-size: 11px; font-weight: 700; flex-wrap: wrap;">
+                    <span style="color: var(--brand-green);">✓ Phase 1: Drafts</span>
+                    <span style="color: var(--brand-green);">✓ Phase 2: Internal HR</span>
+                    <span style="color: var(--brand-teal);">⚡ Phase 3: Client Review</span>
+                    <span style="color: var(--text-muted);">🔒 Phase 4: Legal SHA</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Priority 3: Internal Review Project (45%) -->
+              <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; display: flex; align-items: center; gap: 20px;">
+                <div class="wheel-container" style="width: 80px; height: 80px; flex-shrink: 0;">
+                  <svg class="wheel-svg" viewBox="0 0 140 140">
+                    <circle class="wheel-bg-circle" cx="70" cy="70" r="60"></circle>
+                    <circle class="wheel-progress-circle" cx="70" cy="70" r="60" style="stroke-dashoffset: 207; stroke: #f59e0b;"></circle>
+                  </svg>
+                  <div class="wheel-center-text">
+                    <div class="wheel-percentage" style="font-size: 16px; color: #f59e0b;">45%</div>
+                  </div>
+                </div>
+
+                <div style="flex: 1;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span style="font-size: 11px; font-weight: 800; color: #78350f; background: #fef3c7; padding: 2px 8px; border-radius: 10px;">PRIORITY 3</span>
+                      <h4 style="font-size: 15px; color: var(--brand-navy); font-weight: 700;">SEO Content Pitch Deck</h4>
+                    </div>
+                    <span class="status-badge review">INTERNAL REVIEW</span>
+                  </div>
+                  <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Client: Luminary Inc • Lead: Copywriter Lead</div>
+                  <div style="display: flex; gap: 10px; font-size: 11px; font-weight: 700; flex-wrap: wrap;">
+                    <span style="color: var(--brand-green);">✓ Phase 1: Drafts</span>
+                    <span style="color: #f59e0b;">⚡ Phase 2: Internal HR Review</span>
+                    <span style="color: var(--text-muted);">🔒 Phase 3: Client Sign-off</span>
+                    <span style="color: var(--text-muted);">🔒 Phase 4: Legal SHA</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             TAB 2: FULL WORKFLOWS MANAGEMENT
+             ========================================== -->
+        <div id="tab-workflows" class="dashboard-tab">
+          <div class="card-section" style="margin-bottom: 20px;">
+            <div class="section-header" style="margin-bottom: 0;">
+              <h2 class="section-title">
+                <iconify-icon icon="tabler:git-pull-request" style="color: var(--brand-teal);"></iconify-icon>
+                All Workflows Management
+              </h2>
+
+              <div style="display: flex; gap: 10px;">
+                <button class="btn-secondary" style="font-size: 13px; padding: 8px 16px;" onclick="filterWorkflows('all')">All</button>
+                <button class="btn-secondary" style="font-size: 13px; padding: 8px 16px;" onclick="filterWorkflows('pending')">Pending</button>
+                <button class="btn-secondary" style="font-size: 13px; padding: 8px 16px;" onclick="filterWorkflows('approved')">Approved</button>
+                <button class="btn-secondary" style="font-size: 13px; padding: 8px 16px;" onclick="filterWorkflows('review')">In Review</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="full-workflows-container">
+            <!-- Populated dynamically in app.js -->
+          </div>
+        </div>
+
+        <!-- ==========================================
+             TAB 3: APPROVAL QUEUE
+             ========================================== -->
+        <div id="tab-approvals" class="dashboard-tab">
+          <div class="card-section" style="margin-bottom: 20px;">
+            <div class="section-header">
+              <h2 class="section-title">
+                <iconify-icon icon="tabler:checks" style="color: var(--brand-teal);"></iconify-icon>
+                Pending Client Approval Queue
+              </h2>
+              <span style="font-size: 12px; color: var(--status-pending); font-weight: 700; background: var(--status-pending-bg); padding: 4px 12px; border-radius: 20px;">
+                ACTION REQUIRED
+              </span>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 0;">
+              Review deliverables awaiting client committee consensus or digital signature.
+            </p>
+          </div>
+
+          <div id="approval-queue-container">
+            <!-- Populated dynamically in app.js -->
+          </div>
+        </div>
+
+        <!-- ==========================================
+             TAB 3.5: FEEDBACK & MESSAGES
+             ========================================== -->
+        <div id="tab-messages" class="dashboard-tab">
+          <div class="card-section" style="margin-bottom: 20px;">
+            <div class="section-header">
+              <h2 class="section-title">
+                <iconify-icon icon="tabler:message-dots" style="color: var(--brand-teal);"></iconify-icon>
+                Client Feedback & Real-Time Messaging
+              </h2>
+              <span class="status-badge approved">LIVE FEEDBACK CHANNEL</span>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted);">
+              Communicate directly with the agency project leads, attach revision notes, and track responses.
+            </p>
+          </div>
+
+          <div class="chat-container">
+            <div class="chat-header">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div class="project-icon">
+                  <iconify-icon icon="tabler:brand-hipchat"></iconify-icon>
+                </div>
+                <div>
+                  <h4 style="font-size: 15px; color: var(--brand-navy);">Apex Global Project Channel</h4>
+                  <span style="font-size: 11px; color: var(--brand-green); font-weight: 700;">● Online • Agency Leads Connected</span>
+                </div>
+              </div>
+              <button class="btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="showToast('Refreshed live feedback messages.')">
+                <iconify-icon icon="tabler:refresh"></iconify-icon>
+                Refresh Chat
+              </button>
+            </div>
+
+            <div class="chat-messages" id="chat-messages-container">
+              <div class="message-bubble agency">
+                <div>Hello! We uploaded the latest deliverable draft for <strong>Q3 Brand Rebrand Campaign</strong>. Please inspect the assets in your Approval Queue.</div>
+                <div class="message-meta">Today, 2:32 PM • Agency Team</div>
+              </div>
+
+              <div class="message-bubble client">
+                <div>Thanks! The logo alignment looks clean. We requested a minor tweak on the color contrast for slide 4.</div>
+                <div class="message-meta">Today, 2:40 PM • Client Representative</div>
+              </div>
+
+              <div class="message-bubble agency">
+                <div>Color contrast adjusted! Updated version is sealed and awaiting your final sign-off.</div>
+                <div class="message-meta">Today, 2:45 PM • Campaign Director</div>
+              </div>
+            </div>
+
+            <form class="chat-input-box" onsubmit="sendFeedbackMessage(event)">
+              <input type="text" id="chat-input-field" placeholder="Type your feedback message or revision note..." required>
+              <button type="submit" class="btn-primary" style="padding: 8px 18px; border-radius: 20px; font-size: 13px;">
+                <iconify-icon icon="tabler:send"></iconify-icon>
+                Send Feedback
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             TAB 4: HR & PERSONNEL MANAGEMENT
+             ========================================== -->
+        <div id="tab-hr" class="dashboard-tab">
+          <div class="card-section" style="margin-bottom: 20px;">
+            <div class="section-header">
+              <h2 class="section-title">
+                <iconify-icon icon="tabler:users-group" style="color: var(--brand-teal);"></iconify-icon>
+                Human Resources & Department Personnel
+              </h2>
+              <button class="btn-primary" style="font-size: 13px; padding: 8px 16px;" onclick="openAddHrModal()">
+                <iconify-icon icon="tabler:user-plus"></iconify-icon>
+                Add HR Personnel
+              </button>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted);">
+              Manage approval authorities, department leads, and reviewers for your company sector.
+            </p>
+          </div>
+
+          <div id="full-hr-container">
+            <!-- Populated dynamically in app.js -->
+          </div>
+        </div>
+
+        <!-- ==========================================
+             TAB: COMPANY TEAMS & EMPLOYEE SQUADS
+             ========================================== -->
+        <div id="tab-team" class="dashboard-tab">
+          <div class="card-section" style="margin-bottom: 20px;">
+            <div class="section-header">
+              <h2 class="section-title">
+                <iconify-icon icon="tabler:users" style="color: var(--brand-teal);"></iconify-icon>
+                Company Teams & Employee Squads
+              </h2>
+
+              <!-- Add Team Member Button (Admin Only) -->
+              <button class="btn-primary" id="btn-admin-add-team" onclick="openAddTeamModal()" style="font-size: 13px; padding: 8px 16px;">
+                <iconify-icon icon="tabler:user-plus"></iconify-icon>
+                + Add Team Member
+              </button>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted);">
+              Specialized employee teams and assigned project squads across your company sector.
+            </p>
+          </div>
+
+          <div id="company-teams-container">
+            <!-- Populated dynamically in app.js -->
+          </div>
+        </div>
+
+        <!-- ==========================================
+             TAB 5: LEGAL AGREEMENTS & COMPLIANCE VAULT
+             ========================================== -->
+        <div id="tab-legal" class="dashboard-tab">
+          <div class="card-section" style="margin-bottom: 20px;">
+            <div class="section-header">
+              <h2 class="section-title">
+                <iconify-icon icon="tabler:file-certificate" style="color: var(--brand-teal);"></iconify-icon>
+                Legal Compliance & Certificate Vault
+              </h2>
+              <span class="status-badge approved">PROTECTED & SECURED</span>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted);">
+              Cryptographically timestamped approval seals generated upon client sign-off to protect against legal disputes.
+            </p>
+          </div>
+
+          <div class="certificate-grid" id="legal-certificates-container">
+            <!-- Populated dynamically in app.js -->
+          </div>
+        </div>
+
+        <!-- ==========================================
+             TAB 6: SETTINGS & UNIQUE ADMIN LINK GENERATOR
+             ========================================== -->
+        <div id="tab-settings" class="dashboard-tab">
+          <div class="card-section" style="margin-bottom: 20px;">
+            <h2 class="section-title">
+              <iconify-icon icon="tabler:settings" style="color: var(--brand-teal);"></iconify-icon>
+              Company Settings & Security Tokens
+            </h2>
+          </div>
+
+          <div class="settings-grid">
+            <div class="settings-card">
+              <h3 style="font-size: 16px; margin-bottom: 16px; color: var(--brand-navy);">System Admin Credentials</h3>
+              <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.4;">
+                Configure your custom System Admin Username ID and Master Password to lock down system control.
+              </p>
+
+              <form onsubmit="saveAdminCredentials(event)">
+                <div class="form-group">
+                  <label>Admin Username / User ID</label>
+                  <input type="text" id="setting-admin-id" value="admin" required placeholder="e.g. admin">
+                </div>
+
+                <div class="form-group">
+                  <label>Admin Master Password</label>
+                  <input type="password" id="setting-admin-pass" value="admin123" required placeholder="Enter password">
+                </div>
+
+                <button type="submit" class="btn-primary" style="font-size: 13px;">
+                  <iconify-icon icon="tabler:shield-check"></iconify-icon>
+                  Save Admin Credentials
+                </button>
+              </form>
+            </div>
+
+            <div class="settings-card">
+              <h3 style="font-size: 16px; margin-bottom: 16px; color: var(--brand-navy);">Company Profile Preferences</h3>
+              
+              <div class="form-group">
+                <label>Company Display Name</label>
+                <input type="text" value="Pragati Enterprise Agency">
+              </div>
+
+              <div class="form-group">
+                <label>Notification Preference</label>
+                <select>
+                  <option>Instant Email & Toast Alert on Client Sign-off</option>
+                  <option>Daily Digest Only</option>
+                </select>
+              </div>
+
+              <button class="btn-primary" onclick="showToast('Saved settings preferences successfully.')">
+                Save Preferences
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODALS & OVERLAYS
+       ========================================================================== -->
+
+  <!-- Modal 1: Create New Workflow -->
+  <div id="create-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Create New Workflow</h3>
+        <button class="close-btn" onclick="closeModal('create-modal')">✕</button>
+      </div>
+
+      <form onsubmit="submitNewWorkflow(event)">
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Project Name</label>
+          <input type="text" id="input-wf-projectname" required placeholder="e.g. Q3 Brand Rebrand Campaign" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Deliverable Title</label>
+          <input type="text" id="input-wf-title" required placeholder="e.g. Brand Design System v1" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Client Enterprise / Name</label>
+          <input type="text" id="input-wf-client" required placeholder="e.g. Apex Global" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Client WhatsApp Phone (For Auto-Notification on Completion)</label>
+          <input type="tel" id="input-wf-client-phone" placeholder="e.g. +977 9801234567" value="+9779801234567" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="margin-bottom: 24px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Assign Department Lead / HR</label>
+          <select id="input-wf-hr" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button type="button" class="btn-secondary" onclick="closeModal('create-modal')">Cancel</button>
+          <button type="submit" class="btn-primary">
+            <iconify-icon icon="tabler:rocket"></iconify-icon>
+            Launch & Enable WhatsApp Alerts
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: View & Approve Workflow -->
+  <div id="approval-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Client Approval Portal</h3>
+        <button class="close-btn" onclick="closeModal('approval-modal')">✕</button>
+      </div>
+
+      <div style="margin-bottom: 20px; background: #f8fafc; padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+        <h4 id="modal-wf-title" style="font-size: 16px; margin-bottom: 4px;">Deliverable Title</h4>
+        <p id="modal-wf-client" style="font-size: 12px; color: var(--text-muted);">Client Name</p>
+        <div style="margin-top: 10px; font-size: 12px; display: flex; gap: 12px;">
+          <span>Reviewer HR: <strong id="modal-wf-hr">Lead</strong></span>
+          <span style="color: var(--brand-green); font-weight: 700;">Status: Pending Client Sign-off</span>
+        </div>
+      </div>
+
+      <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 24px;">
+        By clicking <strong>Approve & Seal</strong>, you verify that this deliverable satisfies all multi-layered committee requirements and is locked against future legal modifications.
+      </p>
+
+      <div style="display: flex; gap: 12px; justify-content: flex-end;">
+        <button id="btn-modal-reject" class="btn-secondary" style="color: var(--status-rejected);">Request Revisions</button>
+        <button id="btn-modal-approve" class="btn-primary">Approve & Seal Deliverable</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Add HR Personnel -->
+  <div id="hr-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Add HR & Personnel Member</h3>
+        <button class="close-btn" onclick="closeModal('hr-modal')">✕</button>
+      </div>
+
+      <form onsubmit="submitNewHr(event)">
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Full Name</label>
+          <input type="text" id="input-hr-name" required placeholder="e.g. Sarah Jenkins" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Department</label>
+          <input type="text" id="input-hr-dept" required placeholder="e.g. Quality Assurance" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Email Address</label>
+          <input type="email" id="input-hr-email" required placeholder="sarah@agency.com" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="margin-bottom: 24px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Approval Authority Role</label>
+          <select id="input-hr-role" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+            <option value="Final Approver">Final Approver</option>
+            <option value="Reviewer">Reviewer</option>
+            <option value="Department Lead">Department Lead</option>
+            <option value="Client Liaison">Client Liaison</option>
+          </select>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button type="button" class="btn-secondary" onclick="closeModal('hr-modal')">Cancel</button>
+          <button type="submit" class="btn-primary">Add Personnel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 4: Client Onboarding Info (Name & Phone Number) -->
+  <div id="client-info-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Client Profile Verification</h3>
+        <button class="close-btn" onclick="closeModal('client-info-modal')">✕</button>
+      </div>
+
+      <div style="background: #e0f2fe; padding: 14px; border-radius: var(--radius-md); border: 1px solid #bae6fd; margin-bottom: 20px; font-size: 13px; color: #0369a1;">
+        <iconify-icon icon="tabler:shield-check" style="font-size: 18px; vertical-align: middle; margin-right: 6px;"></iconify-icon>
+        Google Authentication Verified! Please enter your official Client contact details to access your Project Approval Hub.
+      </div>
+
+      <form onsubmit="submitClientInfo(event)">
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Client Full Name</label>
+          <input type="text" id="input-client-fullname" required placeholder="e.g. Ramesh Kumar Sharma" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Phone Number (For Instant SMS Sign-off Alerts)</label>
+          <input type="tel" id="input-client-phone" required placeholder="+977 9801234567" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Client Enterprise / Organization</label>
+          <input type="text" id="input-client-org" placeholder="e.g. Apex Global Enterprise" value="Apex Global Ltd" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="margin-bottom: 24px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Select Active Project to View Progress</label>
+          <select id="input-client-active-project" style="width: 100%; padding: 10px 14px; border: 2px solid var(--brand-teal); border-radius: var(--radius-md); font-size: 14px; font-weight: 700; color: var(--brand-navy); background: white;">
+            <option value="WF-101">Q3 Brand Rebrand Campaign (75% In Progress)</option>
+            <option value="WF-102">Social Media Banner Sets (100% Completed)</option>
+            <option value="WF-103">SEO Content Pitch Deck (45% Review)</option>
+          </select>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">
+            <iconify-icon icon="tabler:circle-check"></iconify-icon>
+            Verify & Enter Client Portal
+          </button>
+        </div>
+      </form>
+  <!-- Modal 5: WhatsApp Project Completion Dispatcher -->
+  <div id="whatsapp-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><iconify-icon icon="tabler:brand-whatsapp" style="color: #25D366; vertical-align: middle;"></iconify-icon> WhatsApp Client Completion Dispatcher</h3>
+        <button class="close-btn" onclick="closeModal('whatsapp-modal')">✕</button>
+      </div>
+
+      <div style="background: #dcfce7; padding: 14px; border-radius: var(--radius-md); border: 1px solid #86efac; margin-bottom: 20px; font-size: 13px; color: #166534;">
+        <iconify-icon icon="tabler:circle-check" style="font-size: 18px; vertical-align: middle; margin-right: 6px;"></iconify-icon>
+        Project 100% Completed & Cryptographically Sealed! Dispatch official completion alert directly to client via WhatsApp.
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Client WhatsApp Number</label>
+        <input type="text" id="wa-phone-display" readonly style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 13px; font-weight: 700; background: #f8fafc;">
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Pre-formatted WhatsApp Alert Message</label>
+        <textarea id="wa-message-text" rows="4" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 13px; line-height: 1.4; outline: none; background: white; resize: none;"></textarea>
+      </div>
+
+      <div style="display: flex; gap: 12px; justify-content: flex-end;">
+        <button type="button" class="btn-secondary" onclick="closeModal('whatsapp-modal')">Close</button>
+        <button type="button" class="btn-primary" style="background: #25D366; border-color: #25D366;" onclick="dispatchWhatsAppDirect()">
+          <iconify-icon icon="tabler:brand-whatsapp" style="font-size: 18px;"></iconify-icon>
+          Send via WhatsApp Web / App
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 6: Add New Team Member (Admin Only) -->
+  <div id="team-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><iconify-icon icon="tabler:user-plus" style="color: var(--brand-teal); vertical-align: middle;"></iconify-icon> Add New Team Member</h3>
+        <button class="close-btn" onclick="closeModal('team-modal')">✕</button>
+      </div>
+
+      <div style="background: #e0f2fe; padding: 14px; border-radius: var(--radius-md); border: 1px solid #bae6fd; margin-bottom: 20px; font-size: 13px; color: #0369a1;">
+        <iconify-icon icon="tabler:shield-check" style="font-size: 18px; vertical-align: middle; margin-right: 6px;"></iconify-icon>
+        Admin Control: Customize the team member's full name, role title, team squad, and approval authority level.
+      </div>
+
+      <form onsubmit="submitNewTeamMember(event)">
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Employee Full Name</label>
+          <input type="text" id="input-team-name" required placeholder="Type employee name e.g. Anish Maharjan" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Team / Squad Name (Type custom name or select)</label>
+          <input type="text" id="input-team-squad" list="squad-suggestions" required placeholder="Type team name e.g. Core AI Engineering Squad" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+          <datalist id="squad-suggestions">
+            <!-- Populated dynamically in app.js -->
+          </datalist>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+          <div>
+            <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Typeable Role Name / Title</label>
+            <input type="text" id="input-team-role" list="role-suggestions" required placeholder="Type role name e.g. Senior AI Engineer" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+            <datalist id="role-suggestions">
+              <option value="Campaign Director">
+              <option value="Senior Brand Strategist">
+              <option value="Lead Software Architect">
+              <option value="QA & Compliance Specialist">
+              <option value="Executive Producer">
+              <option value="Senior Event Planner">
+            </datalist>
+          </div>
+          <div>
+            <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Typeable Role Authority</label>
+            <input type="text" id="input-team-authority" list="authority-suggestions" placeholder="Type authority level e.g. Final Approver" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+            <datalist id="authority-suggestions">
+              <option value="Final Approver">
+              <option value="Sprint / Team Lead">
+              <option value="Reviewer & Quality Assurance">
+              <option value="Deliverable Creator">
+              <option value="Client Liaison">
+            </datalist>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Email Address</label>
+          <input type="email" id="input-team-email" required placeholder="employee@company.com" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="margin-bottom: 24px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Assigned Project Deliverable</label>
+          <input type="text" id="input-team-project" placeholder="e.g. Q3 Brand Rebrand Campaign" value="Q3 Brand Rebrand Campaign" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button type="button" class="btn-secondary" onclick="closeModal('team-modal')">Cancel</button>
+          <button type="submit" class="btn-primary">
+            <iconify-icon icon="tabler:user-check"></iconify-icon>
+            Save Team Member & Assign Role
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 7: Unified Multi-Department Project Intake -->
+  <div id="multi-intake-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 650px;">
+      <div class="modal-header">
+        <h3><iconify-icon icon="tabler:category-2" style="color: var(--brand-teal); vertical-align: middle;"></iconify-icon> Unified Multi-Department Project Intake</h3>
+        <button class="close-btn" onclick="closeModal('multi-intake-modal')">✕</button>
+      </div>
+
+      <div style="background: linear-gradient(135deg, rgba(14, 165, 233, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%); padding: 14px; border-radius: var(--radius-md); border: 1px solid var(--brand-teal); margin-bottom: 20px; font-size: 13px; color: var(--brand-navy);">
+        <iconify-icon icon="tabler:route-2" style="font-size: 18px; vertical-align: middle; margin-right: 6px; color: var(--brand-teal);"></iconify-icon>
+        <strong>Automated Category Router:</strong> Select multiple required departments for cross-functional client projects (e.g., Event needing Decoration + Digital Marketing + IT/AV Setup).
+      </div>
+
+      <form onsubmit="submitMultiIntake(event)">
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Enterprise Client Name</label>
+          <input type="text" id="multi-input-client" required placeholder="e.g. Apex Global Enterprise" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Unified Project Title</label>
+          <input type="text" id="multi-input-title" required placeholder="e.g. Grand Expo 2026 Launch & Venue Install" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <!-- Checkbox selections for 4 verticals -->
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--brand-navy);">Select Required Departments (Multi-Route):</label>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; background: #f8fafc; padding: 10px 14px; border-radius: var(--radius-md); border: 1px solid var(--border-color); cursor: pointer;">
+              <input type="checkbox" name="multi-dept" value="marketing" checked>
+              <span>Digital Marketing (Copy & Ads)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; background: #f8fafc; padding: 10px 14px; border-radius: var(--radius-md); border: 1px solid var(--border-color); cursor: pointer;">
+              <input type="checkbox" name="multi-dept" value="production" checked>
+              <span>Production (Video & Film)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; background: #f8fafc; padding: 10px 14px; border-radius: var(--radius-md); border: 1px solid var(--border-color); cursor: pointer;">
+              <input type="checkbox" name="multi-dept" value="decoration" checked>
+              <span>Decoration (Installs & Decor)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; background: #f8fafc; padding: 10px 14px; border-radius: var(--radius-md); border: 1px solid var(--border-color); cursor: pointer;">
+              <input type="checkbox" name="multi-dept" value="it" checked>
+              <span>IT Services (AV & Infra)</span>
+            </label>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px;">
+          <div>
+            <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Project Total Budget ($)</label>
+            <input type="number" id="multi-input-budget" placeholder="45000" value="45000" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Client WhatsApp Phone</label>
+            <input type="tel" id="multi-input-phone" placeholder="+9779801234567" value="+9779801234567" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button type="button" class="btn-secondary" onclick="closeModal('multi-intake-modal')">Cancel</button>
+          <button type="submit" class="btn-primary">
+            <iconify-icon icon="tabler:git-fork"></iconify-icon>
+            Auto-Route to Selected Departments
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Live Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- JS App Script -->
+  <script src="app.js"></script>
+
+</body>
+</html>
