@@ -129,25 +129,45 @@ function selectUserType(type) {
   const adminNotice = document.getElementById('admin-security-notice');
   const googleLabel = document.getElementById('google-btn-label');
 
-  if (type === 'admin') {
-    if (btnCompany) btnCompany.classList.remove('active');
-    if (btnClient) btnClient.classList.remove('active');
-    if (btnAdmin) btnAdmin.classList.add('active');
-    googleBtn.style.display = 'none';
-    adminNotice.style.display = 'block';
-    showToast('🔒 Google Login disabled for Admin. Security Link required.');
-  } else if (type === 'client') {
+  const companySectorLabel = document.querySelector('.company-categories-label');
+  const companyGrid = document.getElementById('company-grid-container');
+  const hrRolesBox = document.querySelector('.hr-roles-box');
+
+  if (type === 'client') {
     if (btnCompany) btnCompany.classList.remove('active');
     if (btnAdmin) btnAdmin.classList.remove('active');
     if (btnClient) btnClient.classList.add('active');
+
+    // Hide internal agency sector & internal HR roles for client login
+    if (companySectorLabel) companySectorLabel.style.display = 'none';
+    if (companyGrid) companyGrid.style.display = 'none';
+    if (hrRolesBox) hrRolesBox.style.display = 'none';
+
     googleBtn.style.display = 'block';
     adminNotice.style.display = 'none';
-    if (googleLabel) googleLabel.innerText = 'Sign in with Google as Client Approver';
-    showToast('🏢 Client Account Selected. Sign in with Google to access Approval Queue.');
+    if (googleLabel) googleLabel.innerText = 'Sign in with Google as Client';
+    showToast('🏢 Client Login Selected. Sign in with Google to enter Client Portal.');
+  } else if (type === 'admin') {
+    if (btnCompany) btnCompany.classList.remove('active');
+    if (btnClient) btnClient.classList.remove('active');
+    if (btnAdmin) btnAdmin.classList.add('active');
+
+    if (companySectorLabel) companySectorLabel.style.display = 'block';
+    if (companyGrid) companyGrid.style.display = 'grid';
+    if (hrRolesBox) hrRolesBox.style.display = 'block';
+
+    googleBtn.style.display = 'none';
+    adminNotice.style.display = 'block';
+    showToast('🔒 Google Login disabled for Admin. Security Link required.');
   } else {
     if (btnAdmin) btnAdmin.classList.remove('active');
     if (btnClient) btnClient.classList.remove('active');
     if (btnCompany) btnCompany.classList.add('active');
+
+    if (companySectorLabel) companySectorLabel.style.display = 'block';
+    if (companyGrid) companyGrid.style.display = 'grid';
+    if (hrRolesBox) hrRolesBox.style.display = 'block';
+
     googleBtn.style.display = 'block';
     adminNotice.style.display = 'none';
     const roleName = currentState.selectedRole || 'Company User';
