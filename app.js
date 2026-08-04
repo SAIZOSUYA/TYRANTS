@@ -178,94 +178,116 @@ function renderCrewTable() {
    HTML5 CANVAS CHART RENDERERS (PRA-गति BRAND GRADIENTS)
    ========================================================================== */
 
-// 1. Project Volume Bar Chart (Monthly Shoots Overview)
+// 1. Project Volume Bar Chart (Full Width & Peak Badges)
 function renderProjectVolumeChart() {
   const canvas = document.getElementById('project-volume-chart');
-  if (!canvas) return;
+  if (!canvas || !canvas.parentElement) return;
+
+  const container = canvas.parentElement;
+  const width = container.clientWidth || 500;
+  const height = 260;
+  const dpr = window.devicePixelRatio || 1;
+
+  canvas.width = width * dpr;
+  canvas.height = height * dpr;
+  canvas.style.width = width + 'px';
+  canvas.style.height = height + 'px';
 
   const ctx = canvas.getContext('2d');
-  const dpr = window.devicePixelRatio || 1;
-  const rect = canvas.getBoundingClientRect();
-
-  canvas.width = rect.width * dpr;
-  canvas.height = rect.height * dpr;
   ctx.scale(dpr, dpr);
-
-  const width = rect.width;
-  const height = rect.height;
-
   ctx.clearRect(0, 0, width, height);
 
   // Y-axis gridlines & labels (0, 9, 18, 27, 36)
   const yLabels = [0, 9, 18, 27, 36];
-  const chartBottom = height - 35;
-  const chartTop = 20;
+  const chartBottom = height - 38;
+  const chartTop = 30;
   const chartHeight = chartBottom - chartTop;
+  const paddingLeft = 38;
+  const paddingRight = 16;
+  const chartWidth = width - paddingLeft - paddingRight;
 
-  ctx.strokeStyle = 'rgba(15, 23, 42, 0.08)';
+  ctx.strokeStyle = 'rgba(15, 23, 42, 0.06)';
   ctx.lineWidth = 1;
-  ctx.fillStyle = '#5a6a85';
-  ctx.font = '11px Plus Jakarta Sans';
+  ctx.fillStyle = '#64748b';
+  ctx.font = '500 11px Plus Jakarta Sans';
 
   yLabels.forEach(val => {
     const y = chartBottom - (val / 36) * chartHeight;
     ctx.beginPath();
     ctx.setLineDash([4, 4]);
-    ctx.moveTo(35, y);
-    ctx.lineTo(width, y);
+    ctx.moveTo(paddingLeft, y);
+    ctx.lineTo(width - paddingRight, y);
     ctx.stroke();
     ctx.setLineDash([]);
     ctx.fillText(val.toString(), 10, y + 4);
   });
 
-  // Monthly Bar Heights & Month Labels
+  // Monthly Bar Data & Full-Width Bar Calculations
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const data = [4, 6, 8, 12, 10, 14, 11, 16, 18, 27, 36, 32];
-  const barWidth = (width - 50) / data.length - 10;
+  const totalBars = data.length;
+  const gap = 10;
+  const barWidth = (chartWidth - (totalBars - 1) * gap) / totalBars;
 
   data.forEach((val, i) => {
-    const x = 45 + i * (barWidth + 10);
+    const x = paddingLeft + i * (barWidth + gap);
     const barH = (val / 36) * chartHeight;
     const y = chartBottom - barH;
 
-    // Create Bar Gradient matching PRA-गति Cyan-Lime palette
+    // Gradient matching PRA-गति Cyan-Lime palette
     const barGradient = ctx.createLinearGradient(x, y + barH, x, y);
     if (i >= 8) {
       barGradient.addColorStop(0, '#0284c7');
       barGradient.addColorStop(1, '#65a30d');
     } else {
-      barGradient.addColorStop(0, 'rgba(2, 132, 199, 0.5)');
-      barGradient.addColorStop(1, 'rgba(101, 163, 13, 0.6)');
+      barGradient.addColorStop(0, 'rgba(2, 132, 199, 0.45)');
+      barGradient.addColorStop(1, 'rgba(101, 163, 13, 0.55)');
     }
+
+    ctx.save();
+    ctx.shadowColor = i >= 8 ? 'rgba(101, 163, 13, 0.25)' : 'rgba(2, 132, 199, 0.15)';
+    ctx.shadowBlur = 8;
+    ctx.shadowOffsetY = 2;
 
     ctx.fillStyle = barGradient;
     ctx.beginPath();
-    ctx.roundRect(x, y, barWidth, barH, [4, 4, 0, 0]);
+    ctx.roundRect(x, y, barWidth, barH, [6, 6, 0, 0]);
     ctx.fill();
+    ctx.restore();
 
-    // Draw Month Label below bar
-    ctx.fillStyle = '#64748b';
-    ctx.font = '10px Plus Jakarta Sans';
-    ctx.fillText(months[i], x + (barWidth / 2) - 9, chartBottom + 16);
+    // Value Pill Badge above peak bars
+    if (val >= 27) {
+      ctx.fillStyle = '#0f2744';
+      ctx.font = '700 10px Plus Jakarta Sans';
+      ctx.textAlign = 'center';
+      ctx.fillText(val.toString(), x + barWidth / 2, y - 6);
+    }
+
+    // Month Label
+    ctx.fillStyle = i >= 8 ? '#0f2744' : '#64748b';
+    ctx.font = i >= 8 ? '700 11px Plus Jakarta Sans' : '500 11px Plus Jakarta Sans';
+    ctx.textAlign = 'center';
+    ctx.fillText(months[i], x + barWidth / 2, chartBottom + 18);
   });
 }
 
-// 2. Project Distribution Donut Chart
+// 2. Project Distribution Donut Chart (With Center Total & Styled Legend)
 function renderProjectDistributionChart() {
   const canvas = document.getElementById('project-distribution-chart');
-  if (!canvas) return;
+  if (!canvas || !canvas.parentElement) return;
+
+  const container = canvas.parentElement;
+  const width = container.clientWidth || 350;
+  const height = 260;
+  const dpr = window.devicePixelRatio || 1;
+
+  canvas.width = width * dpr;
+  canvas.height = height * dpr;
+  canvas.style.width = width + 'px';
+  canvas.style.height = height + 'px';
 
   const ctx = canvas.getContext('2d');
-  const dpr = window.devicePixelRatio || 1;
-  const rect = canvas.getBoundingClientRect();
-
-  canvas.width = rect.width * dpr;
-  canvas.height = rect.height * dpr;
   ctx.scale(dpr, dpr);
-
-  const width = rect.width;
-  const height = rect.height;
-
   ctx.clearRect(0, 0, width, height);
 
   const segments = [
@@ -275,11 +297,10 @@ function renderProjectDistributionChart() {
     { label: 'Corporate', value: 12, color: '#14b8a6' }
   ];
 
-  // Adjust Donut Center & Radius to leave ample space for legend below
   const centerX = width / 2;
-  const centerY = (height - 40) / 2;
-  const outerRadius = Math.min(centerX, centerY) - 15;
-  const innerRadius = outerRadius * 0.62;
+  const centerY = (height - 35) / 2;
+  const outerRadius = Math.min(centerX, centerY) - 12;
+  const innerRadius = outerRadius * 0.65;
 
   const total = segments.reduce((sum, s) => sum + s.value, 0);
   let startAngle = -Math.PI / 2;
@@ -288,6 +309,10 @@ function renderProjectDistributionChart() {
     const sliceAngle = (seg.value / total) * (Math.PI * 2);
     const endAngle = startAngle + sliceAngle;
 
+    ctx.save();
+    ctx.shadowColor = seg.color;
+    ctx.shadowBlur = 6;
+
     ctx.beginPath();
     ctx.arc(centerX, centerY, outerRadius, startAngle, endAngle);
     ctx.arc(centerX, centerY, innerRadius, endAngle, startAngle, true);
@@ -295,25 +320,37 @@ function renderProjectDistributionChart() {
 
     ctx.fillStyle = seg.color;
     ctx.fill();
+    ctx.restore();
 
     startAngle = endAngle;
   });
 
-  // Legend cleanly placed at bottom with balanced horizontal positioning
-  const legendY = height - 14;
-  const totalLegendWidth = segments.reduce((acc, s) => acc + (s.label.length * 7 + 22), 0);
-  let legendX = Math.max(10, (width - totalLegendWidth) / 2);
+  // Center Donut Typography
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#0f2744';
+  ctx.font = '800 20px Outfit';
+  ctx.fillText('100%', centerX, centerY + 2);
 
-  ctx.font = '11px Plus Jakarta Sans';
-  segments.forEach(seg => {
+  ctx.fillStyle = '#64748b';
+  ctx.font = '600 10px Plus Jakarta Sans';
+  ctx.fillText('TOTAL SHOOTS', centerX, centerY + 16);
+
+  // Bottom Legend
+  const legendY = height - 12;
+  const itemWidth = width / 4;
+
+  ctx.font = '600 11px Plus Jakarta Sans';
+  segments.forEach((seg, i) => {
+    const lx = i * itemWidth + itemWidth / 2 - 20;
+
     ctx.fillStyle = seg.color;
     ctx.beginPath();
-    ctx.arc(legendX, legendY - 3, 5, 0, Math.PI * 2);
+    ctx.arc(lx, legendY - 4, 4, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = '#5a6a85';
-    ctx.fillText(seg.label, legendX + 10, legendY);
-    legendX += (seg.label.length * 7 + 22);
+    ctx.fillStyle = '#0f2744';
+    ctx.textAlign = 'left';
+    ctx.fillText(seg.label, lx + 8, legendY);
   });
 }
 
