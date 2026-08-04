@@ -102,7 +102,7 @@ function renderDashboardProjects() {
     <tr>
       <td><strong>${escapeHtml(p.title)}</strong></td>
       <td>${escapeHtml(p.client)}</td>
-      <td><span class="status-tag" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">${escapeHtml(p.category)}</span></td>
+      <td><span class="status-tag" style="background: var(--brand-cyan-light); color: var(--brand-cyan);">${escapeHtml(p.category)}</span></td>
       <td>${escapeHtml(p.date)}</td>
       <td><span class="status-tag ${p.status.toLowerCase()}">${escapeHtml(p.status)}</span></td>
       <td>
@@ -154,7 +154,7 @@ function renderCrewTable() {
   tbody.innerHTML = appState.crew.map(c => `
     <tr>
       <td><strong>${escapeHtml(c.name)}</strong></td>
-      <td><span class="status-tag" style="background: rgba(245, 158, 11, 0.1); color: var(--brand-amber);">${escapeHtml(c.role)}</span></td>
+      <td><span class="status-tag" style="background: var(--brand-lime-light); color: var(--brand-lime);">${escapeHtml(c.role)}</span></td>
       <td>${escapeHtml(c.email)}</td>
       <td><strong>$${c.rate}</strong>/day</td>
       <td><span class="status-tag ${c.status === 'Available' ? 'active' : 'pending'}">${c.status}</span></td>
@@ -168,7 +168,7 @@ function renderCrewTable() {
 }
 
 /* ==========================================================================
-   HTML5 CANVAS CHART RENDERERS (MATCHING REFERENCE SCREENSHOT)
+   HTML5 CANVAS CHART RENDERERS (PRA-गति BRAND GRADIENTS)
    ========================================================================== */
 
 // 1. Project Volume Bar Chart (Monthly Shoots Overview)
@@ -189,15 +189,15 @@ function renderProjectVolumeChart() {
 
   ctx.clearRect(0, 0, width, height);
 
-  // Y-axis gridlines & labels (0, 9, 18, 27, 36 matching screenshot)
+  // Y-axis gridlines & labels (0, 9, 18, 27, 36)
   const yLabels = [0, 9, 18, 27, 36];
   const chartBottom = height - 30;
   const chartTop = 20;
   const chartHeight = chartBottom - chartTop;
 
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+  ctx.strokeStyle = 'rgba(15, 23, 42, 0.08)';
   ctx.lineWidth = 1;
-  ctx.fillStyle = '#64748b';
+  ctx.fillStyle = '#5a6a85';
   ctx.font = '11px Plus Jakarta Sans';
 
   yLabels.forEach(val => {
@@ -211,7 +211,7 @@ function renderProjectVolumeChart() {
     ctx.fillText(val.toString(), 10, y + 4);
   });
 
-  // Monthly Bar Heights (matching screenshot profile: low early, rising to 18, 27, 36 at end)
+  // Monthly Bar Heights
   const data = [4, 6, 8, 12, 10, 14, 11, 16, 18, 27, 36, 32];
   const barWidth = (width - 50) / data.length - 12;
 
@@ -220,8 +220,17 @@ function renderProjectVolumeChart() {
     const barH = (val / 36) * chartHeight;
     const y = chartBottom - barH;
 
-    // Draw Bar with Amber Fill
-    ctx.fillStyle = i >= 8 ? '#f59e0b' : 'rgba(245, 158, 11, 0.6)';
+    // Create Bar Gradient matching PRA-गति Cyan-Lime palette
+    const barGradient = ctx.createLinearGradient(x, y + barH, x, y);
+    if (i >= 8) {
+      barGradient.addColorStop(0, '#0284c7');
+      barGradient.addColorStop(1, '#65a30d');
+    } else {
+      barGradient.addColorStop(0, 'rgba(2, 132, 199, 0.5)');
+      barGradient.addColorStop(1, 'rgba(101, 163, 13, 0.6)');
+    }
+
+    ctx.fillStyle = barGradient;
     ctx.beginPath();
     ctx.roundRect(x, y, barWidth, barH, [4, 4, 0, 0]);
     ctx.fill();
@@ -251,10 +260,10 @@ function renderProjectDistributionChart() {
   ctx.clearRect(0, 0, width, height);
 
   const segments = [
-    { label: 'Commercial', value: 45, color: '#f59e0b' },
-    { label: 'Feature Film', value: 25, color: '#3b82f6' },
-    { label: 'Music Video', value: 18, color: '#8b5cf6' },
-    { label: 'Corporate', value: 12, color: '#1e2637' }
+    { label: 'Commercial', value: 45, color: '#0284c7' },
+    { label: 'Feature Film', value: 25, color: '#65a30d' },
+    { label: 'Music Video', value: 18, color: '#0f2744' },
+    { label: 'Corporate', value: 12, color: '#14b8a6' }
   ];
 
   const total = segments.reduce((sum, s) => sum + s.value, 0);
