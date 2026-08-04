@@ -146,6 +146,7 @@ function selectCompanyCategory(catKey) {
   currentState.workflows = [...COMPANY_CONFIG[catKey].sampleWorkflows];
   currentState.certificates = [...COMPANY_CONFIG[catKey].certificates];
   currentState.hrList = [...COMPANY_CONFIG[catKey].hrRoles];
+  currentState.selectedRole = 'Company Admin';
 
   document.querySelectorAll('.company-card').forEach(card => card.classList.remove('selected'));
   const selectedCard = document.getElementById(`company-card-${catKey}`);
@@ -175,55 +176,113 @@ function renderCompanyCategories() {
   }).join('');
 }
 
+function selectHrRole(roleName, isAdmin = false) {
+  currentState.selectedRole = roleName;
+
+  const googleLabel = document.getElementById('google-btn-label');
+  const adminLabel = document.getElementById('admin-btn-label');
+
+  if (isAdmin || roleName === 'Company Admin') {
+    selectUserType('admin');
+    if (adminLabel) adminLabel.innerText = `Log In as Company Admin via Security Link`;
+  } else {
+    selectUserType('company');
+    if (googleLabel) googleLabel.innerText = `Sign in with Google as ${roleName}`;
+    if (adminLabel) adminLabel.innerText = `Log In via Unique Admin Token Link`;
+  }
+
+  renderHrRoles();
+  showToast(`👤 Active Personnel Role set to: ${roleName}`);
+}
+
+function promptAddCustomRole() {
+  const roleName = prompt("Enter new HR / Personnel Role for your company:");
+  if (roleName && roleName.trim() !== "") {
+    const trimmed = roleName.trim();
+    const initials = trimmed.split(' ').map(n => n[0]).join('').toUpperCase().substr(0, 2) || 'HR';
+    const newRole = {
+      id: 'hr-custom-' + Date.now(),
+      name: trimmed,
+      dept: 'Custom Department',
+      access: 'Workflow Approver',
+      avatar: initials,
+      email: `${trimmed.toLowerCase().replace(/\s+/g, '')}@company.com`
+    };
+
+    currentState.hrList.push(newRole);
+    currentState.selectedRole = trimmed;
+    renderHrRoles();
+    showToast(`✨ Added & Selected custom role: "${trimmed}"`);
+  }
+}
+
 function renderHrRoles() {
   const container = document.getElementById('hr-roles-container');
   const company = COMPANY_CONFIG[currentState.selectedCompanyType];
   if (!container || !company) return;
 
-  const hrHtml = currentState.hrList.map(role => `
-    <div class="hr-tag">
-      <iconify-icon icon="tabler:user-check" style="color: var(--brand-teal);"></iconify-icon>
-      <span>${role.name}</span>
-    </div>
-  `).join('');
+  if (!currentState.selectedRole) {
+    currentState.selectedRole = 'Company Admin';
+  }
+
+  const isAdminSelected = currentState.selectedRole === 'Company Admin' ? 'selected' : '';
+
+  const hrHtml = currentState.hrList.map(role => {
+    const isSelected = currentState.selectedRole === role.name ? 'selected' : '';
+    return `
+      <div class="hr-tag ${isSelected}" onclick="selectHrRole('${role.name}', false)" title="Click to choose ${role.name}">
+        <iconify-icon icon="${isSelected ? 'tabler:circle-check-filled' : 'tabler:user-check'}" style="color: ${isSelected ? 'white' : 'var(--brand-teal)'};"></iconify-icon>
+        <span>${role.name}</span>
+      </div>
+    `;
+  }).join('');
 
   container.innerHTML = `
-    <div class="hr-tag admin-badge">
-      <iconify-icon icon="tabler:shield-check"></iconify-icon>
+    <div class="hr-tag admin-badge ${isAdminSelected}" onclick="selectHrRole('Company Admin', true)" title="Click to choose Company Admin">
+      <iconify-icon icon="${isAdminSelected ? 'tabler:shield-check-filled' : 'tabler:shield-check'}"></iconify-icon>
       <span>Company Admin</span>
     </div>
     ${hrHtml}
+    <div class="hr-tag-add" onclick="promptAddCustomRole()" title="Add your own custom HR role">
+      <iconify-icon icon="tabler:plus"></iconify-icon>
+      <span>Add Custom Role</span>
+    </div>
   `;
 }
 
 // 5. LOGIN HANDLERS
 function handleGoogleLogin() {
   const company = COMPANY_CONFIG[currentState.selectedCompanyType];
+  const roleName = currentState.selectedRole || 'Company User';
+  const roleObj = currentState.hrList.find(r => r.name === roleName);
+
   currentState.user = {
-    name: 'Kritan Pradhan',
-    email: `kritan@${currentState.selectedCompanyType}agency.com`,
-    role: `Company User (${company.name})`,
+    name: roleObj ? roleObj.name : 'Kritan Pradhan',
+    email: roleObj ? roleObj.email : `user@${currentState.selectedCompanyType}agency.com`,
+    role: `${roleName} (${company.name})`,
     isAdmin: false,
-    avatar: 'KP'
+    avatar: roleObj ? roleObj.avatar : 'KP'
   };
 
-  showToast(`Welcome back, ${currentState.user.name}! Signed in via Google.`);
+  showToast(`Welcome back, ${currentState.user.name}! Signed in as ${roleName}.`);
   switchScreen('dashboard-screen');
   renderDashboard();
 }
 
 function handleAdminLinkLogin() {
   const company = COMPANY_CONFIG[currentState.selectedCompanyType];
+  const roleName = currentState.selectedRole || 'Master Admin';
+
   currentState.user = {
     name: 'System Admin (SAIZOSUYA)',
     email: `admin@${currentState.selectedCompanyType}.pragati.io`,
-    role: `Master Admin (${company.name})`,
+    role: `${roleName} (${company.name})`,
     isAdmin: true,
     avatar: 'SA'
   };
 
   history.replaceState(null, '', `?admin_token=${currentState.adminToken}`);
-  showToast('🔑 Unique Admin Token Verified! Full Control Granted.');
+  showToast(`🔑 Unique Admin Token Verified! Signed in as ${roleName}.`);
   switchScreen('dashboard-screen');
   renderDashboard();
 }
