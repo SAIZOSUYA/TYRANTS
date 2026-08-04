@@ -1,5 +1,5 @@
 /* ==========================================================================
-   FILMCRAFT STUDIO COMMAND CENTER - JAVASCRIPT LOGIC & STATE
+   PRAGATI STUDIO COMMAND CENTER - JAVASCRIPT LOGIC & STATE
    ========================================================================== */
 
 // Initial Mock State
@@ -10,10 +10,10 @@ const DEFAULT_STATE = {
     { id: 'cli_3', name: 'Elena Rostova', company: 'Vanguard Creative', email: 'elena@vanguard.com', phone: '+1 555-7722', projects: 1, status: 'Active' }
   ],
   crew: [
-    { id: 'crw_1', name: 'David Fincher', role: 'Director', email: 'fincher@filmcraft.com', rate: 1200, status: 'Available' },
-    { id: 'crw_2', name: 'Roger Deakins', role: 'Director of Photography', email: 'deakins@filmcraft.com', rate: 1500, status: 'Available' },
-    { id: 'crw_3', name: 'Hans Zimmer', role: 'Sound Engineer', email: 'hans@filmcraft.com', rate: 1100, status: 'On Shoot' },
-    { id: 'crw_4', name: 'Rachel Morrison', role: 'Gaffer / Lighting', email: 'rachel@filmcraft.com', rate: 850, status: 'Available' }
+    { id: 'crw_1', name: 'David Fincher', role: 'Director', email: 'fincher@pragatisystem.com', rate: 1200, status: 'Available' },
+    { id: 'crw_2', name: 'Roger Deakins', role: 'Director of Photography', email: 'deakins@pragatisystem.com', rate: 1500, status: 'Available' },
+    { id: 'crw_3', name: 'Hans Zimmer', role: 'Sound Engineer', email: 'hans@pragatisystem.com', rate: 1100, status: 'On Shoot' },
+    { id: 'crw_4', name: 'Rachel Morrison', role: 'Gaffer / Lighting', email: 'rachel@pragatisystem.com', rate: 850, status: 'Available' }
   ],
   projects: [
     { id: 'prj_1', title: 'Cyberdyne Campaign', client: 'Cyberdyne Media', category: 'Commercial', date: '2026-08-10', status: 'Active' },
@@ -28,7 +28,7 @@ const DEFAULT_STATE = {
 let appState = loadState();
 
 function loadState() {
-  const saved = localStorage.getItem('filmcraft_studio_state');
+  const saved = localStorage.getItem('pragati_studio_state');
   if (saved) {
     try { return JSON.parse(saved); } catch (e) { console.error('Failed to parse state', e); }
   }
@@ -36,7 +36,7 @@ function loadState() {
 }
 
 function saveState() {
-  localStorage.setItem('filmcraft_studio_state', JSON.stringify(appState));
+  localStorage.setItem('pragati_studio_state', JSON.stringify(appState));
   updateStats();
   renderDashboardProjects();
   renderClientsTable();
