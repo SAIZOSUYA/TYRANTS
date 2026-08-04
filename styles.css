@@ -1413,6 +1413,60 @@ body.user-is-admin li.admin-only {
     font-size: 13px;
   }
 
+  /* Top Header Mobile Fixes (No Overlaps) */
+  .top-header {
+    height: auto !important;
+    padding: 12px 14px !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+
+  .header-search {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .header-search input {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .header-right {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    gap: 8px !important;
+  }
+
+  .header-right .btn-primary-amber {
+    padding: 6px 10px !important;
+    font-size: 11px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Floating Fixed Dropdowns for Mobile Viewports (No Left/Right Clipping) */
+  #notifications-dropdown-menu {
+    position: fixed !important;
+    top: 60px !important;
+    left: 12px !important;
+    right: 12px !important;
+    width: auto !important;
+    max-width: calc(100vw - 24px) !important;
+    z-index: 99999 !important;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.25) !important;
+  }
+
+  #user-dropdown-menu {
+    position: fixed !important;
+    top: 60px !important;
+    right: 12px !important;
+    width: 180px !important;
+    z-index: 99999 !important;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.25) !important;
+  }
+
   /* Text Size Adjustments for Mobile */
   h1, .header-left h1 {
     font-size: 18px !important;
@@ -1466,27 +1520,29 @@ body.user-is-admin li.admin-only {
     font-size: 18px !important;
   }
 
-  /* Data Table Mobile Scaling & Horizontal Scroll */
+  /* Data Table Mobile Scaling & Touch Horizontal Scroll */
+  .section-card {
+    padding: 14px 10px !important;
+    border-radius: var(--radius-md) !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
   .data-table {
-    min-width: 600px;
-    font-size: 11px;
+    min-width: 520px !important;
+    font-size: 11px !important;
   }
 
   .data-table th {
-    padding: 8px 10px;
-    font-size: 10px;
-    letter-spacing: 0.3px;
+    padding: 8px 6px !important;
+    font-size: 10px !important;
+    letter-spacing: 0.3px !important;
+    white-space: nowrap !important;
   }
 
   .data-table td {
-    padding: 8px 10px;
-    font-size: 11px;
-  }
-
-  .section-card {
-    padding: 16px 12px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    padding: 8px 6px !important;
+    font-size: 11px !important;
   }
 
   .section-header {
