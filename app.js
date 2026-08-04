@@ -191,6 +191,19 @@ function renderDashboardProjects(customList) {
           </div>
         `;
 
+        const isAdmin = appState.user && appState.user.role === 'Admin';
+
+        const actionCell = isAdmin ? `
+          <td>
+            <button class="icon-btn" style="width:30px; height:30px; font-size:14px; margin-right:4px;" onclick="openEditProjectModal('${p.id}')" title="Edit Project">
+              <iconify-icon icon="tabler:pencil" style="color: var(--brand-cyan);"></iconify-icon>
+            </button>
+            <button class="icon-btn" style="width:30px; height:30px; font-size:14px;" onclick="deleteProject('${p.id}')" title="Delete Project">
+              <iconify-icon icon="tabler:trash" style="color: var(--brand-red);"></iconify-icon>
+            </button>
+          </td>
+        ` : ``;
+
         return `
           <tr>
             <td><strong>${escapeHtml(p.title)}</strong></td>
@@ -199,14 +212,7 @@ function renderDashboardProjects(customList) {
             <td>${crewPills}</td>
             <td>${datesHtml}</td>
             <td><span class="status-tag ${p.status.toLowerCase()}">${escapeHtml(p.status)}</span></td>
-            <td>
-              <button class="icon-btn" style="width:30px; height:30px; font-size:14px; margin-right:4px;" onclick="openEditProjectModal('${p.id}')" title="Edit Project">
-                <iconify-icon icon="tabler:pencil" style="color: var(--brand-cyan);"></iconify-icon>
-              </button>
-              <button class="icon-btn" style="width:30px; height:30px; font-size:14px;" onclick="deleteProject('${p.id}')" title="Delete Project">
-                <iconify-icon icon="tabler:trash" style="color: var(--brand-red);"></iconify-icon>
-              </button>
-            </td>
+            ${actionCell}
           </tr>
         `;
       }).join('');
@@ -226,14 +232,10 @@ function renderClientsTable(customList) {
     return;
   }
 
-  tbody.innerHTML = list.map(c => `
-    <tr>
-      <td><strong>${escapeHtml(c.name)}</strong></td>
-      <td>${escapeHtml(c.company)}</td>
-      <td>${escapeHtml(c.email)}</td>
-      <td>${escapeHtml(c.phone)}</td>
-      <td>${c.projects || 1} active</td>
-      <td><span class="status-tag active">${c.status || 'Active'}</span></td>
+  const isAdmin = appState.user && appState.user.role === 'Admin';
+
+  tbody.innerHTML = list.map(c => {
+    const actionCell = isAdmin ? `
       <td>
         <button class="icon-btn" style="width:30px; height:30px; font-size:14px; margin-right:4px;" onclick="openEditClientModal('${c.id}')" title="Edit Client">
           <iconify-icon icon="tabler:pencil" style="color: var(--brand-cyan);"></iconify-icon>
@@ -242,8 +244,20 @@ function renderClientsTable(customList) {
           <iconify-icon icon="tabler:trash" style="color: var(--brand-red);"></iconify-icon>
         </button>
       </td>
-    </tr>
-  `).join('');
+    ` : ``;
+
+    return `
+      <tr>
+        <td><strong>${escapeHtml(c.name)}</strong></td>
+        <td>${escapeHtml(c.company)}</td>
+        <td>${escapeHtml(c.email)}</td>
+        <td>${escapeHtml(c.phone)}</td>
+        <td>${c.projects || 1} active</td>
+        <td><span class="status-tag active">${c.status || 'Active'}</span></td>
+        ${actionCell}
+      </tr>
+    `;
+  }).join('');
 }
 
 // Render Crew & Talent Table
@@ -261,14 +275,10 @@ function renderCrewTable(customList) {
     return;
   }
 
-  tbody.innerHTML = list.map(c => `
-    <tr>
-      <td><strong>${escapeHtml(c.name)}</strong></td>
-      <td><span class="status-tag" style="background: var(--brand-lime-light); color: var(--brand-lime);">${escapeHtml(c.role)}</span></td>
-      <td>${escapeHtml(c.email)}</td>
-      <td>${escapeHtml(c.phone || 'N/A')}</td>
-      <td><strong>${symbol}${c.rate ? c.rate.toLocaleString() : '0'}</strong>/day</td>
-      <td><span class="status-tag ${c.status === 'Available' ? 'active' : 'pending'}">${c.status || 'Available'}</span></td>
+  const isAdmin = appState.user && appState.user.role === 'Admin';
+
+  tbody.innerHTML = list.map(c => {
+    const actionCell = isAdmin ? `
       <td>
         <button class="icon-btn" style="width:30px; height:30px; font-size:14px; margin-right:4px;" onclick="openEditCrewModal('${c.id}')" title="Edit Crew Member">
           <iconify-icon icon="tabler:pencil" style="color: var(--brand-cyan);"></iconify-icon>
@@ -277,8 +287,20 @@ function renderCrewTable(customList) {
           <iconify-icon icon="tabler:trash" style="color: var(--brand-red);"></iconify-icon>
         </button>
       </td>
-    </tr>
-  `).join('');
+    ` : ``;
+
+    return `
+      <tr>
+        <td><strong>${escapeHtml(c.name)}</strong></td>
+        <td><span class="status-tag" style="background: var(--brand-lime-light); color: var(--brand-lime);">${escapeHtml(c.role)}</span></td>
+        <td>${escapeHtml(c.email)}</td>
+        <td>${escapeHtml(c.phone || 'N/A')}</td>
+        <td><strong>${symbol}${c.rate ? c.rate.toLocaleString() : '0'}</strong>/day</td>
+        <td><span class="status-tag ${c.status === 'Available' ? 'active' : 'pending'}">${c.status || 'Available'}</span></td>
+        ${actionCell}
+      </tr>
+    `;
+  }).join('');
 }
 
 /* ==========================================================================
@@ -771,6 +793,15 @@ function renderProgressTracker(customList) {
          </div>`
       : `<div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Timeline: ${escapeHtml(startDate)} &rarr; ${escapeHtml(endDate)}</div>`;
 
+    const userRole = appState.user ? appState.user.role : null;
+    const canUpdateProgress = userRole === 'Admin' || userRole === 'Crew Member' || userRole === 'Crew';
+
+    const updateBtnHtml = canUpdateProgress ? `
+      <button class="btn-primary-amber" style="padding: 6px 12px; font-size: 12px;" onclick="openUpdateProgressModal('${p.id}')">
+        <iconify-icon icon="tabler:adjustments"></iconify-icon> Update
+      </button>
+    ` : `<span style="font-size: 11px; color: var(--brand-cyan); font-weight: 700; background: var(--brand-cyan-light); padding: 4px 10px; border-radius: 12px;">View Only</span>`;
+
     return `
       <div class="${cardClass}">
         <div class="progress-card-header">
@@ -797,9 +828,7 @@ function renderProgressTracker(customList) {
             <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">ASSIGNED CREW</span>
             ${crewPills}
           </div>
-          <button class="btn-primary-amber" style="padding: 6px 12px; font-size: 12px;" onclick="openUpdateProgressModal('${p.id}')">
-            <iconify-icon icon="tabler:adjustments"></iconify-icon> Update
-          </button>
+          ${updateBtnHtml}
         </div>
       </div>
     `;
@@ -1218,25 +1247,72 @@ function checkAuthState() {
     roleEl.textContent = user.role || 'Member';
     roleEl.style.color = user.role === 'Admin' ? 'var(--brand-cyan)' : 'var(--brand-lime)';
   }
+
+  updateRolePermissions();
+}
+
+function updateRolePermissions() {
+  const user = appState.user;
+  const role = user ? user.role : null;
+  const isAdmin = role === 'Admin';
+
+  // Toggle .admin-only elements (Add buttons, Quick Actions, Settings tab)
+  document.querySelectorAll('.admin-only').forEach(el => {
+    el.style.display = isAdmin ? '' : 'none';
+  });
+
+  // Toggle table Actions TH headers if not admin
+  document.querySelectorAll('.data-table').forEach(table => {
+    const ths = table.querySelectorAll('th');
+    if (ths.length > 0) {
+      const lastTh = ths[ths.length - 1];
+      if (lastTh && lastTh.textContent.trim().toLowerCase().includes('action')) {
+        lastTh.style.display = isAdmin ? '' : 'none';
+      }
+    }
+  });
+
+  // Redirect to Dashboard if non-admin is currently viewing Settings
+  const settingsTab = document.getElementById('view-settings');
+  if (!isAdmin && settingsTab && settingsTab.classList.contains('active')) {
+    switchTab('view-dashboard');
+  }
 }
 
 function switchAuthTab(tabType) {
   const btnAdmin = document.getElementById('tab-btn-admin');
   const btnCrew = document.getElementById('tab-btn-crew');
+  const btnClient = document.getElementById('tab-btn-client');
+
   const formAdmin = document.getElementById('auth-form-admin');
   const formCrew = document.getElementById('auth-form-crew');
+  const formClient = document.getElementById('auth-form-client');
+
+  [btnAdmin, btnCrew, btnClient].forEach(btn => btn && btn.classList.remove('active'));
+  [formAdmin, formCrew, formClient].forEach(form => form && form.classList.remove('active'));
 
   if (tabType === 'admin') {
     if (btnAdmin) btnAdmin.classList.add('active');
-    if (btnCrew) btnCrew.classList.remove('active');
     if (formAdmin) formAdmin.classList.add('active');
-    if (formCrew) formCrew.classList.remove('active');
-  } else {
+  } else if (tabType === 'crew') {
     if (btnCrew) btnCrew.classList.add('active');
-    if (btnAdmin) btnAdmin.classList.remove('active');
     if (formCrew) formCrew.classList.add('active');
-    if (formAdmin) formAdmin.classList.remove('active');
+  } else if (tabType === 'client') {
+    if (btnClient) btnClient.classList.add('active');
+    if (formClient) formClient.classList.add('active');
   }
+}
+
+function handleClientLogin() {
+  appState.user = {
+    name: 'Client Portal',
+    email: 'client@company.com',
+    role: 'Client',
+    avatar: 'C'
+  };
+
+  saveState();
+  checkAuthState();
 }
 
 function handleAdminLogin(e) {

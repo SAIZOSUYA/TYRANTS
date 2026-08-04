@@ -59,7 +59,7 @@
             <span>Crew & Talent</span>
           </a>
         </li>
-        <li class="nav-item" id="nav-settings">
+        <li class="nav-item admin-only" id="nav-settings">
           <a onclick="switchTab('view-settings')">
             <iconify-icon icon="tabler:settings"></iconify-icon>
             <span>Settings</span>
@@ -68,7 +68,7 @@
       </ul>
 
       <!-- Quick Actions Widget -->
-      <div class="quick-actions-box">
+      <div class="quick-actions-box admin-only">
         <span class="quick-actions-title">QUICK ACTIONS</span>
         <button class="btn-quick-action" onclick="openWhatsAppModal()">
           <iconify-icon icon="tabler:brand-whatsapp"></iconify-icon>
@@ -91,7 +91,7 @@
         </div>
 
         <div class="header-right">
-          <button class="btn-primary-amber" style="padding: 8px 16px; font-size: 13px;" onclick="openAddProjectModal()">
+          <button class="btn-primary-amber admin-only" style="padding: 8px 16px; font-size: 13px;" onclick="openAddProjectModal()">
             <iconify-icon icon="tabler:plus"></iconify-icon> Add Project
           </button>
 
@@ -229,7 +229,7 @@
           <div class="section-card">
             <div class="section-header">
               <h3>Upcoming Production Shoots</h3>
-              <button class="btn-primary-amber" onclick="openAddProjectModal()">
+              <button class="btn-primary-amber admin-only" onclick="openAddProjectModal()">
                 <iconify-icon icon="tabler:plus"></iconify-icon> Add New Project
               </button>
             </div>
@@ -264,7 +264,7 @@
                 <h2>Projects Directory</h2>
                 <p style="color: var(--text-muted); font-size: 13px;">Manage all production shoots, assigned crew rosters, and category breakdowns</p>
               </div>
-              <button class="btn-primary-amber" onclick="openAddProjectModal()">
+              <button class="btn-primary-amber admin-only" onclick="openAddProjectModal()">
                 <iconify-icon icon="tabler:plus"></iconify-icon> Add Project
               </button>
             </div>
@@ -298,7 +298,7 @@
                 <h2>Project Progress Tracker</h2>
                 <p style="color: var(--text-muted); font-size: 13px;">Track real-time production stages, shoot milestones, and completion percentages</p>
               </div>
-              <button class="btn-primary-amber" onclick="openAddProjectModal()">
+              <button class="btn-primary-amber admin-only" onclick="openAddProjectModal()">
                 <iconify-icon icon="tabler:plus"></iconify-icon> Add Project
               </button>
             </div>
@@ -319,7 +319,7 @@
                 <h2>Clients Directory</h2>
                 <p style="color: var(--text-muted); font-size: 13px;">Manage client profiles, active contracts, and shoot histories</p>
               </div>
-              <button class="btn-primary-amber" onclick="openModal('modal-add-client')">
+              <button class="btn-primary-amber admin-only" onclick="openModal('modal-add-client')">
                 <iconify-icon icon="tabler:plus"></iconify-icon> Add Client
               </button>
             </div>
@@ -351,9 +351,9 @@
             <div class="section-header">
               <div>
                 <h2>Crew & Talent Roster</h2>
-                <p style="color: var(--text-muted); font-size: 13px;">Manage film crew, directors, DPs, sound engineers, and talent availability</p>
+                <p style="color: var(--text-muted); font-size: 13px;">Manage film directors, DPs, sound engineers, lighting crew, and talent</p>
               </div>
-              <button class="btn-primary-amber" onclick="openModal('modal-add-crew')">
+              <button class="btn-primary-amber admin-only" onclick="openModal('modal-add-crew')">
                 <iconify-icon icon="tabler:plus"></iconify-icon> Add Crew Member
               </button>
             </div>
@@ -879,6 +879,9 @@
         <button type="button" class="auth-tab-btn" id="tab-btn-crew" onclick="switchAuthTab('crew')">
           <iconify-icon icon="logos:google-icon"></iconify-icon> Crew Google Sign-In
         </button>
+        <button type="button" class="auth-tab-btn" id="tab-btn-client" onclick="switchAuthTab('client')">
+          <iconify-icon icon="tabler:user"></iconify-icon> Client Access
+        </button>
       </div>
 
       <!-- Admin Login Form -->
@@ -910,6 +913,19 @@
           <button type="button" class="btn-google-login" onclick="handleGoogleSignIn()">
             <iconify-icon icon="logos:google-icon" style="font-size: 20px;"></iconify-icon>
             Sign in with Google
+          </button>
+        </div>
+      </div>
+
+      <!-- Client Access View -->
+      <div id="auth-form-client" class="auth-form">
+        <div style="text-align: center; padding: 12px 0;">
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5;">
+            Clients can log in to view active project timelines, deliverables, and production progress.
+          </p>
+
+          <button type="button" class="btn-primary-amber" style="width: 100%; padding: 12px; font-weight: 700; font-size: 14px;" onclick="handleClientLogin()">
+            <iconify-icon icon="tabler:eye"></iconify-icon> Enter Client Portal (View Only)
           </button>
         </div>
       </div>
