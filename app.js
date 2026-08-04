@@ -96,37 +96,37 @@ function updateStats() {
   if (upcomingShootsEl) upcomingShootsEl.textContent = appState.projects.length;
 }
 
-// Render Dashboard Production Shoots Table
+// Render Dashboard & Projects Directory Tables
 function renderDashboardProjects() {
-  const tbody = document.getElementById('table-dashboard-projects');
-  if (!tbody) return;
+  const tbodyDashboard = document.getElementById('table-dashboard-projects');
+  const tbodyAll = document.getElementById('table-all-projects');
 
-  if (appState.projects.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 24px;">No production shoots scheduled. Click "Add New Project" to get started.</td></tr>`;
-    return;
-  }
+  const htmlContent = appState.projects.length === 0
+    ? `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 24px;">No production shoots scheduled. Click "Add Project" to get started.</td></tr>`
+    : appState.projects.map(p => {
+        const crewPills = (p.crew && p.crew.length > 0)
+          ? p.crew.map(cr => `<span class="crew-tag-pill">${escapeHtml(cr)}</span>`).join('')
+          : `<span style="font-size: 12px; color: var(--text-muted);">Unassigned</span>`;
 
-  tbody.innerHTML = appState.projects.map(p => {
-    const crewPills = (p.crew && p.crew.length > 0)
-      ? p.crew.map(cr => `<span class="crew-tag-pill">${escapeHtml(cr)}</span>`).join('')
-      : `<span style="font-size: 12px; color: var(--text-muted);">Unassigned</span>`;
+        return `
+          <tr>
+            <td><strong>${escapeHtml(p.title)}</strong></td>
+            <td>${escapeHtml(p.client)}</td>
+            <td><span class="status-tag" style="background: var(--brand-cyan-light); color: var(--brand-cyan);">${escapeHtml(p.category)}</span></td>
+            <td>${crewPills}</td>
+            <td>${escapeHtml(p.date)}</td>
+            <td><span class="status-tag ${p.status.toLowerCase()}">${escapeHtml(p.status)}</span></td>
+            <td>
+              <button class="icon-btn" style="width:30px; height:30px; font-size:14px;" onclick="deleteProject('${p.id}')" title="Delete Project">
+                <iconify-icon icon="tabler:trash" style="color: var(--brand-red);"></iconify-icon>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
 
-    return `
-      <tr>
-        <td><strong>${escapeHtml(p.title)}</strong></td>
-        <td>${escapeHtml(p.client)}</td>
-        <td><span class="status-tag" style="background: var(--brand-cyan-light); color: var(--brand-cyan);">${escapeHtml(p.category)}</span></td>
-        <td>${crewPills}</td>
-        <td>${escapeHtml(p.date)}</td>
-        <td><span class="status-tag ${p.status.toLowerCase()}">${escapeHtml(p.status)}</span></td>
-        <td>
-          <button class="icon-btn" style="width:30px; height:30px; font-size:14px;" onclick="deleteProject('${p.id}')" title="Delete Project">
-            <iconify-icon icon="tabler:trash" style="color: var(--brand-red);"></iconify-icon>
-          </button>
-        </td>
-      </tr>
-    `;
-  }).join('');
+  if (tbodyDashboard) tbodyDashboard.innerHTML = htmlContent;
+  if (tbodyAll) tbodyAll.innerHTML = htmlContent;
 }
 
 // Render Clients Directory Table

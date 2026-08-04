@@ -35,6 +35,12 @@
             <span>Dashboard</span>
           </a>
         </li>
+        <li class="nav-item" id="nav-projects">
+          <a onclick="switchTab('view-projects')">
+            <iconify-icon icon="tabler:movie"></iconify-icon>
+            <span>Projects</span>
+          </a>
+        </li>
         <li class="nav-item" id="nav-clients">
           <a onclick="switchTab('view-clients')">
             <iconify-icon icon="tabler:users-group"></iconify-icon>
@@ -82,6 +88,10 @@
         </div>
 
         <div class="header-right">
+          <button class="btn-primary-amber" style="padding: 8px 16px; font-size: 13px;" onclick="openAddProjectModal()">
+            <iconify-icon icon="tabler:plus"></iconify-icon> Add Project
+          </button>
+
           <button class="icon-btn" title="Notifications" onclick="toggleNotifications()">
             <iconify-icon icon="tabler:bell"></iconify-icon>
             <span class="notification-badge"></span>
@@ -224,6 +234,40 @@
             </table>
           </div>
 
+        </section>
+
+        <!-- ==========================================================================
+             TAB 2: PROJECTS DIRECTORY
+             ========================================================================== -->
+        <section id="view-projects" class="view-tab">
+          <div class="section-card">
+            <div class="section-header">
+              <div>
+                <h2>Projects Directory</h2>
+                <p style="color: var(--text-muted); font-size: 13px;">Manage all production shoots, assigned crew rosters, and category breakdowns</p>
+              </div>
+              <button class="btn-primary-amber" onclick="openAddProjectModal()">
+                <iconify-icon icon="tabler:plus"></iconify-icon> Add Project
+              </button>
+            </div>
+
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Project Name</th>
+                  <th>Client</th>
+                  <th>Category</th>
+                  <th>Assigned Crew</th>
+                  <th>Shoot Date</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="table-all-projects">
+                <!-- Dynamically Populated in app.js -->
+              </tbody>
+            </table>
+          </div>
         </section>
 
         <!-- ==========================================================================
