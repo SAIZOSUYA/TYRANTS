@@ -647,13 +647,21 @@ function handleWARecipientTypeChange() {
   if (!select) return;
 
   if (category === 'client') {
-    select.innerHTML = appState.clients.map(c => 
-      `<option value="${c.id}" data-name="${escapeHtml(c.name)}" data-phone="${c.phone}">${escapeHtml(c.name)} (${escapeHtml(c.company)}) - ${c.phone}</option>`
-    ).join('');
+    if (appState.clients.length === 0) {
+      select.innerHTML = `<option value="">No clients registered</option>`;
+    } else {
+      select.innerHTML = appState.clients.map(c => 
+        `<option value="${c.id}" data-name="${escapeHtml(c.name)}" data-phone="${c.phone || ''}">${escapeHtml(c.name)} (${escapeHtml(c.company)}) - Phone: ${c.phone || 'N/A'}</option>`
+      ).join('');
+    }
   } else {
-    select.innerHTML = appState.crew.map(cr => 
-      `<option value="${cr.id}" data-name="${escapeHtml(cr.name)}" data-phone="${cr.phone || ''}">${escapeHtml(cr.name)} (${escapeHtml(cr.role)}) ${cr.phone ? '- ' + cr.phone : ''}</option>`
-    ).join('');
+    if (appState.crew.length === 0) {
+      select.innerHTML = `<option value="">No crew members in roster</option>`;
+    } else {
+      select.innerHTML = appState.crew.map(cr => 
+        `<option value="${cr.id}" data-name="${escapeHtml(cr.name)}" data-phone="${cr.phone || ''}">${escapeHtml(cr.name)} (${escapeHtml(cr.role)}) - Phone: ${cr.phone || 'N/A'}</option>`
+      ).join('');
+    }
   }
 
   updateWAMessageTemplate();
@@ -685,14 +693,16 @@ function updateWAMessageTemplate() {
   const recipientPhone = selectedOpt ? (selectedOpt.getAttribute('data-phone') || '') : '';
   const projectTitle = projectSelect ? projectSelect.value : 'your project';
 
-  if (targetPhoneInput && recipientPhone) {
+  if (targetPhoneInput) {
     targetPhoneInput.value = recipientPhone;
   }
 
+  const phoneNote = recipientPhone ? ` (Contact: ${recipientPhone})` : '';
+
   if (category === 'client') {
-    messageTextarea.value = `Hello ${recipientName}, here is an official project update regarding '${projectTitle}': The shoot & production deliverables are progressing smoothly according to our Pragati workflow schedule! Please let us know if you have any questions.`;
+    messageTextarea.value = `Hello ${recipientName}${phoneNote}, here is an official project update regarding '${projectTitle}': The shoot & production deliverables are progressing smoothly according to our Pragati workflow schedule! Please let us know if you have any questions.`;
   } else {
-    messageTextarea.value = `Hi ${recipientName}, please provide a quick status update regarding your assigned deliverables for project '${projectTitle}'. Let us know if you need any additional resources, equipment, or approvals!`;
+    messageTextarea.value = `Hi ${recipientName}${phoneNote}, please provide a quick status update regarding your assigned deliverables for project '${projectTitle}'. Let us know if you need any additional resources, equipment, or approvals!`;
   }
 }
 
