@@ -95,14 +95,18 @@
           </div>
         </div>
 
-        <!-- Admin Security Link Notice (Hidden for company users) -->
+        <!-- Admin Security Link & Unique Passkey Portal -->
         <div id="admin-security-notice" class="admin-login-notice" style="display: none;">
           <div class="admin-notice-header">
-            <iconify-icon icon="tabler:lock-code" style="font-size: 20px;"></iconify-icon>
-            <span>Admin Unique Link Security Protocol</span>
+            <iconify-icon icon="tabler:shield-lock" style="font-size: 20px; color: var(--brand-navy);"></iconify-icon>
+            <span>Admin Unique Pass Key & Control Portal</span>
           </div>
-          <div class="admin-notice-text">
-            Standard Google Sign-In is disabled for System Admin accounts. Admins must log in using their unique encrypted token link provided by the system.
+          <div class="admin-notice-text" style="margin-bottom: 12px;">
+            Standard Google Sign-In is disabled for System Admin accounts. Enter your Unique Admin Pass Key or use your encrypted security link to gain full system master control.
+          </div>
+          <div style="margin-bottom: 12px;">
+            <label style="display: block; font-size: 11px; font-weight: 700; color: var(--brand-navy); margin-bottom: 4px; text-transform: uppercase;">Unique Admin Pass Code</label>
+            <input type="password" id="input-admin-passkey" placeholder="Enter Admin Unique Pass Key (e.g. admin123)" value="admin123" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 13px; outline: none; background: white;">
           </div>
         </div>
 
@@ -183,8 +187,6 @@
               </div>
             </a>
           </li>
-        </ul>
-
           <li class="nav-item" id="nav-tab-messages">
             <a onclick="switchTab('tab-messages')">
               <div class="nav-item-content">
@@ -255,8 +257,8 @@
               <input type="text" placeholder="Search workflows, clients...">
             </div>
 
-            <!-- Create New Workflow CTA -->
-            <button class="btn-primary" onclick="openCreateModal()">
+            <!-- Create New Workflow CTA (Admin Only) -->
+            <button class="btn-primary" id="btn-header-new-wf" onclick="openCreateModal()">
               <iconify-icon icon="tabler:plus"></iconify-icon>
               New Workflow
             </button>

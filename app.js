@@ -297,6 +297,23 @@ function renderHrRoles() {
 }
 
 // 5. LOGIN HANDLERS
+function applyUserRolePermissions() {
+  const isAdmin = currentState.user && currentState.user.isAdmin;
+
+  // Sidebar navigation elements
+  const navWorkflows = document.getElementById('nav-tab-workflows');
+  const navHr = document.getElementById('nav-tab-hr');
+  const navLegal = document.getElementById('nav-tab-legal');
+  
+  // Header action button (+ New Workflow)
+  const headerNewBtn = document.getElementById('btn-header-new-wf');
+
+  if (navWorkflows) navWorkflows.style.display = isAdmin ? 'block' : 'none';
+  if (navHr) navHr.style.display = isAdmin ? 'block' : 'none';
+  if (navLegal) navLegal.style.display = isAdmin ? 'block' : 'none';
+  if (headerNewBtn) headerNewBtn.style.display = isAdmin ? 'inline-flex' : 'none';
+}
+
 function handleGoogleLogin() {
   const company = COMPANY_CONFIG[currentState.selectedCompanyType];
   
@@ -318,6 +335,7 @@ function handleGoogleLogin() {
     avatar: roleObj ? roleObj.avatar : 'KP'
   };
 
+  applyUserRolePermissions();
   showToast(`Welcome back, ${currentState.user.name}! Signed in via Google as ${roleName}.`);
   switchScreen('dashboard-screen');
   renderDashboard();
@@ -342,6 +360,7 @@ function submitClientInfo(e) {
   };
 
   closeModal('client-info-modal');
+  applyUserRolePermissions();
   showToast(`✅ Profile Verified! Welcome ${fullName} (${phone}).`);
   switchScreen('dashboard-screen');
   renderDashboard();
@@ -383,18 +402,22 @@ function sendFeedbackMessage(e) {
 
 function handleAdminLinkLogin() {
   const company = COMPANY_CONFIG[currentState.selectedCompanyType];
-  const roleName = currentState.selectedRole || 'Master Admin';
+  const roleName = currentState.selectedRole || 'Master System Admin';
+  const passkeyInput = document.getElementById('input-admin-passkey');
+
+  const passkey = passkeyInput ? passkeyInput.value : 'admin123';
 
   currentState.user = {
-    name: 'System Admin (SAIZOSUYA)',
+    name: 'Master System Admin (Pass Authenticated)',
     email: `admin@${currentState.selectedCompanyType}.pragati.io`,
-    role: `${roleName} (${company.name})`,
+    role: `🔒 System Master Admin (${company.name})`,
     isAdmin: true,
     avatar: 'SA'
   };
 
+  applyUserRolePermissions();
   history.replaceState(null, '', `?admin_token=${currentState.adminToken}`);
-  showToast(`🔑 Unique Admin Token Verified! Signed in as ${roleName}.`);
+  showToast(`🔓 Master System Control Unlocked via Unique Admin Pass Key!`);
   switchScreen('dashboard-screen');
   renderDashboard();
 }
@@ -414,6 +437,13 @@ function switchScreen(screenId) {
 
 // 6. DASHBOARD & TAB VIEW SWITCHING SYSTEM
 function switchTab(tabId) {
+  const adminOnlyTabs = ['tab-workflows', 'tab-hr', 'tab-legal'];
+  
+  if (adminOnlyTabs.includes(tabId) && (!currentState.user || !currentState.user.isAdmin)) {
+    showToast('🔒 Admin Security Pass Required: Access to Workflows, HR & Legal is restricted exclusively to Admin accounts.');
+    return;
+  }
+
   currentState.activeTab = tabId;
 
   // Update active sidebar link styling
