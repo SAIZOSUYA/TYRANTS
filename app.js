@@ -2,26 +2,13 @@
    PRAGATI STUDIO COMMAND CENTER - JAVASCRIPT LOGIC & STATE
    ========================================================================== */
 
-// Initial Mock State
+// Initial Clean State
 const DEFAULT_STATE = {
-  clients: [
-    { id: 'cli_1', name: 'Sarah Connor', company: 'Cyberdyne Media', email: 'sarah@cyberdyne.com', phone: '+1 555-0192', projects: 3, status: 'Active' },
-    { id: 'cli_2', name: 'Marcus Wright', company: 'Resistance Films', email: 'marcus@resistance.org', phone: '+1 555-4821', projects: 2, status: 'Active' },
-    { id: 'cli_3', name: 'Elena Rostova', company: 'Vanguard Creative', email: 'elena@vanguard.com', phone: '+1 555-7722', projects: 1, status: 'Active' }
-  ],
-  crew: [
-    { id: 'crw_1', name: 'David Fincher', role: 'Director', email: 'fincher@pragatisystem.com', rate: 1200, status: 'Available' },
-    { id: 'crw_2', name: 'Roger Deakins', role: 'Director of Photography', email: 'deakins@pragatisystem.com', rate: 1500, status: 'Available' },
-    { id: 'crw_3', name: 'Hans Zimmer', role: 'Sound Engineer', email: 'hans@pragatisystem.com', rate: 1100, status: 'On Shoot' },
-    { id: 'crw_4', name: 'Rachel Morrison', role: 'Gaffer / Lighting', email: 'rachel@pragatisystem.com', rate: 850, status: 'Available' }
-  ],
-  projects: [
-    { id: 'prj_1', title: 'Cyberdyne Campaign', client: 'Cyberdyne Media', category: 'Commercial', date: '2026-08-10', crew: ['David Fincher', 'Roger Deakins'], status: 'Active' },
-    { id: 'prj_2', title: 'Resistance Docu-Series', client: 'Resistance Films', category: 'Feature Film', date: '2026-08-14', crew: ['David Fincher', 'Hans Zimmer'], status: 'Active' },
-    { id: 'prj_3', title: 'Vanguard Music Launch', client: 'Vanguard Creative', category: 'Music Video', date: '2026-08-18', crew: ['Rachel Morrison'], status: 'Pending' }
-  ],
-  revenue: 42500,
-  upcomingShoots: 8
+  clients: [],
+  crew: [],
+  projects: [],
+  revenue: 0,
+  upcomingShoots: 0
 };
 
 // Application State
@@ -32,7 +19,7 @@ function loadState() {
   if (saved) {
     try {
       const parsed = JSON.parse(saved);
-      if (parsed && parsed.projects && parsed.projects.length > 0) {
+      if (parsed && typeof parsed === 'object') {
         return parsed;
       }
     } catch (e) { console.error('Failed to parse state', e); }
@@ -186,7 +173,7 @@ function renderCrewTable() {
    DYNAMIC CANVAS CHART RENDERERS (POWERED BY LIVE USER DATA)
    ========================================================================== */
 
-// 1. Dynamic Project Volume Bar Chart (Aggregated from appState.projects)
+// 1. Dynamic Project Volume Bar Chart (Aggregated purely from user projects)
 function renderProjectVolumeChart() {
   const canvas = document.getElementById('project-volume-chart');
   if (!canvas || !canvas.parentElement) return;
@@ -207,7 +194,6 @@ function renderProjectVolumeChart() {
 
   // Compute live monthly shoot volume from user projects
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  const baseTrends = [4, 6, 8, 12, 10, 14, 11, 16, 18, 27, 36, 32];
   const userMonthlyCounts = new Array(12).fill(0);
 
   appState.projects.forEach(p => {
@@ -219,9 +205,8 @@ function renderProjectVolumeChart() {
     }
   });
 
-  // Combine baseline overview + live user additions for dynamic display
-  const data = baseTrends.map((val, idx) => val + (userMonthlyCounts[idx] * 5));
-  const maxVal = Math.max(36, ...data);
+  const data = userMonthlyCounts;
+  const maxVal = Math.max(8, ...data);
 
   // Y-axis gridlines & labels
   const yStep = Math.ceil(maxVal / 4);
@@ -256,32 +241,34 @@ function renderProjectVolumeChart() {
 
   data.forEach((val, i) => {
     const x = paddingLeft + i * (barWidth + gap);
-    const barH = (val / (yStep * 4)) * chartHeight;
+    const barH = val > 0 ? (val / (yStep * 4)) * chartHeight : 4; // minimum 4px height for empty months
     const y = chartBottom - barH;
 
     // Gradient matching PRA-गति Cyan-Lime palette
     const barGradient = ctx.createLinearGradient(x, y + barH, x, y);
-    if (i >= 8 || userMonthlyCounts[i] > 0) {
+    if (val > 0) {
       barGradient.addColorStop(0, '#0284c7');
       barGradient.addColorStop(1, '#65a30d');
     } else {
-      barGradient.addColorStop(0, 'rgba(2, 132, 199, 0.45)');
-      barGradient.addColorStop(1, 'rgba(101, 163, 13, 0.55)');
+      barGradient.addColorStop(0, 'rgba(226, 232, 240, 0.6)');
+      barGradient.addColorStop(1, 'rgba(203, 213, 225, 0.6)');
     }
 
     ctx.save();
-    ctx.shadowColor = i >= 8 ? 'rgba(101, 163, 13, 0.25)' : 'rgba(2, 132, 199, 0.15)';
-    ctx.shadowBlur = 8;
-    ctx.shadowOffsetY = 2;
+    if (val > 0) {
+      ctx.shadowColor = 'rgba(101, 163, 13, 0.25)';
+      ctx.shadowBlur = 6;
+      ctx.shadowOffsetY = 2;
+    }
 
     ctx.fillStyle = barGradient;
     ctx.beginPath();
-    ctx.roundRect(x, y, barWidth, barH, [6, 6, 0, 0]);
+    ctx.roundRect(x, y, barWidth, barH, [4, 4, 0, 0]);
     ctx.fill();
     ctx.restore();
 
-    // Value Pill Badge above bars
-    if (val >= 20 || userMonthlyCounts[i] > 0) {
+    // Value Badge above bars
+    if (val > 0) {
       ctx.fillStyle = '#0f2744';
       ctx.font = '700 10px Plus Jakarta Sans';
       ctx.textAlign = 'center';
@@ -289,8 +276,8 @@ function renderProjectVolumeChart() {
     }
 
     // Month Label
-    ctx.fillStyle = (i >= 8 || userMonthlyCounts[i] > 0) ? '#0f2744' : '#64748b';
-    ctx.font = (i >= 8 || userMonthlyCounts[i] > 0) ? '700 11px Plus Jakarta Sans' : '500 11px Plus Jakarta Sans';
+    ctx.fillStyle = val > 0 ? '#0f2744' : '#94a3b8';
+    ctx.font = val > 0 ? '700 11px Plus Jakarta Sans' : '500 11px Plus Jakarta Sans';
     ctx.textAlign = 'center';
     ctx.fillText(months[i], x + barWidth / 2, chartBottom + 18);
   });
@@ -335,10 +322,10 @@ function renderProjectDistributionChart() {
   const totalUserProjects = appState.projects.length;
 
   const segments = [
-    { label: 'Commercial', value: categoryCounts['Commercial'] || 1, color: '#0284c7' },
-    { label: 'Feature Film', value: categoryCounts['Feature Film'] || 1, color: '#65a30d' },
-    { label: 'Music Video', value: categoryCounts['Music Video'] || 1, color: '#0f2744' },
-    { label: 'Corporate', value: categoryCounts['Corporate'] || 1, color: '#14b8a6' }
+    { label: 'Commercial', value: categoryCounts['Commercial'], color: '#0284c7' },
+    { label: 'Feature Film', value: categoryCounts['Feature Film'], color: '#65a30d' },
+    { label: 'Music Video', value: categoryCounts['Music Video'], color: '#0f2744' },
+    { label: 'Corporate', value: categoryCounts['Corporate'], color: '#14b8a6' }
   ];
 
   const centerX = width / 2;
@@ -347,27 +334,37 @@ function renderProjectDistributionChart() {
   const innerRadius = outerRadius * 0.65;
 
   const totalSegmentVal = segments.reduce((sum, s) => sum + s.value, 0);
-  let startAngle = -Math.PI / 2;
 
-  segments.forEach(seg => {
-    const sliceAngle = (seg.value / totalSegmentVal) * (Math.PI * 2);
-    const endAngle = startAngle + sliceAngle;
-
-    ctx.save();
-    ctx.shadowColor = seg.color;
-    ctx.shadowBlur = 6;
-
+  if (totalSegmentVal === 0) {
+    // Draw empty ring
     ctx.beginPath();
-    ctx.arc(centerX, centerY, outerRadius, startAngle, endAngle);
-    ctx.arc(centerX, centerY, innerRadius, endAngle, startAngle, true);
-    ctx.closePath();
-
-    ctx.fillStyle = seg.color;
+    ctx.arc(centerX, centerY, outerRadius, 0, Math.PI * 2);
+    ctx.arc(centerX, centerY, innerRadius, Math.PI * 2, 0, true);
+    ctx.fillStyle = '#e2e8f0';
     ctx.fill();
-    ctx.restore();
+  } else {
+    let startAngle = -Math.PI / 2;
+    segments.forEach(seg => {
+      if (seg.value === 0) return;
+      const sliceAngle = (seg.value / totalSegmentVal) * (Math.PI * 2);
+      const endAngle = startAngle + sliceAngle;
 
-    startAngle = endAngle;
-  });
+      ctx.save();
+      ctx.shadowColor = seg.color;
+      ctx.shadowBlur = 6;
+
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, outerRadius, startAngle, endAngle);
+      ctx.arc(centerX, centerY, innerRadius, endAngle, startAngle, true);
+      ctx.closePath();
+
+      ctx.fillStyle = seg.color;
+      ctx.fill();
+      ctx.restore();
+
+      startAngle = endAngle;
+    });
+  }
 
   // Center Donut Typography (Displays Live Total User Projects Count)
   ctx.textAlign = 'center';
@@ -387,12 +384,12 @@ function renderProjectDistributionChart() {
   segments.forEach((seg, i) => {
     const lx = i * itemWidth + itemWidth / 2 - 20;
 
-    ctx.fillStyle = seg.color;
+    ctx.fillStyle = seg.value > 0 ? seg.color : '#cbd5e1';
     ctx.beginPath();
     ctx.arc(lx, legendY - 4, 4, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = '#0f2744';
+    ctx.fillStyle = seg.value > 0 ? '#0f2744' : '#94a3b8';
     ctx.textAlign = 'left';
     ctx.fillText(seg.label, lx + 8, legendY);
   });
