@@ -164,7 +164,7 @@
               <div class="stat-value" id="stat-total-clients">0</div>
               <div class="stat-change">
                 <iconify-icon icon="tabler:arrow-up-right"></iconify-icon>
-                <span>0 new registered</span>
+                <span id="stat-sub-clients">0 new registered</span>
               </div>
             </div>
 
@@ -177,7 +177,7 @@
               <div class="stat-value" id="stat-active-projects">0</div>
               <div class="stat-change">
                 <iconify-icon icon="tabler:arrow-up-right"></iconify-icon>
-                <span>0 active projects</span>
+                <span id="stat-sub-active-projects">0 active projects</span>
               </div>
             </div>
 
@@ -190,7 +190,7 @@
               <div class="stat-value" id="stat-upcoming-shoots">0</div>
               <div class="stat-change">
                 <iconify-icon icon="tabler:arrow-up-right"></iconify-icon>
-                <span>0 scheduled</span>
+                <span id="stat-sub-scheduled">0 scheduled</span>
               </div>
             </div>
 
@@ -203,7 +203,7 @@
               <div class="stat-value" id="stat-revenue">$0</div>
               <div class="stat-change">
                 <iconify-icon icon="tabler:arrow-up-right"></iconify-icon>
-                <span>+$0 estimated</span>
+                <span id="stat-sub-revenue">+$0 estimated</span>
               </div>
             </div>
 
@@ -538,6 +538,10 @@
             <option value="Music Video">Music Video</option>
             <option value="Corporate">Corporate</option>
           </select>
+        </div>
+        <div class="form-group">
+          <label>Estimated Budget / Revenue</label>
+          <input type="number" id="input-project-revenue" placeholder="e.g. 5000">
         </div>
         <div class="form-group-dates">
           <div>

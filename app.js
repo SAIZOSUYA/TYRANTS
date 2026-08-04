@@ -212,16 +212,37 @@ function updateStats() {
   const activeProjectsEl = document.getElementById('stat-active-projects');
   const upcomingShootsEl = document.getElementById('stat-upcoming-shoots');
   const revenueEl = document.getElementById('stat-revenue');
+  
+  const subClientsEl = document.getElementById('stat-sub-clients');
+  const subActiveEl = document.getElementById('stat-sub-active-projects');
+  const subUpcomingEl = document.getElementById('stat-sub-scheduled');
+  const subRevenueEl = document.getElementById('stat-sub-revenue');
+
   const symbol = getCurrencySymbol();
+  
+  const activeCount = appState.projects.filter(p => p.status === 'Active').length;
 
   if (totalClientsEl) totalClientsEl.textContent = appState.clients.length;
-  if (activeProjectsEl) activeProjectsEl.textContent = appState.projects.filter(p => p.status === 'Active').length;
+  if (subClientsEl) subClientsEl.textContent = appState.clients.length + ' new registered';
+
+  if (activeProjectsEl) activeProjectsEl.textContent = activeCount;
+  if (subActiveEl) subActiveEl.textContent = activeCount + ' active projects';
+
   if (upcomingShootsEl) upcomingShootsEl.textContent = appState.projects.length;
+  if (subUpcomingEl) subUpcomingEl.textContent = appState.projects.length + ' scheduled';
+
   if (revenueEl) {
+    // Calculate total revenue from all projects
+    const totalRev = appState.projects.reduce((sum, p) => sum + (Number(p.revenue) || 0), 0);
+    appState.revenue = totalRev; // keep state in sync
+    
     const rev = appState.revenue || 0;
-    revenueEl.textContent = rev > 0 
-      ? symbol + (rev >= 1000 ? (rev / 1000).toFixed(1) + 'k' : rev.toLocaleString()) 
-      : symbol + '0';
+    const revFormatted = rev > 0 ? (rev >= 1000 ? (rev / 1000).toFixed(1) + 'k' : rev.toLocaleString()) : '0';
+    revenueEl.textContent = symbol + revFormatted;
+    
+    if (subRevenueEl) {
+      subRevenueEl.textContent = '+' + symbol + revFormatted + ' estimated';
+    }
   }
 }
 
@@ -794,6 +815,7 @@ function handleAddProject(e) {
   const title = document.getElementById('input-project-title').value;
   const client = document.getElementById('input-project-client').value;
   const category = document.getElementById('input-project-category').value;
+  const revenue = document.getElementById('input-project-revenue').value;
   const startDate = document.getElementById('input-project-start-date').value || new Date().toISOString().split('T')[0];
   const date = document.getElementById('input-project-date').value || startDate;
   const endDate = document.getElementById('input-project-end-date').value || date;
@@ -805,6 +827,7 @@ function handleAddProject(e) {
     title,
     client,
     category,
+    revenue: Number(revenue) || 0,
     startDate,
     date,
     endDate,
@@ -1566,7 +1589,7 @@ function updateRolePermissions() {
   }
 }
 
-const GOOGLE_CLIENT_ID = "842949964836-v9650tbm470mbpt17kj8fkkneju956kg.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = "208804575488-orsff45u4v59fh6cathmjnbc6kkjat4t.apps.googleusercontent.com";
 
 function initGoogleSignInButton() {
   const container = document.getElementById('google-button-container');
