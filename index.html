@@ -321,7 +321,7 @@
                   <th>Primary Role</th>
                   <th>Contact Email</th>
                   <th>Phone / WhatsApp</th>
-                  <th>Day Rate ($)</th>
+                  <th id="crew-header-rate">Day Rate</th>
                   <th>Availability</th>
                   <th>Actions</th>
                 </tr>
@@ -348,11 +348,16 @@
                 <input type="text" id="setting-studio-name" value="Pragati Studio Command Center">
               </div>
               <div class="form-group">
-                <label>Default Currency</label>
-                <select id="setting-currency">
-                  <option value="USD">USD ($)</option>
-                  <option value="EUR">EUR (€)</option>
-                  <option value="GBP">GBP (£)</option>
+                <label>Default Currency (Regional)</label>
+                <select id="setting-currency" onchange="handleCurrencySelectChange(event)">
+                  <option value="INR">INR (₹) - Indian Rupee</option>
+                  <option value="NPR">NPR (रु) - Nepalese Rupee</option>
+                  <option value="USD">USD ($) - US Dollar</option>
+                  <option value="EUR">EUR (€) - Euro</option>
+                  <option value="GBP">GBP (£) - British Pound</option>
+                  <option value="AUD">AUD (A$) - Australian Dollar</option>
+                  <option value="CAD">CAD (C$) - Canadian Dollar</option>
+                  <option value="AED">AED (د.إ) - UAE Dirham</option>
                 </select>
               </div>
               <div class="form-group">

@@ -2,13 +2,31 @@
    PRAGATI STUDIO COMMAND CENTER - JAVASCRIPT LOGIC & STATE
    ========================================================================== */
 
+// Regional Currencies Map
+const CURRENCIES = {
+  INR: { code: 'INR', symbol: '₹', name: 'Indian Rupee' },
+  NPR: { code: 'NPR', symbol: 'रु ', name: 'Nepalese Rupee' },
+  USD: { code: 'USD', symbol: '$', name: 'US Dollar' },
+  EUR: { code: 'EUR', symbol: '€', name: 'Euro' },
+  GBP: { code: 'GBP', symbol: '£', name: 'British Pound' },
+  AUD: { code: 'AUD', symbol: 'A$', name: 'Australian Dollar' },
+  CAD: { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar' },
+  AED: { code: 'AED', symbol: 'د.إ ', name: 'UAE Dirham' }
+};
+
+function getCurrencySymbol() {
+  const code = appState.currency || 'INR';
+  return (CURRENCIES[code] && CURRENCIES[code].symbol) ? CURRENCIES[code].symbol : '₹';
+}
+
 // Initial Clean State
 const DEFAULT_STATE = {
   clients: [],
   crew: [],
   projects: [],
   revenue: 0,
-  upcomingShoots: 0
+  upcomingShoots: 0,
+  currency: 'INR'
 };
 
 // Application State
@@ -20,6 +38,7 @@ function loadState() {
     try {
       const parsed = JSON.parse(saved);
       if (parsed && typeof parsed === 'object') {
+        if (!parsed.currency) parsed.currency = 'INR';
         return parsed;
       }
     } catch (e) { console.error('Failed to parse state', e); }
@@ -38,6 +57,10 @@ function saveState() {
 
 // Initialize App on DOM Load
 document.addEventListener('DOMContentLoaded', () => {
+  const settingCurrency = document.getElementById('setting-currency');
+  if (settingCurrency && appState.currency) {
+    settingCurrency.value = appState.currency;
+  }
   updateStats();
   renderDashboardProjects();
   renderClientsTable();
@@ -78,13 +101,16 @@ function updateStats() {
   const activeProjectsEl = document.getElementById('stat-active-projects');
   const upcomingShootsEl = document.getElementById('stat-upcoming-shoots');
   const revenueEl = document.getElementById('stat-revenue');
+  const symbol = getCurrencySymbol();
 
   if (totalClientsEl) totalClientsEl.textContent = appState.clients.length;
   if (activeProjectsEl) activeProjectsEl.textContent = appState.projects.filter(p => p.status === 'Active').length;
   if (upcomingShootsEl) upcomingShootsEl.textContent = appState.projects.length;
   if (revenueEl) {
     const rev = appState.revenue || 0;
-    revenueEl.textContent = rev > 0 ? '$' + (rev >= 1000 ? (rev / 1000).toFixed(1) + 'k' : rev) : '$0';
+    revenueEl.textContent = rev > 0 
+      ? symbol + (rev >= 1000 ? (rev / 1000).toFixed(1) + 'k' : rev.toLocaleString()) 
+      : symbol + '0';
   }
 }
 
@@ -157,6 +183,10 @@ function renderClientsTable() {
 // Render Crew & Talent Table
 function renderCrewTable() {
   const tbody = document.getElementById('table-crew');
+  const rateHeader = document.getElementById('crew-header-rate');
+  const symbol = getCurrencySymbol();
+  if (rateHeader) rateHeader.textContent = `Day Rate (${symbol.trim()})`;
+
   if (!tbody) return;
 
   if (appState.crew.length === 0) {
@@ -170,7 +200,7 @@ function renderCrewTable() {
       <td><span class="status-tag" style="background: var(--brand-lime-light); color: var(--brand-lime);">${escapeHtml(c.role)}</span></td>
       <td>${escapeHtml(c.email)}</td>
       <td>${escapeHtml(c.phone || 'N/A')}</td>
-      <td><strong>$${c.rate}</strong>/day</td>
+      <td><strong>${symbol}${c.rate ? c.rate.toLocaleString() : '0'}</strong>/day</td>
       <td><span class="status-tag ${c.status === 'Available' ? 'active' : 'pending'}">${c.status || 'Available'}</span></td>
       <td>
         <button class="icon-btn" style="width:30px; height:30px; font-size:14px; margin-right:4px;" onclick="openEditCrewModal('${c.id}')" title="Edit Crew Member">
@@ -848,8 +878,23 @@ function handleGlobalSearch(e) {
   }
 }
 
+// Currency Select Change Handler
+function handleCurrencySelectChange(e) {
+  appState.currency = e.target.value;
+  saveState();
+}
+
 // Save Settings
 function saveSettings() {
+  const studioName = document.getElementById('setting-studio-name');
+  const currencySelect = document.getElementById('setting-currency');
+  const emailInput = document.getElementById('setting-email');
+
+  if (studioName) appState.studioName = studioName.value;
+  if (currencySelect) appState.currency = currencySelect.value;
+  if (emailInput) appState.email = emailInput.value;
+
+  saveState();
   alert('Studio settings updated successfully!');
 }
 
