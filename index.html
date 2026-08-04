@@ -99,18 +99,18 @@
         <div id="admin-security-notice" class="admin-login-notice" style="display: none;">
           <div class="admin-notice-header">
             <iconify-icon icon="tabler:shield-lock" style="font-size: 20px; color: var(--brand-navy);"></iconify-icon>
-            <span>System Admin Authentication Portal</span>
+            <span>Company Admin Authentication Portal</span>
           </div>
           <div class="admin-notice-text" style="margin-bottom: 14px;">
-            Enter your System Admin User ID and Password to unlock master system control.
+            Enter your Company Admin User ID and Password to unlock master system control.
           </div>
           <div style="margin-bottom: 10px;">
             <label style="display: block; font-size: 11px; font-weight: 700; color: var(--brand-navy); margin-bottom: 4px; text-transform: uppercase;">Admin User ID</label>
-            <input type="text" id="input-admin-userid" placeholder="Enter Admin User ID" value="admin" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 13px; outline: none; background: white;">
+            <input type="text" id="input-admin-userid" placeholder="Enter Admin User ID" value="" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 13px; outline: none; background: white;">
           </div>
           <div style="margin-bottom: 12px;">
             <label style="display: block; font-size: 11px; font-weight: 700; color: var(--brand-navy); margin-bottom: 4px; text-transform: uppercase;">Admin Password</label>
-            <input type="password" id="input-admin-passkey" placeholder="Enter Admin Password" value="admin123" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 13px; outline: none; background: white;">
+            <input type="password" id="input-admin-passkey" placeholder="Enter Admin Password" value="" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 13px; outline: none; background: white;">
           </div>
         </div>
 
@@ -133,7 +133,7 @@
 
         <button class="btn-admin-link" onclick="handleAdminLinkLogin()">
           <iconify-icon icon="tabler:key"></iconify-icon>
-          <span id="admin-btn-label">Log In via Unique Admin Token Link</span>
+          <span id="admin-btn-label">Log In as Company Admin</span>
         </button>
 
       </div>

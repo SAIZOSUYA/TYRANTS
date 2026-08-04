@@ -231,11 +231,11 @@ function selectHrRole(roleName, isAdmin = false) {
 
   if (isAdmin || roleName === 'Company Admin') {
     selectUserType('admin');
-    if (adminLabel) adminLabel.innerText = `Log In as Company Admin via Security Link`;
+    if (adminLabel) adminLabel.innerText = `Log In as Company Admin`;
   } else {
     selectUserType('company');
     if (googleLabel) googleLabel.innerText = `Sign in with Google as ${roleName}`;
-    if (adminLabel) adminLabel.innerText = `Log In via Unique Admin Token Link`;
+    if (adminLabel) adminLabel.innerText = `Log In as Company Admin`;
   }
 
   renderHrRoles();
