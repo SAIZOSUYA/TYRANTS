@@ -48,6 +48,9 @@ function loadState() {
   return JSON.parse(JSON.stringify(DEFAULT_STATE));
 }
 
+const SHARED_CLOUD_URL = 'https://jsonblob.com/api/jsonBlob/019fce71-82ae-7d17-9a67-35cc57c18ebc';
+window._isSyncingFromCloud = false;
+
 function saveState() {
   localStorage.setItem('pragati_studio_state', JSON.stringify(appState));
   updateStats();
@@ -57,6 +60,84 @@ function saveState() {
   renderProgressTracker();
   renderCharts();
   checkAuthState();
+
+  // Real-time cloud sync push to share data across all devices/users
+  pushToSharedCloud();
+}
+
+function pushToSharedCloud() {
+  if (window._isSyncingFromCloud) return;
+  const payload = {
+    clients: appState.clients || [],
+    crew: appState.crew || [],
+    projects: appState.projects || [],
+    revenue: appState.revenue || 0,
+    studioName: appState.studioName || 'Pragati Studio Command Center',
+    currency: appState.currency || 'INR',
+    notifications: appState.notifications || [],
+    lastUpdated: Date.now()
+  };
+
+  fetch(SHARED_CLOUD_URL, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify(payload)
+  }).catch(e => console.warn('Cloud sync push error', e));
+}
+
+function fetchSharedCloudState() {
+  fetch(SHARED_CLOUD_URL)
+    .then(res => {
+      if (!res.ok) return null;
+      return res.json();
+    })
+    .then(cloudData => {
+      if (!cloudData || typeof cloudData !== 'object') return;
+      if (!cloudData.projects || !cloudData.clients || !cloudData.crew) return;
+
+      const cloudStr = JSON.stringify({
+        c: cloudData.clients,
+        r: cloudData.crew,
+        p: cloudData.projects,
+        n: cloudData.notifications
+      });
+
+      const localStr = JSON.stringify({
+        c: appState.clients,
+        r: appState.crew,
+        p: appState.projects,
+        n: appState.notifications
+      });
+
+      if (cloudStr !== localStr) {
+        window._isSyncingFromCloud = true;
+
+        const currentUser = appState.user;
+
+        appState.clients = cloudData.clients;
+        appState.crew = cloudData.crew;
+        appState.projects = cloudData.projects;
+        if (cloudData.revenue !== undefined) appState.revenue = cloudData.revenue;
+        if (cloudData.notifications) appState.notifications = cloudData.notifications;
+        if (cloudData.currency) appState.currency = cloudData.currency;
+        if (cloudData.studioName) appState.studioName = cloudData.studioName;
+
+        // Maintain active user session
+        appState.user = currentUser;
+
+        localStorage.setItem('pragati_studio_state', JSON.stringify(appState));
+        updateStats();
+        renderDashboardProjects();
+        renderClientsTable();
+        renderCrewTable();
+        renderProgressTracker();
+        renderNotifications();
+        renderCharts();
+
+        window._isSyncingFromCloud = false;
+      }
+    })
+    .catch(e => console.warn('Cloud sync fetch error', e));
 }
 
 // Initialize App on DOM Load
@@ -76,6 +157,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Render Canvas Charts with resize listener
   renderCharts();
   window.addEventListener('resize', renderCharts);
+
+  // Real-time Cloud Sync Polling across all devices every 3.5 seconds
+  fetchSharedCloudState();
+  setInterval(fetchSharedCloudState, 3500);
 });
 
 function renderCharts() {
