@@ -128,18 +128,23 @@ a {
 .sidebar-header {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  padding-bottom: 20px;
+  justify-content: center;
+  padding: 12px 8px 24px 8px;
   border-bottom: 1px solid var(--border-color);
   margin-bottom: 24px;
 }
 
 .sidebar-logo {
-  height: 48px;
+  height: 68px;
   width: auto;
   max-width: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 2px 8px rgba(15, 39, 68, 0.12));
+  filter: drop-shadow(0 3px 10px rgba(15, 39, 68, 0.15));
+  transition: var(--transition-fast);
+}
+
+.sidebar-logo:hover {
+  transform: scale(1.03);
 }
 
 .nav-menu {
