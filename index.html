@@ -85,7 +85,8 @@
       <header class="top-header">
         <div class="header-search">
           <iconify-icon icon="tabler:search"></iconify-icon>
-          <input type="text" id="global-search-input" placeholder="Search projects, clients..." onkeyup="handleGlobalSearch(event)">
+          <input type="text" id="global-search-input" placeholder="Search projects, clients, crew..." onkeyup="handleGlobalSearch(event)" onfocus="handleGlobalSearch(event)">
+          <div id="search-results-dropdown" class="search-dropdown"></div>
         </div>
 
         <div class="header-right">

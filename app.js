@@ -119,13 +119,14 @@ function updateStats() {
 }
 
 // Render Dashboard & Projects Directory Tables
-function renderDashboardProjects() {
+function renderDashboardProjects(customList) {
   const tbodyDashboard = document.getElementById('table-dashboard-projects');
   const tbodyAll = document.getElementById('table-all-projects');
+  const list = customList !== undefined ? customList : appState.projects;
 
-  const htmlContent = appState.projects.length === 0
-    ? `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 24px;">No production shoots scheduled. Click "Add Project" to get started.</td></tr>`
-    : appState.projects.map(p => {
+  const htmlContent = list.length === 0
+    ? `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 24px;">No production shoots found.</td></tr>`
+    : list.map(p => {
         const crewPills = (p.crew && p.crew.length > 0)
           ? p.crew.map(cr => `<span class="crew-tag-pill">${escapeHtml(cr)}</span>`).join('')
           : `<span style="font-size: 12px; color: var(--text-muted);">Unassigned</span>`;
@@ -155,16 +156,17 @@ function renderDashboardProjects() {
 }
 
 // Render Clients Directory Table
-function renderClientsTable() {
+function renderClientsTable(customList) {
   const tbody = document.getElementById('table-clients');
   if (!tbody) return;
+  const list = customList !== undefined ? customList : appState.clients;
 
-  if (appState.clients.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 24px;">No clients added yet. Click "Add Client" to register your first client.</td></tr>`;
+  if (list.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 24px;">No matching clients found.</td></tr>`;
     return;
   }
 
-  tbody.innerHTML = appState.clients.map(c => `
+  tbody.innerHTML = list.map(c => `
     <tr>
       <td><strong>${escapeHtml(c.name)}</strong></td>
       <td>${escapeHtml(c.company)}</td>
@@ -185,20 +187,21 @@ function renderClientsTable() {
 }
 
 // Render Crew & Talent Table
-function renderCrewTable() {
+function renderCrewTable(customList) {
   const tbody = document.getElementById('table-crew');
   const rateHeader = document.getElementById('crew-header-rate');
   const symbol = getCurrencySymbol();
   if (rateHeader) rateHeader.textContent = `Day Rate (${symbol.trim()})`;
 
   if (!tbody) return;
+  const list = customList !== undefined ? customList : appState.crew;
 
-  if (appState.crew.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 24px;">No crew members in roster. Click "Add Crew Member" to expand your crew.</td></tr>`;
+  if (list.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 24px;">No matching crew members found.</td></tr>`;
     return;
   }
 
-  tbody.innerHTML = appState.crew.map(c => `
+  tbody.innerHTML = list.map(c => `
     <tr>
       <td><strong>${escapeHtml(c.name)}</strong></td>
       <td><span class="status-tag" style="background: var(--brand-lime-light); color: var(--brand-lime);">${escapeHtml(c.role)}</span></td>
@@ -670,16 +673,17 @@ function handleSaveEditProject(e) {
    PROJECT PROGRESS TRACKER HANDLERS
    ========================================================================== */
 
-function renderProgressTracker() {
+function renderProgressTracker(customList) {
   const container = document.getElementById('progress-cards-container');
   if (!container) return;
+  const list = customList !== undefined ? customList : appState.projects;
 
-  if (appState.projects.length === 0) {
-    container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 36px; background: white; border: 1px solid var(--border-color); border-radius: var(--radius-lg);">No production projects active. Click "Add Project" to begin tracking progress.</div>`;
+  if (list.length === 0) {
+    container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 36px; background: white; border: 1px solid var(--border-color); border-radius: var(--radius-lg);">No matching production projects found.</div>`;
     return;
   }
 
-  container.innerHTML = appState.projects.map(p => {
+  container.innerHTML = list.map(p => {
     const percent = p.progress !== undefined ? p.progress : 25;
     const stage = p.stage || 'Pre-Production';
     const crewPills = (p.crew && p.crew.length > 0)
@@ -955,16 +959,118 @@ function deleteProject(id) {
   saveState();
 }
 
-// Global Search
+// Global Live Search Handler
 function handleGlobalSearch(e) {
-  const query = e.target.value.toLowerCase();
+  const input = document.getElementById('global-search-input');
+  const query = (input ? input.value : (e.target ? e.target.value : '')).toLowerCase().trim();
+  const dropdown = document.getElementById('search-results-dropdown');
+
   if (!query) {
+    if (dropdown) {
+      dropdown.classList.remove('active');
+      dropdown.innerHTML = '';
+    }
     renderDashboardProjects();
     renderClientsTable();
     renderCrewTable();
+    renderProgressTracker();
     return;
   }
+
+  // Filter state objects
+  const filteredProjects = appState.projects.filter(p => 
+    (p.title && p.title.toLowerCase().includes(query)) ||
+    (p.client && p.client.toLowerCase().includes(query)) ||
+    (p.category && p.category.toLowerCase().includes(query)) ||
+    (p.crew && p.crew.some(cr => cr.toLowerCase().includes(query)))
+  );
+
+  const filteredClients = appState.clients.filter(c => 
+    (c.name && c.name.toLowerCase().includes(query)) ||
+    (c.company && c.company.toLowerCase().includes(query)) ||
+    (c.email && c.email.toLowerCase().includes(query)) ||
+    (c.phone && c.phone.toLowerCase().includes(query))
+  );
+
+  const filteredCrew = appState.crew.filter(cr => 
+    (cr.name && cr.name.toLowerCase().includes(query)) ||
+    (cr.role && cr.role.toLowerCase().includes(query)) ||
+    (cr.email && cr.email.toLowerCase().includes(query)) ||
+    (cr.phone && cr.phone.toLowerCase().includes(query))
+  );
+
+  // Re-render views live
+  renderDashboardProjects(filteredProjects);
+  renderClientsTable(filteredClients);
+  renderCrewTable(filteredCrew);
+  renderProgressTracker(filteredProjects);
+
+  // Render Search Dropdown Overlay
+  if (dropdown) {
+    let html = '';
+
+    if (filteredProjects.length > 0) {
+      html += `<div class="search-group-header">Projects (${filteredProjects.length})</div>`;
+      html += filteredProjects.map(p => `
+        <div class="search-result-item" onclick="selectSearchResult('view-projects')">
+          <div>
+            <div class="search-result-title">${escapeHtml(p.title)}</div>
+            <div class="search-result-sub">${escapeHtml(p.client)} &bull; ${escapeHtml(p.category)}</div>
+          </div>
+          <span class="status-tag" style="background: var(--brand-cyan-light); color: var(--brand-cyan); font-size: 10px;">${escapeHtml(p.status)}</span>
+        </div>
+      `).join('');
+    }
+
+    if (filteredClients.length > 0) {
+      html += `<div class="search-group-header">Clients (${filteredClients.length})</div>`;
+      html += filteredClients.map(c => `
+        <div class="search-result-item" onclick="selectSearchResult('view-clients')">
+          <div>
+            <div class="search-result-title">${escapeHtml(c.name)}</div>
+            <div class="search-result-sub">${escapeHtml(c.company)} &bull; ${escapeHtml(c.email)}</div>
+          </div>
+          <span class="status-tag active" style="font-size: 10px;">Client</span>
+        </div>
+      `).join('');
+    }
+
+    if (filteredCrew.length > 0) {
+      html += `<div class="search-group-header">Crew & Talent (${filteredCrew.length})</div>`;
+      html += filteredCrew.map(cr => `
+        <div class="search-result-item" onclick="selectSearchResult('view-crew')">
+          <div>
+            <div class="search-result-title">${escapeHtml(cr.name)}</div>
+            <div class="search-result-sub">${escapeHtml(cr.role)} &bull; ${escapeHtml(cr.phone || cr.email)}</div>
+          </div>
+          <span class="status-tag" style="background: var(--brand-lime-light); color: var(--brand-lime); font-size: 10px;">Crew</span>
+        </div>
+      `).join('');
+    }
+
+    if (!html) {
+      html = `<div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 13px;">No results found matching "${escapeHtml(query)}"</div>`;
+    }
+
+    dropdown.innerHTML = html;
+    dropdown.classList.add('active');
+  }
 }
+
+function selectSearchResult(viewId) {
+  const dropdown = document.getElementById('search-results-dropdown');
+  if (dropdown) dropdown.classList.remove('active');
+  switchTab(viewId);
+}
+
+// Close search dropdown on click outside
+document.addEventListener('click', (e) => {
+  const searchBox = document.querySelector('.header-search');
+  const dropdown = document.getElementById('search-results-dropdown');
+  if (searchBox && !searchBox.contains(e.target) && dropdown) {
+    dropdown.classList.remove('active');
+  }
+});
 
 // Currency Select Change Handler
 function handleCurrencySelectChange(e) {
