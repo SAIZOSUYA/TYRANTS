@@ -721,9 +721,9 @@ function showToast(message) {
 
   container.appendChild(toast);
 
-  // Disappear after half a second (500ms) with slide-out transition
+  // Disappear after 0.25 seconds (250ms) with quick slide-out transition
   setTimeout(() => {
     toast.classList.add('hiding');
-    setTimeout(() => toast.remove(), 250);
-  }, 500);
+    setTimeout(() => toast.remove(), 150);
+  }, 250);
 }
