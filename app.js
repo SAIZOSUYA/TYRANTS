@@ -122,8 +122,17 @@ function fetchSharedCloudState() {
         if (cloudData.currency) appState.currency = cloudData.currency;
         if (cloudData.studioName) appState.studioName = cloudData.studioName;
 
-        // Maintain active user session
-        appState.user = currentUser;
+        // Maintain active user session unless deleted by Admin
+        if (currentUser && (currentUser.role === 'Crew Member' || currentUser.role === 'Crew')) {
+          const matchingCrew = appState.crew.find(c => (c.email || '').toLowerCase() === (currentUser.email || '').toLowerCase());
+          if (!matchingCrew || matchingCrew.approvalStatus !== 'Approved') {
+            appState.user = null;
+          } else {
+            appState.user = currentUser;
+          }
+        } else {
+          appState.user = currentUser;
+        }
 
         localStorage.setItem('pragati_studio_state', JSON.stringify(appState));
         updateStats();
@@ -133,6 +142,7 @@ function fetchSharedCloudState() {
         renderProgressTracker();
         renderNotifications();
         renderCharts();
+        checkAuthState();
 
         window._isSyncingFromCloud = false;
       }
@@ -1317,6 +1327,10 @@ function deleteClient(id) {
 
 // Delete Crew
 function deleteCrew(id) {
+  const crewMember = appState.crew.find(c => c.id === id);
+  if (crewMember && appState.user && appState.user.email && appState.user.email.toLowerCase() === crewMember.email.toLowerCase()) {
+    appState.user = null; // Immediately revoke session if active user is deleted
+  }
   appState.crew = appState.crew.filter(c => c.id !== id);
   saveState();
 }
@@ -1709,14 +1723,14 @@ function completeGoogleAuth(name, email, picture) {
 
   if (!crewMember) {
     crewMember = {
-      id: 'cr_' + Date.now(),
+      id: 'crw_' + Date.now(),
       name: name || 'Crew Member',
       role: 'Production Crew',
       email: email,
       phone: '',
       rate: 500,
       status: 'Available',
-      approvalStatus: 'Pending' // New crew members require Admin approval
+      approvalStatus: 'Pending' // New/Re-registered crew members require Admin approval
     };
     appState.crew.push(crewMember);
 
@@ -1725,14 +1739,16 @@ function completeGoogleAuth(name, email, picture) {
       title: 'New Crew Registration',
       message: `Crew member ${name} (${email}) requested registration. Pending Admin approval.`
     });
+    saveState();
   }
 
   if (crewMember.approvalStatus === 'Pending') {
-    // Show Pending Approval view
+    // Show Pending Approval view until Admin approves access
     switchAuthTab('pending');
     return;
   }
 
+  // Once Admin approves access, remember approval permanently and log in directly
   appState.user = {
     name: crewMember.name,
     email: crewMember.email,
