@@ -1,6 +1,6 @@
 # 🚀 PRAGATI — Studio Command Center & Production Workflow System
 
-> **Empowering Marketing Agencies and Production Houses with Seamless Workflow Automation, Talent Scheduling, & Real-Time Project Tracking.**
+> **Empowering Marketing Agencies and Production Houses with Seamless Workflow, Talent Scheduling, & Real-Time Project Tracking.**
 
 ---
 
