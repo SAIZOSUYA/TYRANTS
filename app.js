@@ -304,7 +304,7 @@ function renderCrewTable(customList) {
       </div>
       <div style="display: flex; flex-direction: column; gap: 8px;">
         ${pendingCrew.map(cr => `
-          <div style="display: flex; justify-content: space-between; align-items: center; background: white; padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid #fde68a;">
+          <div id="pending-card-${cr.id}" class="pending-approval-card" style="display: flex; justify-content: space-between; align-items: center; background: white; padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid #fde68a; max-height: 80px;">
             <div>
               <strong style="color: var(--brand-navy);">${escapeHtml(cr.name)}</strong> (${escapeHtml(cr.email)})
             </div>
@@ -1606,25 +1606,38 @@ function completeGoogleAuth(name, email, picture) {
 }
 
 function approveCrewMember(id) {
-  const crewMember = appState.crew.find(c => c.id === id);
-  if (!crewMember) return;
+  const card = document.getElementById(`pending-card-${id}`);
+  if (card) {
+    card.classList.add('slide-out-right');
+  }
 
-  crewMember.approvalStatus = 'Approved';
-  crewMember.status = 'Available';
+  setTimeout(() => {
+    const crewMember = appState.crew.find(c => c.id === id);
+    if (!crewMember) return;
 
-  // Notify approved crew member
-  sendAdminNotificationToCrew(crewMember.name, 'Account Approved', `Welcome ${crewMember.name}! Admin has approved your Crew access.`);
+    crewMember.approvalStatus = 'Approved';
+    crewMember.status = 'Available';
 
-  saveState();
-  alert(`Approved crew member ${crewMember.name}!`);
+    // Notify approved crew member
+    sendAdminNotificationToCrew(crewMember.name, 'Account Approved', `Welcome ${crewMember.name}! Admin has approved your Crew access.`);
+
+    saveState();
+  }, 400);
 }
 
 function rejectCrewMember(id) {
-  const idx = appState.crew.findIndex(c => c.id === id);
-  if (idx !== -1) {
-    appState.crew.splice(idx, 1);
-    saveState();
+  const card = document.getElementById(`pending-card-${id}`);
+  if (card) {
+    card.classList.add('slide-out-left');
   }
+
+  setTimeout(() => {
+    const idx = appState.crew.findIndex(c => c.id === id);
+    if (idx !== -1) {
+      appState.crew.splice(idx, 1);
+      saveState();
+    }
+  }, 400);
 }
 
 /* ==========================================================================
