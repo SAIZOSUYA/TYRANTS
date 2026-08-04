@@ -180,9 +180,18 @@
           <li class="nav-item active" id="nav-tab-dashboard">
             <a onclick="switchTab('tab-dashboard')">
               <div class="nav-item-content">
-                <iconify-icon icon="tabler:layout-dashboard"></iconify-icon>
-                <span>Dashboard</span>
+                <iconify-icon icon="tabler:sparkles"></iconify-icon>
+                <span>For You Hub</span>
               </div>
+            </a>
+          </li>
+          <li class="nav-item" id="nav-tab-kanban">
+            <a onclick="switchTab('tab-kanban')">
+              <div class="nav-item-content">
+                <iconify-icon icon="tabler:columns"></iconify-icon>
+                <span>Jira Kanban Board</span>
+              </div>
+              <span class="nav-badge" style="background: var(--brand-teal);">Agile</span>
             </a>
           </li>
           <li class="nav-item" id="nav-tab-workflows">
@@ -307,6 +316,24 @@
              ========================================== -->
         <div id="tab-dashboard" class="dashboard-tab active">
           
+          <!-- Jira Atlassian "For You" Recommended Actions Widget -->
+          <div class="card-section" style="margin-bottom: 24px; background: linear-gradient(135deg, rgba(0, 82, 204, 0.04) 0%, rgba(14, 165, 233, 0.06) 100%); border: 1px solid rgba(0, 82, 204, 0.2);">
+            <div class="section-header">
+              <h2 class="section-title" style="display: flex; align-items: center; gap: 10px;">
+                <iconify-icon icon="tabler:sparkles" style="color: #0052CC; font-size: 24px;"></iconify-icon>
+                Recommended Actions For You
+              </h2>
+              <span class="status-badge" style="background: #0052CC; color: white;">3 ACTIONS REQUIRED</span>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 18px;">
+              Prioritized deliverable reviews, client committee approvals, and legal seals requiring your immediate attention.
+            </p>
+
+            <div id="jira-recommended-actions-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px;">
+              <!-- Dynamically populated in app.js -->
+            </div>
+          </div>
+
           <!-- 4 Metric Cards (Admin Only View) -->
           <div class="metrics-grid" id="admin-dashboard-metrics">
             <div class="metric-card">
@@ -573,7 +600,67 @@
                 </div>
               </div>
 
+        </div>
+
+        <!-- ==========================================
+             TAB: JIRA AGILE KANBAN BOARD
+             ========================================== -->
+        <div id="tab-kanban" class="dashboard-tab">
+          <div class="card-section" style="margin-bottom: 20px;">
+            <div class="section-header">
+              <h2 class="section-title" style="display: flex; align-items: center; gap: 10px;">
+                <iconify-icon icon="tabler:columns" style="color: #0052CC; font-size: 24px;"></iconify-icon>
+                Agile Workflow Kanban Board
+              </h2>
+              <div style="display: flex; gap: 10px; align-items: center;">
+                <span class="status-badge" style="background: #e0f2fe; color: #0369a1;">PROJECT: PWS AGILE SPRINT</span>
+                <button class="btn-primary" onclick="openCreateModal()" style="font-size: 12px; padding: 6px 14px;">+ Create Issue</button>
+              </div>
             </div>
+            <p style="font-size: 13px; color: var(--text-muted);">
+              Track and transition deliverable workflows across 4 agile stages: Backlog, In Progress, Client Review, and Sealed.
+            </p>
+          </div>
+
+          <!-- 4 Kanban Columns Grid -->
+          <div class="jira-kanban-board">
+            
+            <!-- Column 1: To Do / Backlog -->
+            <div class="jira-column" id="col-todo">
+              <div class="jira-col-header">
+                <span class="jira-col-title">TO DO / BACKLOG</span>
+                <span class="jira-col-count" id="count-todo">0</span>
+              </div>
+              <div class="jira-col-cards" id="cards-todo"></div>
+            </div>
+
+            <!-- Column 2: In Progress -->
+            <div class="jira-column" id="col-in_progress">
+              <div class="jira-col-header">
+                <span class="jira-col-title">IN PROGRESS</span>
+                <span class="jira-col-count" id="count-in_progress">0</span>
+              </div>
+              <div class="jira-col-cards" id="cards-in_progress"></div>
+            </div>
+
+            <!-- Column 3: Client Review & Sign-Off -->
+            <div class="jira-column" id="col-client_review">
+              <div class="jira-col-header">
+                <span class="jira-col-title">CLIENT REVIEW</span>
+                <span class="jira-col-count" id="count-client_review">0</span>
+              </div>
+              <div class="jira-col-cards" id="cards-client_review"></div>
+            </div>
+
+            <!-- Column 4: Done & Sealed -->
+            <div class="jira-column" id="col-done">
+              <div class="jira-col-header">
+                <span class="jira-col-title">DONE & SEALED</span>
+                <span class="jira-col-count" id="count-done">0</span>
+              </div>
+              <div class="jira-col-cards" id="cards-done"></div>
+            </div>
+
           </div>
         </div>
 
@@ -1095,10 +1182,53 @@
         </div>
       </form>
     </div>
+  <!-- Modal 7: Jira Issue Detail & Transition Drawer -->
+  <div id="jira-issue-modal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-card" style="max-width: 650px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="issue-key-badge" id="jira-modal-key">PWS-101</span>
+          <h3 id="jira-modal-title">Deliverable Summary</h3>
+        </div>
+        <button class="close-btn" onclick="closeModal('jira-issue-modal')">✕</button>
+      </div>
+
+      <div style="background: #f8fafc; border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-md); margin-bottom: 20px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; font-size: 13px;">
+          <div>
+            <div style="color: var(--text-muted); font-size: 11px; font-weight: 700;">CURRENT STAGE</div>
+            <span class="status-badge" id="jira-modal-status">In Progress</span>
+          </div>
+          <div>
+            <div style="color: var(--text-muted); font-size: 11px; font-weight: 700;">PRIORITY</div>
+            <span style="font-weight: 800; color: #dc2626;" id="jira-modal-priority">HIGH</span>
+          </div>
+          <div>
+            <div style="color: var(--text-muted); font-size: 11px; font-weight: 700;">CLIENT ENTERPRISE</div>
+            <strong id="jira-modal-client" style="color: var(--brand-navy);">Apex Global</strong>
+          </div>
+          <div>
+            <div style="color: var(--text-muted); font-size: 11px; font-weight: 700;">ASSIGNED LEAD</div>
+            <strong id="jira-modal-assignee" style="color: var(--brand-navy);">Sarah Jenkins</strong>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">AGILE STATUS TRANSITIONS</label>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;" id="jira-modal-transitions">
+          <!-- Transition buttons populated in app.js -->
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px; justify-content: flex-end;">
+        <button type="button" class="btn-secondary" onclick="closeModal('jira-issue-modal')">Close</button>
+      </div>
+    </div>
   </div>
 
   <!-- Live Toast Container -->
-  <div id="toast-container" class="toast-container"></div>
+  <div id="toast-container" class="toast-container" role="status" aria-live="polite"></div>
 
   <!-- JS App Script -->
   <script src="app.js"></script>

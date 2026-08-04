@@ -17,9 +17,9 @@ const COMPANY_CONFIG = {
       { id: 'hr-4', name: 'Client Relations Specialist', dept: 'Account Mgmt', access: 'Client Liaison', avatar: 'CR', email: 'client.rel@agency.com' }
     ],
     sampleWorkflows: [
-      { id: 'WF-101', title: 'Q3 Brand Rebrand Campaign', client: 'Apex Global', stage: 'Client Approval', status: 'pending', date: 'Today, 2:30 PM', hr: 'Campaign Director', hash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855' },
-      { id: 'WF-102', title: 'Social Media Banner Sets', client: 'Horizon Tech', stage: 'Legally Approved', status: 'approved', date: 'Yesterday', hr: 'Creative Manager', hash: 'f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2' },
-      { id: 'WF-103', title: 'SEO Content Pitch Deck', client: 'Luminary Inc', stage: 'Internal Review', status: 'review', date: 'Aug 2, 2026', hr: 'Copywriter Lead', hash: '4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a' }
+      { id: 'WF-101', issueKey: 'PWS-101', priority: 'HIGH', column: 'client_review', title: 'Q3 Brand Rebrand Campaign', client: 'Apex Global', stage: 'Client Approval', status: 'pending', date: 'Today, 2:30 PM', hr: 'Campaign Director', hash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855' },
+      { id: 'WF-102', issueKey: 'PWS-102', priority: 'HIGHEST', column: 'done', title: 'Social Media Banner Sets', client: 'Horizon Tech', stage: 'Legally Approved', status: 'approved', date: 'Yesterday', hr: 'Creative Manager', hash: 'f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2' },
+      { id: 'WF-103', issueKey: 'PWS-103', priority: 'MEDIUM', column: 'in_progress', title: 'SEO Content Pitch Deck', client: 'Luminary Inc', stage: 'Internal Review', status: 'review', date: 'Aug 2, 2026', hr: 'Copywriter Lead', hash: '4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a' }
     ],
     certificates: [
       { certId: 'CERT-8841', project: 'Social Media Banner Sets', client: 'Horizon Tech', date: '2026-08-03 16:42 UTC', hash: 'f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2', signee: 'VP of Marketing (Horizon Tech)' }
@@ -519,6 +519,7 @@ function switchTab(tabId) {
 
   // Render tab content
   if (tabId === 'tab-dashboard') renderDashboard();
+  if (tabId === 'tab-kanban') renderKanbanBoard();
   if (tabId === 'tab-workflows') renderWorkflowsTab();
   if (tabId === 'tab-approvals') renderApprovalQueueTab();
   if (tabId === 'tab-hr') renderHrTab();
@@ -540,8 +541,135 @@ function renderDashboard() {
     <span>${company.name} Workflow</span>
   `;
 
+  renderRecommendedActions();
   renderWorkflowTable();
   renderDashboardHrList();
+}
+
+// Jira Atlassian Recommended Actions & Kanban Functions
+function renderRecommendedActions() {
+  const container = document.getElementById('jira-recommended-actions-container');
+  if (!container) return;
+
+  const actions = currentState.workflows.slice(0, 3).map((wf, idx) => {
+    const key = wf.issueKey || `PWS-${101 + idx}`;
+    return `
+      <div class="recommended-action-card">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span class="issue-key-badge">${key}</span>
+            <span class="status-badge ${wf.status}">${wf.stage}</span>
+          </div>
+          <h4 style="font-size: 14px; font-weight: 700; color: var(--brand-navy); margin-bottom: 4px;">${escapeHTML(wf.projectName || wf.title)}</h4>
+          <div style="font-size: 12px; color: var(--text-muted);">Client: ${escapeHTML(wf.client)} • Lead: ${escapeHTML(wf.hr)}</div>
+        </div>
+        <div style="display: flex; gap: 8px; margin-top: 10px;">
+          <button class="btn-primary" style="font-size: 11px; padding: 6px 12px; flex: 1;" onclick="openJiraIssueModal('${key}')">
+            Review Action
+          </button>
+          <button class="btn-secondary" style="font-size: 11px; padding: 6px 10px;" onclick="moveIssueStatus('${wf.id}', 'done')">
+            Quick Approve
+          </button>
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = actions.join('');
+}
+
+function renderKanbanBoard() {
+  const columns = ['todo', 'in_progress', 'client_review', 'done'];
+  columns.forEach(col => {
+    const container = document.getElementById(`cards-${col}`);
+    const countEl = document.getElementById(`count-${col}`);
+    if (!container) return;
+
+    const items = currentState.workflows.filter(w => {
+      if (col === 'todo') return w.column === 'todo' || w.status === 'review';
+      if (col === 'in_progress') return w.column === 'in_progress' || (w.status === 'pending' && w.stage.includes('Internal'));
+      if (col === 'client_review') return w.column === 'client_review' || (w.status === 'pending' && !w.stage.includes('Internal'));
+      if (col === 'done') return w.column === 'done' || w.status === 'approved';
+      return false;
+    });
+
+    if (countEl) countEl.innerText = items.length;
+
+    if (items.length === 0) {
+      container.innerHTML = `<div style="text-align: center; padding: 24px; font-size: 12px; color: var(--text-muted); border: 1px dashed var(--border-color); border-radius: var(--radius-sm);">No issues in this stage</div>`;
+      return;
+    }
+
+    container.innerHTML = items.map(wf => {
+      const key = wf.issueKey || `PWS-${wf.id.replace('WF-', '')}`;
+      return `
+        <div class="jira-card" onclick="openJiraIssueModal('${key}')">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span class="issue-key-badge">${key}</span>
+            <span style="font-size: 10px; font-weight: 800; color: #dc2626; background: #fee2e2; padding: 2px 6px; border-radius: 4px;">HIGH</span>
+          </div>
+          <h4 style="font-size: 13px; font-weight: 700; color: var(--brand-navy); margin-bottom: 6px;">${escapeHTML(wf.projectName || wf.title)}</h4>
+          <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">Client: ${escapeHTML(wf.client)}</div>
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px;">
+            <span style="font-weight: 600; color: var(--brand-teal);">${escapeHTML(wf.hr)}</span>
+            <iconify-icon icon="tabler:arrow-right" style="color: var(--text-muted);"></iconify-icon>
+          </div>
+        </div>
+      `;
+    }).join('');
+  });
+}
+
+function moveIssueStatus(wfIdOrKey, newColumn) {
+  const wf = currentState.workflows.find(w => w.id === wfIdOrKey || w.issueKey === wfIdOrKey);
+  if (!wf) return;
+
+  wf.column = newColumn;
+  if (newColumn === 'todo') {
+    wf.status = 'review';
+    wf.stage = 'Backlog / Draft';
+  } else if (newColumn === 'in_progress') {
+    wf.status = 'pending';
+    wf.stage = 'Internal HR Review';
+  } else if (newColumn === 'client_review') {
+    wf.status = 'pending';
+    wf.stage = 'Client Sign-off Pending';
+  } else if (newColumn === 'done') {
+    wf.status = 'approved';
+    wf.stage = 'Legally Approved & Sealed';
+    approveWorkflow(wf.id);
+    return;
+  }
+
+  renderWorkflowTable();
+  renderKanbanBoard();
+  renderRecommendedActions();
+  if (currentState.activeTab === 'tab-workflows') renderWorkflowsTab();
+  showToast(`⚡ Issue ${wf.issueKey || wf.id} transitioned to ${newColumn.replace('_', ' ').toUpperCase()}`);
+}
+
+function openJiraIssueModal(issueKey) {
+  const wf = currentState.workflows.find(w => w.issueKey === issueKey || w.id === issueKey || `PWS-${w.id.replace('WF-', '')}` === issueKey) || currentState.workflows[0];
+  if (!wf) return;
+
+  const key = wf.issueKey || `PWS-${wf.id.replace('WF-', '')}`;
+  document.getElementById('jira-modal-key').innerText = key;
+  document.getElementById('jira-modal-title').innerText = wf.projectName || wf.title;
+  document.getElementById('jira-modal-status').innerText = wf.stage;
+  document.getElementById('jira-modal-client').innerText = wf.client;
+  document.getElementById('jira-modal-assignee').innerText = wf.hr;
+
+  const container = document.getElementById('jira-modal-transitions');
+  if (container) {
+    container.innerHTML = `
+      <button class="btn-secondary" style="font-size: 12px; padding: 6px 12px;" onclick="moveIssueStatus('${wf.id}', 'todo'); closeModal('jira-issue-modal');">Move to Backlog</button>
+      <button class="btn-secondary" style="font-size: 12px; padding: 6px 12px; color: var(--brand-teal);" onclick="moveIssueStatus('${wf.id}', 'in_progress'); closeModal('jira-issue-modal');">Move to In Progress</button>
+      <button class="btn-secondary" style="font-size: 12px; padding: 6px 12px; color: var(--status-pending);" onclick="moveIssueStatus('${wf.id}', 'client_review'); closeModal('jira-issue-modal');">Submit to Client Review</button>
+      <button class="btn-primary" style="font-size: 12px; padding: 6px 14px;" onclick="moveIssueStatus('${wf.id}', 'done'); closeModal('jira-issue-modal');">Approve & Mark Done</button>
+    `;
+  }
+
+  document.getElementById('jira-issue-modal').classList.add('active');
 }
 
 function renderWorkflowTable() {
