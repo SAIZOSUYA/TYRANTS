@@ -385,6 +385,30 @@
             </div>
           </div>
 
+          <!-- Client Project Selector & Progress Chooser Box -->
+          <div class="card-section" id="client-project-chooser-box" style="margin-top: 24px; background: linear-gradient(135deg, rgba(14, 165, 233, 0.04) 0%, rgba(16, 185, 129, 0.06) 100%);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+              <div>
+                <h3 style="font-size: 16px; color: var(--brand-navy); margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
+                  <iconify-icon icon="tabler:folder-search" style="color: var(--brand-teal); font-size: 20px;"></iconify-icon>
+                  Select Active Project to View Progress
+                </h3>
+                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">
+                  Choose your ongoing project below to track real-time milestone progress & WhatsApp alerts:
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <label style="font-size: 13px; font-weight: 700; color: var(--brand-navy);">Choose Project:</label>
+                <select id="client-project-dropdown" onchange="switchClientProject(this.value)" style="padding: 10px 16px; border-radius: var(--radius-md); border: 2px solid var(--brand-teal); font-size: 13px; font-weight: 700; color: var(--brand-navy); background: white; outline: none; cursor: pointer;">
+                  <option value="WF-101">Q3 Brand Rebrand Campaign (75% In Progress)</option>
+                  <option value="WF-102">Social Media Banner Sets (100% Completed)</option>
+                  <option value="WF-103">SEO Content Pitch Deck (45% Review)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
           <!-- Project Progress Tracking Section -->
           <div class="card-section" style="margin-top: 24px;">
             <div class="section-header">
@@ -697,14 +721,24 @@
       </div>
 
       <form onsubmit="submitNewWorkflow(event)">
-        <div style="margin-bottom: 16px;">
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Project Name</label>
+          <input type="text" id="input-wf-projectname" required placeholder="e.g. Q3 Brand Rebrand Campaign" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="margin-bottom: 14px;">
           <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Deliverable Title</label>
           <input type="text" id="input-wf-title" required placeholder="e.g. Brand Design System v1" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
         </div>
 
-        <div style="margin-bottom: 16px;">
-          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Client / Enterprise Name</label>
-          <input type="text" id="input-wf-client" required placeholder="e.g. Acme Corporation" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Client Enterprise / Name</label>
+          <input type="text" id="input-wf-client" required placeholder="e.g. Apex Global" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Client WhatsApp Phone (For Auto-Notification on Completion)</label>
+          <input type="tel" id="input-wf-client-phone" placeholder="e.g. +977 9801234567" value="+9779801234567" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
         </div>
 
         <div style="margin-bottom: 24px;">
@@ -716,7 +750,10 @@
 
         <div style="display: flex; gap: 12px; justify-content: flex-end;">
           <button type="button" class="btn-secondary" onclick="closeModal('create-modal')">Cancel</button>
-          <button type="submit" class="btn-primary">Launch & Generate Link</button>
+          <button type="submit" class="btn-primary">
+            <iconify-icon icon="tabler:rocket"></iconify-icon>
+            Launch & Enable WhatsApp Alerts
+          </button>
         </div>
       </form>
     </div>
@@ -828,6 +865,36 @@
           </button>
         </div>
       </form>
+  <!-- Modal 5: WhatsApp Project Completion Dispatcher -->
+  <div id="whatsapp-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><iconify-icon icon="tabler:brand-whatsapp" style="color: #25D366; vertical-align: middle;"></iconify-icon> WhatsApp Client Completion Dispatcher</h3>
+        <button class="close-btn" onclick="closeModal('whatsapp-modal')">✕</button>
+      </div>
+
+      <div style="background: #dcfce7; padding: 14px; border-radius: var(--radius-md); border: 1px solid #86efac; margin-bottom: 20px; font-size: 13px; color: #166534;">
+        <iconify-icon icon="tabler:circle-check" style="font-size: 18px; vertical-align: middle; margin-right: 6px;"></iconify-icon>
+        Project 100% Completed & Cryptographically Sealed! Dispatch official completion alert directly to client via WhatsApp.
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Client WhatsApp Number</label>
+        <input type="text" id="wa-phone-display" readonly style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 13px; font-weight: 700; background: #f8fafc;">
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Pre-formatted WhatsApp Alert Message</label>
+        <textarea id="wa-message-text" rows="4" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 13px; line-height: 1.4; outline: none; background: white; resize: none;"></textarea>
+      </div>
+
+      <div style="display: flex; gap: 12px; justify-content: flex-end;">
+        <button type="button" class="btn-secondary" onclick="closeModal('whatsapp-modal')">Close</button>
+        <button type="button" class="btn-primary" style="background: #25D366; border-color: #25D366;" onclick="dispatchWhatsAppDirect()">
+          <iconify-icon icon="tabler:brand-whatsapp" style="font-size: 18px;"></iconify-icon>
+          Send via WhatsApp Web / App
+        </button>
+      </div>
     </div>
   </div>
 

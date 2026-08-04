@@ -814,20 +814,24 @@ function submitNewWorkflow(e) {
     return;
   }
 
-  const title = document.getElementById('input-wf-title').value;
-  const client = document.getElementById('input-wf-client').value;
-  const hrSelect = document.getElementById('input-wf-hr').value;
+  const projectName = document.getElementById('input-wf-projectname')?.value || 'Project Deliverable';
+  const title = document.getElementById('input-wf-title')?.value || 'Deliverable Document';
+  const client = document.getElementById('input-wf-client')?.value || 'Client';
+  const phone = document.getElementById('input-wf-client-phone')?.value || '+9779801234567';
+  const hrSelect = document.getElementById('input-wf-hr')?.value || 'Company Admin';
 
   const mockHash = Array.from({length: 64}, () => Math.floor(Math.random()*16).toString(16)).join('');
 
   const newWf = {
     id: 'WF-' + Math.floor(100 + Math.random() * 900),
+    projectName: projectName,
     title: title,
     client: client,
+    phone: phone,
     stage: 'Client Approval',
     status: 'pending',
     date: 'Just now',
-    hr: hrSelect || 'Company Admin',
+    hr: hrSelect,
     hash: mockHash
   };
 
@@ -837,14 +841,14 @@ function submitNewWorkflow(e) {
   if (currentState.activeTab === 'tab-approvals') renderApprovalQueueTab();
 
   closeModal('create-modal');
-  showToast(`🎉 New Workflow "${title}" created and routed to client!`);
+  showToast(`🎉 New Project Workflow "${projectName}" created & WhatsApp alerts enabled!`);
 }
 
 function openApprovalModal(wfId) {
   const wf = currentState.workflows.find(w => w.id === wfId);
   if (!wf) return;
 
-  document.getElementById('modal-wf-title').innerText = wf.title;
+  document.getElementById('modal-wf-title').innerText = wf.projectName ? `${wf.projectName} (${wf.title})` : wf.title;
   document.getElementById('modal-wf-client').innerText = `Client: ${wf.client} | ID: ${wf.id}`;
   document.getElementById('modal-wf-hr').innerText = wf.hr;
 
@@ -858,12 +862,12 @@ function approveWorkflow(wfId) {
   const wf = currentState.workflows.find(w => w.id === wfId);
   if (wf) {
     wf.status = 'approved';
-    wf.stage = 'Legally Approved';
+    wf.stage = 'Legally Approved & Sealed';
 
     // Add to certificates
     const newCert = {
       certId: 'CERT-' + Math.floor(1000 + Math.random() * 9000),
-      project: wf.title,
+      project: wf.projectName || wf.title,
       client: wf.client,
       date: new Date().toISOString().replace('T', ' ').substr(0, 19) + ' UTC',
       hash: wf.hash,
@@ -877,8 +881,52 @@ function approveWorkflow(wfId) {
     if (currentState.activeTab === 'tab-legal') renderLegalTab();
 
     closeModal('approval-modal');
-    showToast(`✅ "${wf.title}" officially approved by client! Legal Certificate sealed.`);
+    showToast(`✅ Project "${wf.projectName || wf.title}" officially approved! Preparing WhatsApp notification...`);
+
+    // Open WhatsApp Dispatcher Modal for Client Alert
+    setTimeout(() => {
+      openWhatsAppModal(wf.id);
+    }, 400);
   }
+}
+
+function openWhatsAppModal(wfId) {
+  const wf = currentState.workflows.find(w => w.id === wfId) || {
+    projectName: 'Q3 Brand Rebrand Campaign',
+    title: 'Brand Assets v1',
+    client: 'Apex Global',
+    phone: '+9779801234567'
+  };
+
+  const phoneInput = document.getElementById('wa-phone-display');
+  const msgInput = document.getElementById('wa-message-text');
+
+  const clientPhone = wf.phone || '+9779801234567';
+  const projectName = wf.projectName || wf.title;
+  const prewrittenMsg = `🎉 Hello ${wf.client}! Your project *${projectName}* has been 100% completed & cryptographically sealed on Pragati Workflow System.\n\nView sealed deliverables & compliance certificates here: ${window.location.origin}`;
+
+  if (phoneInput) phoneInput.value = clientPhone;
+  if (msgInput) msgInput.value = prewrittenMsg;
+
+  document.getElementById('whatsapp-modal').classList.add('active');
+}
+
+function dispatchWhatsAppDirect() {
+  const phone = document.getElementById('wa-phone-display').value;
+  const msgText = document.getElementById('wa-message-text').value;
+
+  const cleanPhone = phone.replace(/[^0-9]/g, '');
+  const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msgText)}`;
+
+  window.open(waUrl, '_blank');
+  closeModal('whatsapp-modal');
+  showToast(`💬 Dispatched official WhatsApp completion alert to ${phone}!`);
+}
+
+function switchClientProject(wfId) {
+  const wf = currentState.workflows.find(w => w.id === wfId);
+  const projName = wf ? (wf.projectName || wf.title) : 'Selected Project';
+  showToast(`📂 Loaded Project: ${projName}. Progress view updated!`);
 }
 
 function rejectWorkflow(wfId) {
