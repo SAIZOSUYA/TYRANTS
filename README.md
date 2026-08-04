@@ -1,5 +1,8 @@
 # TYRANTS
 PWS : PRAGATI WORKFLOW SYSTEM
+
+![Pragati Workflow System](./pragati-logo.png)
+
 The aim of the Pragati Workflow System is to eliminate the friction between the client and the creative agencies.
 This system acts as the bridge between your "finished work" and the client's "official yes."
 
