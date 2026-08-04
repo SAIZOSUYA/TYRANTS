@@ -15,3 +15,6 @@ WHY DO WE NEED A CLIENT APPROVAL WORKFLOW SYSTEM?
 
 3. Preventing High-Cost Pipeline Bottlenecks :
    Workflow management system gives a wide overview of the entire project, including work responsibilities of employees, time allocation for each part of the project, completion rate, etc. which makes it easier for managers to prevent idle hours and extra expenses. 
+
+4. Protection Against Client-Side Executive Turnover:
+   In case the executive in charge of the project is changed or replaced, the workflow system provides the undeniable proof of all previous approval, brief, and sign-off, which prevents unpaid rework and complete redo of previously completed work.
