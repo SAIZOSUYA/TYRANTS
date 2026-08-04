@@ -225,7 +225,7 @@
                   <th>Client</th>
                   <th>Category</th>
                   <th>Assigned Crew</th>
-                  <th>Shoot Date</th>
+                  <th>Dates (Start / Shoot / Completion)</th>
                   <th>Status</th>
                   <th>Action</th>
                 </tr>
@@ -260,7 +260,7 @@
                   <th>Client</th>
                   <th>Category</th>
                   <th>Assigned Crew</th>
-                  <th>Shoot Date</th>
+                  <th>Dates (Start / Shoot / Completion)</th>
                   <th>Status</th>
                   <th>Action</th>
                 </tr>
@@ -509,9 +509,19 @@
             <option value="Corporate">Corporate</option>
           </select>
         </div>
-        <div class="form-group">
-          <label>Shoot Date</label>
-          <input type="date" id="input-project-date" required>
+        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+          <div>
+            <label>Start Date</label>
+            <input type="date" id="input-project-start-date" required>
+          </div>
+          <div>
+            <label>Shoot Date</label>
+            <input type="date" id="input-project-date" required>
+          </div>
+          <div>
+            <label>Completion Date</label>
+            <input type="date" id="input-project-end-date" required>
+          </div>
         </div>
         <div class="form-group">
           <label>Assign Crew Members (Select Multiple)</label>
@@ -784,9 +794,19 @@
             <option value="Corporate">Corporate</option>
           </select>
         </div>
-        <div class="form-group">
-          <label>Shoot Date</label>
-          <input type="date" id="edit-project-date" required>
+        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+          <div>
+            <label>Start Date</label>
+            <input type="date" id="edit-project-start-date" required>
+          </div>
+          <div>
+            <label>Shoot Date</label>
+            <input type="date" id="edit-project-date" required>
+          </div>
+          <div>
+            <label>Completion Date</label>
+            <input type="date" id="edit-project-end-date" required>
+          </div>
         </div>
         <div class="form-group">
           <label>Assign Crew Members (Select Multiple)</label>

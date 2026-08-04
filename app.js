@@ -131,13 +131,25 @@ function renderDashboardProjects(customList) {
           ? p.crew.map(cr => `<span class="crew-tag-pill">${escapeHtml(cr)}</span>`).join('')
           : `<span style="font-size: 12px; color: var(--text-muted);">Unassigned</span>`;
 
+        const startDate = p.startDate || p.date;
+        const shootDate = p.date;
+        const endDate = p.endDate || p.date;
+
+        const datesHtml = `
+          <div style="font-size: 11px; line-height: 1.4;">
+            <div><span style="color: var(--brand-cyan); font-weight: 700;">Start:</span> ${escapeHtml(startDate)}</div>
+            <div><span style="color: var(--brand-navy); font-weight: 700;">Shoot:</span> ${escapeHtml(shootDate)}</div>
+            <div><span style="color: var(--brand-lime); font-weight: 700;">End:</span> ${escapeHtml(endDate)}</div>
+          </div>
+        `;
+
         return `
           <tr>
             <td><strong>${escapeHtml(p.title)}</strong></td>
             <td>${escapeHtml(p.client)}</td>
             <td><span class="status-tag" style="background: var(--brand-cyan-light); color: var(--brand-cyan);">${escapeHtml(p.category)}</span></td>
             <td>${crewPills}</td>
-            <td>${escapeHtml(p.date)}</td>
+            <td>${datesHtml}</td>
             <td><span class="status-tag ${p.status.toLowerCase()}">${escapeHtml(p.status)}</span></td>
             <td>
               <button class="icon-btn" style="width:30px; height:30px; font-size:14px; margin-right:4px;" onclick="openEditProjectModal('${p.id}')" title="Edit Project">
@@ -531,7 +543,9 @@ function handleAddProject(e) {
   const title = document.getElementById('input-project-title').value;
   const client = document.getElementById('input-project-client').value;
   const category = document.getElementById('input-project-category').value;
-  const date = document.getElementById('input-project-date').value || new Date().toISOString().split('T')[0];
+  const startDate = document.getElementById('input-project-start-date').value || new Date().toISOString().split('T')[0];
+  const date = document.getElementById('input-project-date').value || startDate;
+  const endDate = document.getElementById('input-project-end-date').value || date;
 
   const checkedCrew = Array.from(document.querySelectorAll('#project-crew-checkboxes input:checked')).map(cb => cb.value);
 
@@ -540,7 +554,9 @@ function handleAddProject(e) {
     title,
     client,
     category,
+    startDate,
     date,
+    endDate,
     crew: checkedCrew.length > 0 ? checkedCrew : ['Unassigned'],
     status: 'Active',
     stage: 'Pre-Production',
@@ -629,7 +645,9 @@ function openEditProjectModal(id) {
   document.getElementById('edit-project-title').value = project.title;
   document.getElementById('edit-project-client').value = project.client;
   document.getElementById('edit-project-category').value = project.category;
+  document.getElementById('edit-project-start-date').value = project.startDate || project.date;
   document.getElementById('edit-project-date').value = project.date;
+  document.getElementById('edit-project-end-date').value = project.endDate || project.date;
   document.getElementById('edit-project-status').value = project.status || 'Active';
 
   const container = document.getElementById('edit-project-crew-checkboxes');
@@ -659,7 +677,9 @@ function handleSaveEditProject(e) {
   project.title = document.getElementById('edit-project-title').value;
   project.client = document.getElementById('edit-project-client').value;
   project.category = document.getElementById('edit-project-category').value;
+  project.startDate = document.getElementById('edit-project-start-date').value;
   project.date = document.getElementById('edit-project-date').value;
+  project.endDate = document.getElementById('edit-project-end-date').value;
   project.status = document.getElementById('edit-project-status').value;
 
   const checkedCrew = Array.from(document.querySelectorAll('#edit-project-crew-checkboxes input:checked')).map(cb => cb.value);
@@ -686,6 +706,8 @@ function renderProgressTracker(customList) {
   container.innerHTML = list.map(p => {
     const percent = p.progress !== undefined ? p.progress : 25;
     const stage = p.stage || 'Pre-Production';
+    const startDate = p.startDate || p.date;
+    const endDate = p.endDate || p.date;
     const crewPills = (p.crew && p.crew.length > 0)
       ? p.crew.map(cr => `<span class="crew-tag-pill">${escapeHtml(cr)}</span>`).join('')
       : `<span style="font-size: 11px; color: var(--text-muted);">Unassigned</span>`;
@@ -696,6 +718,7 @@ function renderProgressTracker(customList) {
           <div>
             <div class="progress-card-title">${escapeHtml(p.title)}</div>
             <div class="progress-card-client">Client: ${escapeHtml(p.client)}</div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Timeline: ${escapeHtml(startDate)} &rarr; ${escapeHtml(endDate)}</div>
           </div>
           <span class="progress-stage-badge">${escapeHtml(stage)}</span>
         </div>
