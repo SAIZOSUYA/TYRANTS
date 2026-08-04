@@ -519,22 +519,26 @@ function renderWorkflowsTab(filter = 'all') {
 
   container.innerHTML = filtered.map(wf => `
     <div class="card-section" style="margin-bottom: 16px;">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
         <div class="project-cell">
           <div class="project-icon">
             <iconify-icon icon="tabler:file-check"></iconify-icon>
           </div>
           <div>
             <div class="project-name" style="font-size: 16px;">${wf.title}</div>
-            <div class="project-client">Client: ${wf.client} • ID: ${wf.id}</div>
+            <div class="project-client">Client: ${wf.client} • ID: ${wf.id} • Lead: ${wf.hr}</div>
           </div>
         </div>
 
-        <div style="display: flex; align-items: center; gap: 16px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
           <span class="status-badge ${wf.status}">${wf.stage}</span>
           <button class="btn-secondary" style="font-size: 12px; padding: 6px 12px;" onclick="copyApprovalLink('${wf.id}')">
             <iconify-icon icon="tabler:link"></iconify-icon>
-            Copy Approval Link
+            Copy Link
+          </button>
+          <button class="btn-secondary" style="font-size: 12px; padding: 6px 12px; color: var(--brand-teal); border-color: var(--brand-teal);" onclick="editWorkflow('${wf.id}')" title="Admin permissions required">
+            <iconify-icon icon="tabler:pencil"></iconify-icon>
+            Edit Workflow
           </button>
           <button class="btn-primary" style="font-size: 12px; padding: 6px 14px;" onclick="openApprovalModal('${wf.id}')">
             Manage Approval
@@ -543,6 +547,22 @@ function renderWorkflowsTab(filter = 'all') {
       </div>
     </div>
   `).join('');
+}
+
+function editWorkflow(wfId) {
+  if (!currentState.user || !currentState.user.isAdmin) {
+    showToast('🔒 Access Denied: Only System & Company Admins have permissions to edit workflows.');
+    return;
+  }
+  const wf = currentState.workflows.find(w => w.id === wfId);
+  if (!wf) return;
+  const newTitle = prompt("Edit Workflow Title (Admin Only):", wf.title);
+  if (newTitle && newTitle.trim() !== "") {
+    wf.title = newTitle.trim();
+    renderWorkflowTable();
+    if (currentState.activeTab === 'tab-workflows') renderWorkflowsTab();
+    showToast(`✏️ Admin Edit: Updated Workflow "${wf.id}" title to "${newTitle.trim()}".`);
+  }
 }
 
 function filterWorkflows(status) {
@@ -713,8 +733,12 @@ function copyAdminTokenLink() {
   }
 }
 
-// 13. WORKFLOW ACTIONS (CREATE, APPROVE, REJECT, LINK COPY)
+// 13. WORKFLOW ACTIONS (CREATE, EDIT, APPROVE, REJECT, LINK COPY)
 function openCreateModal() {
+  if (!currentState.user || !currentState.user.isAdmin) {
+    showToast('🔒 Access Denied: Only Admin accounts can create or edit workflows.');
+    return;
+  }
   const select = document.getElementById('input-wf-hr');
   if (select) {
     select.innerHTML = currentState.hrList.map(r => `<option value="${r.name}">${r.name} (${r.dept})</option>`).join('');
@@ -729,6 +753,12 @@ function closeModal(modalId) {
 
 function submitNewWorkflow(e) {
   e.preventDefault();
+  if (!currentState.user || !currentState.user.isAdmin) {
+    showToast('🔒 Access Denied: Only Admin accounts can create or edit workflows.');
+    closeModal('create-modal');
+    return;
+  }
+
   const title = document.getElementById('input-wf-title').value;
   const client = document.getElementById('input-wf-client').value;
   const hrSelect = document.getElementById('input-wf-hr').value;
