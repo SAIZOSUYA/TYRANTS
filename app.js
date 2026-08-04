@@ -16,9 +16,9 @@ const DEFAULT_STATE = {
     { id: 'crw_4', name: 'Rachel Morrison', role: 'Gaffer / Lighting', email: 'rachel@pragatisystem.com', rate: 850, status: 'Available' }
   ],
   projects: [
-    { id: 'prj_1', title: 'Cyberdyne Campaign', client: 'Cyberdyne Media', category: 'Commercial', date: '2026-08-10', status: 'Active' },
-    { id: 'prj_2', title: 'Resistance Docu-Series', client: 'Resistance Films', category: 'Feature Film', date: '2026-08-14', status: 'Active' },
-    { id: 'prj_3', title: 'Vanguard Music Launch', client: 'Vanguard Creative', category: 'Music Video', date: '2026-08-18', status: 'Pending' }
+    { id: 'prj_1', title: 'Cyberdyne Campaign', client: 'Cyberdyne Media', category: 'Commercial', date: '2026-08-10', crew: ['David Fincher', 'Roger Deakins'], status: 'Active' },
+    { id: 'prj_2', title: 'Resistance Docu-Series', client: 'Resistance Films', category: 'Feature Film', date: '2026-08-14', crew: ['David Fincher', 'Hans Zimmer'], status: 'Active' },
+    { id: 'prj_3', title: 'Vanguard Music Launch', client: 'Vanguard Creative', category: 'Music Video', date: '2026-08-18', crew: ['Rachel Morrison'], status: 'Pending' }
   ],
   revenue: 42500,
   upcomingShoots: 8
@@ -102,24 +102,31 @@ function renderDashboardProjects() {
   if (!tbody) return;
 
   if (appState.projects.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 24px;">No production shoots scheduled. Click "Add New Project" to get started.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 24px;">No production shoots scheduled. Click "Add New Project" to get started.</td></tr>`;
     return;
   }
 
-  tbody.innerHTML = appState.projects.map(p => `
-    <tr>
-      <td><strong>${escapeHtml(p.title)}</strong></td>
-      <td>${escapeHtml(p.client)}</td>
-      <td><span class="status-tag" style="background: var(--brand-cyan-light); color: var(--brand-cyan);">${escapeHtml(p.category)}</span></td>
-      <td>${escapeHtml(p.date)}</td>
-      <td><span class="status-tag ${p.status.toLowerCase()}">${escapeHtml(p.status)}</span></td>
-      <td>
-        <button class="icon-btn" style="width:30px; height:30px; font-size:14px;" onclick="deleteProject('${p.id}')" title="Delete Project">
-          <iconify-icon icon="tabler:trash" style="color: var(--brand-red);"></iconify-icon>
-        </button>
-      </td>
-    </tr>
-  `).join('');
+  tbody.innerHTML = appState.projects.map(p => {
+    const crewPills = (p.crew && p.crew.length > 0)
+      ? p.crew.map(cr => `<span class="crew-tag-pill">${escapeHtml(cr)}</span>`).join('')
+      : `<span style="font-size: 12px; color: var(--text-muted);">Unassigned</span>`;
+
+    return `
+      <tr>
+        <td><strong>${escapeHtml(p.title)}</strong></td>
+        <td>${escapeHtml(p.client)}</td>
+        <td><span class="status-tag" style="background: var(--brand-cyan-light); color: var(--brand-cyan);">${escapeHtml(p.category)}</span></td>
+        <td>${crewPills}</td>
+        <td>${escapeHtml(p.date)}</td>
+        <td><span class="status-tag ${p.status.toLowerCase()}">${escapeHtml(p.status)}</span></td>
+        <td>
+          <button class="icon-btn" style="width:30px; height:30px; font-size:14px;" onclick="deleteProject('${p.id}')" title="Delete Project">
+            <iconify-icon icon="tabler:trash" style="color: var(--brand-red);"></iconify-icon>
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join('');
 }
 
 // Render Clients Directory Table
@@ -449,6 +456,24 @@ function handleAddCrew(e) {
   e.target.reset();
 }
 
+// Open Add Project Modal & Populate Multi-Select Crew Checkboxes
+function openAddProjectModal() {
+  const container = document.getElementById('project-crew-checkboxes');
+  if (container) {
+    if (appState.crew.length === 0) {
+      container.innerHTML = `<span style="font-size: 12px; color: var(--text-muted);">No crew members available in roster. Add crew members first.</span>`;
+    } else {
+      container.innerHTML = appState.crew.map((cr, idx) => `
+        <label class="crew-checkbox-item">
+          <input type="checkbox" value="${escapeHtml(cr.name)}" ${idx === 0 ? 'checked' : ''}>
+          <span>${escapeHtml(cr.name)} (${escapeHtml(cr.role)})</span>
+        </label>
+      `).join('');
+    }
+  }
+  openModal('modal-add-project');
+}
+
 // Add Project Handler
 function handleAddProject(e) {
   e.preventDefault();
@@ -457,12 +482,15 @@ function handleAddProject(e) {
   const category = document.getElementById('input-project-category').value;
   const date = document.getElementById('input-project-date').value || new Date().toISOString().split('T')[0];
 
+  const checkedCrew = Array.from(document.querySelectorAll('#project-crew-checkboxes input:checked')).map(cb => cb.value);
+
   appState.projects.push({
     id: 'prj_' + Date.now(),
     title,
     client,
     category,
     date,
+    crew: checkedCrew.length > 0 ? checkedCrew : ['Unassigned'],
     status: 'Active'
   });
 

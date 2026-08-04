@@ -201,7 +201,7 @@
           <div class="section-card">
             <div class="section-header">
               <h3>Upcoming Production Shoots</h3>
-              <button class="btn-primary-amber" onclick="openModal('modal-add-project')">
+              <button class="btn-primary-amber" onclick="openAddProjectModal()">
                 <iconify-icon icon="tabler:plus"></iconify-icon> Add New Project
               </button>
             </div>
@@ -212,6 +212,7 @@
                   <th>Project Name</th>
                   <th>Client</th>
                   <th>Category</th>
+                  <th>Assigned Crew</th>
                   <th>Shoot Date</th>
                   <th>Status</th>
                   <th>Action</th>
@@ -438,6 +439,12 @@
         <div class="form-group">
           <label>Shoot Date</label>
           <input type="date" id="input-project-date" required>
+        </div>
+        <div class="form-group">
+          <label>Assign Crew Members (Select Multiple)</label>
+          <div id="project-crew-checkboxes" class="crew-checkbox-grid">
+            <!-- Dynamically populated in app.js -->
+          </div>
         </div>
         <div class="form-actions">
           <button type="button" class="btn-secondary" onclick="closeModal('modal-add-project')">Cancel</button>

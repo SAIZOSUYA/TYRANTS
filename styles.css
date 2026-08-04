@@ -733,3 +733,53 @@ a {
 .btn-secondary:hover {
   background: var(--border-hover);
 }
+
+/* Crew Multi-Select Checkbox Grid */
+.crew-checkbox-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  max-height: 160px;
+  overflow-y: auto;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 12px;
+}
+
+.crew-checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-main);
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-fast);
+}
+
+.crew-checkbox-item:hover {
+  background: white;
+}
+
+.crew-checkbox-item input[type="checkbox"] {
+  accent-color: var(--brand-cyan);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.crew-tag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--brand-lime-light);
+  color: var(--brand-lime);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 12px;
+  margin-right: 4px;
+  margin-bottom: 4px;
+}
