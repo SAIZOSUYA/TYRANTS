@@ -269,18 +269,9 @@ function handleGoogleLogin() {
   const company = COMPANY_CONFIG[currentState.selectedCompanyType];
   
   if (currentState.selectedUserType === 'client') {
-    currentState.user = {
-      name: 'Apex Global Client Lead',
-      email: `approver@apexglobal.com`,
-      role: `Client Approver (${company.name})`,
-      isAdmin: false,
-      avatar: 'AG'
-    };
-
-    showToast(`Welcome! Signed in via Google as Client Approver for ${company.name}.`);
-    switchScreen('dashboard-screen');
-    renderDashboard();
-    switchTab('tab-approvals');
+    // Open Client Info Verification Modal for Name & Phone Number
+    document.getElementById('client-info-modal').classList.add('active');
+    showToast(`🔑 Google Auth Verified! Please enter your Client contact details.`);
     return;
   }
 
@@ -298,6 +289,64 @@ function handleGoogleLogin() {
   showToast(`Welcome back, ${currentState.user.name}! Signed in via Google as ${roleName}.`);
   switchScreen('dashboard-screen');
   renderDashboard();
+}
+
+function submitClientInfo(e) {
+  e.preventDefault();
+  const fullName = document.getElementById('input-client-fullname').value;
+  const phone = document.getElementById('input-client-phone').value;
+  const org = document.getElementById('input-client-org').value || 'Client Enterprise';
+  const company = COMPANY_CONFIG[currentState.selectedCompanyType];
+
+  const initials = fullName.split(' ').map(n => n[0]).join('').toUpperCase().substr(0, 2) || 'CL';
+
+  currentState.user = {
+    name: fullName,
+    email: `client@${org.toLowerCase().replace(/\s+/g, '')}.com`,
+    phone: phone,
+    role: `Client Approver (${org})`,
+    isAdmin: false,
+    avatar: initials
+  };
+
+  closeModal('client-info-modal');
+  showToast(`✅ Profile Verified! Welcome ${fullName} (${phone}).`);
+  switchScreen('dashboard-screen');
+  renderDashboard();
+  switchTab('tab-approvals');
+}
+
+function sendFeedbackMessage(e) {
+  e.preventDefault();
+  const input = document.getElementById('chat-input-field');
+  const container = document.getElementById('chat-messages-container');
+  if (!input || !container || !input.value.trim()) return;
+
+  const text = input.value.trim();
+
+  const msgDiv = document.createElement('div');
+  msgDiv.className = 'message-bubble client';
+  msgDiv.innerHTML = `
+    <div>${text}</div>
+    <div class="message-meta">Just now • ${currentState.user ? currentState.user.name : 'Client'}</div>
+  `;
+
+  container.appendChild(msgDiv);
+  input.value = '';
+  container.scrollTop = container.scrollHeight;
+
+  showToast('💬 Feedback sent to Agency Team!');
+
+  setTimeout(() => {
+    const replyDiv = document.createElement('div');
+    replyDiv.className = 'message-bubble agency';
+    replyDiv.innerHTML = `
+      <div>Received your feedback: <em>"${text}"</em>. Our team is updating the asset accordingly!</div>
+      <div class="message-meta">Just now • Agency Team Lead</div>
+    `;
+    container.appendChild(replyDiv);
+    container.scrollTop = container.scrollHeight;
+  }, 1500);
 }
 
 function handleAdminLinkLogin() {

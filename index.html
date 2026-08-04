@@ -185,6 +185,17 @@
           </li>
         </ul>
 
+          <li class="nav-item" id="nav-tab-messages">
+            <a onclick="switchTab('tab-messages')">
+              <div class="nav-item-content">
+                <iconify-icon icon="tabler:message-dots"></iconify-icon>
+                <span>Feedback & Messages</span>
+              </div>
+              <span class="nav-badge" style="background: var(--brand-green);">New</span>
+            </a>
+          </li>
+        </ul>
+
         <div class="nav-section-title">System & Legal</div>
         <ul class="nav-menu">
           <li class="nav-item" id="nav-tab-legal">
@@ -322,6 +333,52 @@
             </div>
           </div>
 
+          <!-- SVG Gradient Definitions for Wheel Chart -->
+          <svg width="0" height="0" style="position: absolute;">
+            <defs>
+              <linearGradient id="brand-gradient-stroke" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#0ea5e9"/>
+                <stop offset="100%" stop-color="#10b981"/>
+              </linearGradient>
+            </defs>
+          </svg>
+
+          <!-- Circular Progress Wheel Chart Card -->
+          <div class="progress-wheel-card" style="margin-top: 24px;">
+            <div class="wheel-container">
+              <svg class="wheel-svg" viewBox="0 0 140 140">
+                <circle class="wheel-bg-circle" cx="70" cy="70" r="60"></circle>
+                <circle class="wheel-progress-circle" cx="70" cy="70" r="60"></circle>
+              </svg>
+              <div class="wheel-center-text">
+                <div class="wheel-percentage">78%</div>
+                <div class="wheel-label">Progress</div>
+              </div>
+            </div>
+
+            <div style="flex: 1;">
+              <h3 style="font-size: 18px; margin-bottom: 6px; color: var(--brand-navy);">Project Deliverables Completion Wheel</h3>
+              <p style="font-size: 13px; color: var(--text-muted); line-height: 1.4; margin-bottom: 14px;">
+                Overall completion tracking across active enterprise deliverables, client committee sign-offs, and SHA-256 legal cryptographic seals.
+              </p>
+
+              <div style="display: flex; gap: 20px;">
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--brand-navy);">
+                  <span style="width: 10px; height: 10px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
+                  142 Approved (78%)
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--brand-navy);">
+                  <span style="width: 10px; height: 10px; border-radius: 50%; background: #f59e0b; display: inline-block;"></span>
+                  4 Pending Reviews (14%)
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--brand-navy);">
+                  <span style="width: 10px; height: 10px; border-radius: 50%; background: #0ea5e9; display: inline-block;"></span>
+                  6 In Progress (8%)
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Quick Navigation Panel -->
           <div class="card-section" style="margin-top: 24px; padding: 32px; text-align: center; background: linear-gradient(135deg, rgba(15, 41, 66, 0.03) 0%, rgba(14, 165, 233, 0.06) 100%);">
             <h2 style="font-size: 22px; color: var(--brand-navy); margin-bottom: 8px;">Pragati System Operational Overview</h2>
@@ -392,6 +449,67 @@
 
           <div id="approval-queue-container">
             <!-- Populated dynamically in app.js -->
+          </div>
+        </div>
+
+        <!-- ==========================================
+             TAB 3.5: FEEDBACK & MESSAGES
+             ========================================== -->
+        <div id="tab-messages" class="dashboard-tab">
+          <div class="card-section" style="margin-bottom: 20px;">
+            <div class="section-header">
+              <h2 class="section-title">
+                <iconify-icon icon="tabler:message-dots" style="color: var(--brand-teal);"></iconify-icon>
+                Client Feedback & Real-Time Messaging
+              </h2>
+              <span class="status-badge approved">LIVE FEEDBACK CHANNEL</span>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted);">
+              Communicate directly with the agency project leads, attach revision notes, and track responses.
+            </p>
+          </div>
+
+          <div class="chat-container">
+            <div class="chat-header">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div class="project-icon">
+                  <iconify-icon icon="tabler:brand-hipchat"></iconify-icon>
+                </div>
+                <div>
+                  <h4 style="font-size: 15px; color: var(--brand-navy);">Apex Global Project Channel</h4>
+                  <span style="font-size: 11px; color: var(--brand-green); font-weight: 700;">● Online • Agency Leads Connected</span>
+                </div>
+              </div>
+              <button class="btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="showToast('Refreshed live feedback messages.')">
+                <iconify-icon icon="tabler:refresh"></iconify-icon>
+                Refresh Chat
+              </button>
+            </div>
+
+            <div class="chat-messages" id="chat-messages-container">
+              <div class="message-bubble agency">
+                <div>Hello! We uploaded the latest deliverable draft for <strong>Q3 Brand Rebrand Campaign</strong>. Please inspect the assets in your Approval Queue.</div>
+                <div class="message-meta">Today, 2:32 PM • Agency Team</div>
+              </div>
+
+              <div class="message-bubble client">
+                <div>Thanks! The logo alignment looks clean. We requested a minor tweak on the color contrast for slide 4.</div>
+                <div class="message-meta">Today, 2:40 PM • Client Representative</div>
+              </div>
+
+              <div class="message-bubble agency">
+                <div>Color contrast adjusted! Updated version is sealed and awaiting your final sign-off.</div>
+                <div class="message-meta">Today, 2:45 PM • Campaign Director</div>
+              </div>
+            </div>
+
+            <form class="chat-input-box" onsubmit="sendFeedbackMessage(event)">
+              <input type="text" id="chat-input-field" placeholder="Type your feedback message or revision note..." required>
+              <button type="submit" class="btn-primary" style="padding: 8px 18px; border-radius: 20px; font-size: 13px;">
+                <iconify-icon icon="tabler:send"></iconify-icon>
+                Send Feedback
+              </button>
+            </form>
           </div>
         </div>
 
@@ -607,6 +725,45 @@
         <div style="display: flex; gap: 12px; justify-content: flex-end;">
           <button type="button" class="btn-secondary" onclick="closeModal('hr-modal')">Cancel</button>
           <button type="submit" class="btn-primary">Add Personnel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 4: Client Onboarding Info (Name & Phone Number) -->
+  <div id="client-info-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Client Profile Verification</h3>
+        <button class="close-btn" onclick="closeModal('client-info-modal')">✕</button>
+      </div>
+
+      <div style="background: #e0f2fe; padding: 14px; border-radius: var(--radius-md); border: 1px solid #bae6fd; margin-bottom: 20px; font-size: 13px; color: #0369a1;">
+        <iconify-icon icon="tabler:shield-check" style="font-size: 18px; vertical-align: middle; margin-right: 6px;"></iconify-icon>
+        Google Authentication Verified! Please enter your official Client contact details to access your Project Approval Hub.
+      </div>
+
+      <form onsubmit="submitClientInfo(event)">
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Client Full Name</label>
+          <input type="text" id="input-client-fullname" required placeholder="e.g. Ramesh Kumar Sharma" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Phone Number (For Instant SMS Sign-off Alerts)</label>
+          <input type="tel" id="input-client-phone" required placeholder="+977 9801234567" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="margin-bottom: 24px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Client Enterprise / Organization</label>
+          <input type="text" id="input-client-org" placeholder="e.g. Apex Global Enterprise" value="Apex Global Ltd" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">
+            <iconify-icon icon="tabler:circle-check"></iconify-icon>
+            Verify & Enter Client Portal
+          </button>
         </div>
       </form>
     </div>
