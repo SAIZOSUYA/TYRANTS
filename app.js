@@ -471,12 +471,160 @@ function handleAddProject(e) {
   e.target.reset();
 }
 
-// Broadcast Email / WhatsApp Handler
-function handleSendBroadcast(e, type) {
+/* ==========================================================================
+   INTERACTIVE WHATSAPP & EMAIL DISPATCHERS
+   ========================================================================== */
+
+// 1. WhatsApp Dispatch Handlers
+function openWhatsAppModal() {
+  handleWARecipientTypeChange();
+  populateWAProjectSelect();
+  openModal('modal-whatsapp');
+}
+
+function handleWARecipientTypeChange() {
+  const category = document.getElementById('wa-recipient-category').value;
+  const select = document.getElementById('wa-recipient-select');
+  if (!select) return;
+
+  if (category === 'client') {
+    select.innerHTML = appState.clients.map(c => 
+      `<option value="${c.id}" data-name="${escapeHtml(c.name)}" data-phone="${c.phone}">${escapeHtml(c.name)} (${escapeHtml(c.company)}) - ${c.phone}</option>`
+    ).join('');
+  } else {
+    select.innerHTML = appState.crew.map(cr => 
+      `<option value="${cr.id}" data-name="${escapeHtml(cr.name)}" data-phone="${cr.phone || '+15554821000'}">${escapeHtml(cr.name)} (${escapeHtml(cr.role)}) - ${cr.phone || '+15554821000'}</option>`
+    ).join('');
+  }
+
+  updateWAMessageTemplate();
+}
+
+function populateWAProjectSelect() {
+  const select = document.getElementById('wa-project-select');
+  if (!select) return;
+  if (appState.projects.length === 0) {
+    select.innerHTML = `<option value="General Production">General Production</option>`;
+  } else {
+    select.innerHTML = appState.projects.map(p => 
+      `<option value="${escapeHtml(p.title)}">${escapeHtml(p.title)} (${escapeHtml(p.category)})</option>`
+    ).join('');
+  }
+}
+
+function updateWAMessageTemplate() {
+  const category = document.getElementById('wa-recipient-category').value;
+  const recipientSelect = document.getElementById('wa-recipient-select');
+  const projectSelect = document.getElementById('wa-project-select');
+  const messageTextarea = document.getElementById('wa-message-text');
+
+  if (!recipientSelect || !messageTextarea) return;
+
+  const selectedOpt = recipientSelect.options[recipientSelect.selectedIndex];
+  const recipientName = selectedOpt ? selectedOpt.getAttribute('data-name') : 'there';
+  const projectTitle = projectSelect ? projectSelect.value : 'your project';
+
+  if (category === 'client') {
+    messageTextarea.value = `Hello ${recipientName}, here is an official project update regarding '${projectTitle}': The shoot & production deliverables are progressing smoothly according to our Pragati workflow schedule! Please let us know if you have any questions.`;
+  } else {
+    messageTextarea.value = `Hi ${recipientName}, please provide a quick status update regarding your assigned deliverables for project '${projectTitle}'. Let us know if you need any additional resources, equipment, or approvals!`;
+  }
+}
+
+function handleSendWhatsApp(e) {
   e.preventDefault();
-  alert(`${type.toUpperCase()} broadcast successfully dispatched to all active clients and crew members!`);
-  closeModal(type === 'email' ? 'modal-email-all' : 'modal-whatsapp-all');
-  e.target.reset();
+  const recipientSelect = document.getElementById('wa-recipient-select');
+  const messageTextarea = document.getElementById('wa-message-text');
+  
+  if (!recipientSelect || !messageTextarea) return;
+
+  const selectedOpt = recipientSelect.options[recipientSelect.selectedIndex];
+  const rawPhone = selectedOpt ? selectedOpt.getAttribute('data-phone') : '';
+  const cleanPhone = rawPhone.replace(/[^\d+]/g, '');
+  const messageText = messageTextarea.value;
+
+  const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(messageText)}`;
+  window.open(waUrl, '_blank');
+
+  closeModal('modal-whatsapp');
+}
+
+// 2. Email Dispatch Handlers
+function openEmailModal() {
+  handleEmailRecipientTypeChange();
+  populateEmailProjectSelect();
+  openModal('modal-email');
+}
+
+function handleEmailRecipientTypeChange() {
+  const category = document.getElementById('email-recipient-category').value;
+  const select = document.getElementById('email-recipient-select');
+  if (!select) return;
+
+  if (category === 'client') {
+    select.innerHTML = appState.clients.map(c => 
+      `<option value="${c.id}" data-name="${escapeHtml(c.name)}" data-email="${c.email}">${escapeHtml(c.name)} (${escapeHtml(c.company)}) - ${c.email}</option>`
+    ).join('');
+  } else {
+    select.innerHTML = appState.crew.map(cr => 
+      `<option value="${cr.id}" data-name="${escapeHtml(cr.name)}" data-email="${cr.email}">${escapeHtml(cr.name)} (${escapeHtml(cr.role)}) - ${cr.email}</option>`
+    ).join('');
+  }
+
+  updateEmailMessageTemplate();
+}
+
+function populateEmailProjectSelect() {
+  const select = document.getElementById('email-project-select');
+  if (!select) return;
+  if (appState.projects.length === 0) {
+    select.innerHTML = `<option value="General Production">General Production</option>`;
+  } else {
+    select.innerHTML = appState.projects.map(p => 
+      `<option value="${escapeHtml(p.title)}">${escapeHtml(p.title)} (${escapeHtml(p.category)})</option>`
+    ).join('');
+  }
+}
+
+function updateEmailMessageTemplate() {
+  const category = document.getElementById('email-recipient-category').value;
+  const recipientSelect = document.getElementById('email-recipient-select');
+  const projectSelect = document.getElementById('email-project-select');
+  const subjectInput = document.getElementById('email-subject-text');
+  const messageTextarea = document.getElementById('email-message-text');
+
+  if (!recipientSelect || !messageTextarea) return;
+
+  const selectedOpt = recipientSelect.options[recipientSelect.selectedIndex];
+  const recipientName = selectedOpt ? selectedOpt.getAttribute('data-name') : 'there';
+  const projectTitle = projectSelect ? projectSelect.value : 'your project';
+
+  if (category === 'client') {
+    if (subjectInput) subjectInput.value = `Project Progress Update: ${projectTitle}`;
+    messageTextarea.value = `Dear ${recipientName},\n\nWe are pleased to share an official progress update for your project '${projectTitle}'.\n\nAll shoot milestones and production deliverables are currently on track per our Pragati workflow agreement.\n\nBest regards,\nPragati Studio Operations`;
+  } else {
+    if (subjectInput) subjectInput.value = `Action Required - Status Update for ${projectTitle}`;
+    messageTextarea.value = `Hello ${recipientName},\n\nCould you please provide a brief status update on your assigned deliverables for '${projectTitle}'?\n\nPlease confirm if your timeline is on schedule or if you require additional resources.\n\nThank you,\nPragati Studio Operations`;
+  }
+}
+
+function handleSendEmail(e) {
+  e.preventDefault();
+  const recipientSelect = document.getElementById('email-recipient-select');
+  const subjectInput = document.getElementById('email-subject-text');
+  const messageTextarea = document.getElementById('email-message-text');
+
+  if (!recipientSelect || !messageTextarea) return;
+
+  const selectedOpt = recipientSelect.options[recipientSelect.selectedIndex];
+  const recipientEmail = selectedOpt ? selectedOpt.getAttribute('data-email') : '';
+  const subject = subjectInput ? subjectInput.value : 'Project Update';
+  const body = messageTextarea.value;
+
+  const mailtoUrl = `mailto:${recipientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.open(mailtoUrl, '_blank');
+
+  closeModal('modal-email');
 }
 
 // Clear All Data Handler
