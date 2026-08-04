@@ -89,6 +89,7 @@ function renderCharts() {
 function switchTab(viewId) {
   document.querySelectorAll('.view-tab').forEach(tab => tab.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+  document.querySelectorAll('.mobile-nav-item').forEach(item => item.classList.remove('active'));
 
   const targetView = document.getElementById(viewId);
   if (targetView) targetView.classList.add('active');
@@ -97,11 +98,17 @@ function switchTab(viewId) {
   const targetNav = document.getElementById(navKey);
   if (targetNav) targetNav.classList.add('active');
 
+  const mobileNavKey = viewId.replace('view-', 'mobile-nav-');
+  const targetMobileNav = document.getElementById(mobileNavKey);
+  if (targetMobileNav) targetMobileNav.classList.add('active');
+
   if (viewId === 'view-dashboard') {
     renderCharts();
   } else if (viewId === 'view-progress') {
     renderProgressTracker();
   }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // Update KPI Metrics in Dashboard Header

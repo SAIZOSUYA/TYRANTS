@@ -1637,3 +1637,80 @@ body.user-is-admin li.admin-only {
     font-size: 10px !important;
   }
 }
+
+/* ==========================================================================
+   FIXED MOBILE BOTTOM APP BAR & NATIVE TOUCH ERGONOMICS
+   ========================================================================== */
+
+.mobile-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border-color);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+  z-index: 9990;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 4px;
+}
+
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 6px 4px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  flex: 1;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-nav-item iconify-icon {
+  font-size: 20px;
+}
+
+.mobile-nav-item.active {
+  color: var(--brand-cyan);
+}
+
+.mobile-nav-item:active {
+  transform: scale(0.92);
+}
+
+@media (max-width: 768px) {
+  .mobile-bottom-nav {
+    display: flex;
+  }
+
+  .main-content {
+    padding-bottom: 76px !important; /* Prevents content truncation above mobile nav */
+  }
+
+  .sidebar {
+    display: none !important; /* Replaced by Fixed Mobile Bottom App Bar */
+  }
+
+  /* Touch Ergonomics & Active Feedback */
+  button, .btn-primary-amber, .btn-secondary, .action-btn, .user-profile-info {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button:active, .btn-primary-amber:active, .btn-secondary:active, .action-btn:active {
+    transform: scale(0.97);
+  }
+}

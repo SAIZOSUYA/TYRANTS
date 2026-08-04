@@ -953,7 +953,32 @@
         </div>
       </div>
     </div>
+    </div>
   </div>
+
+  <!-- Fixed Mobile Bottom Navigation Bar -->
+  <nav class="mobile-bottom-nav">
+    <a class="mobile-nav-item active" id="mobile-nav-dashboard" onclick="switchTab('view-dashboard')">
+      <iconify-icon icon="tabler:layout-grid"></iconify-icon>
+      <span>Dashboard</span>
+    </a>
+    <a class="mobile-nav-item" id="mobile-nav-projects" onclick="switchTab('view-projects')">
+      <iconify-icon icon="tabler:movie"></iconify-icon>
+      <span>Projects</span>
+    </a>
+    <a class="mobile-nav-item" id="mobile-nav-progress" onclick="switchTab('view-progress')">
+      <iconify-icon icon="tabler:chart-bar"></iconify-icon>
+      <span>Progress</span>
+    </a>
+    <a class="mobile-nav-item" id="mobile-nav-crew" onclick="switchTab('view-crew')">
+      <iconify-icon icon="tabler:video-plus"></iconify-icon>
+      <span>Crew</span>
+    </a>
+    <a class="mobile-nav-item admin-only" id="mobile-nav-settings" onclick="switchTab('view-settings')">
+      <iconify-icon icon="tabler:settings"></iconify-icon>
+      <span>Settings</span>
+    </a>
+  </nav>
 
 </body>
 </html>
