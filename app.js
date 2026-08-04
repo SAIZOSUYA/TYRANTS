@@ -1370,9 +1370,19 @@ function updateRolePermissions() {
   const role = user ? user.role : null;
   const isAdmin = role === 'Admin';
 
-  // Toggle .admin-only elements (Add buttons, Quick Actions, Settings tab)
+  if (isAdmin) {
+    document.body.classList.add('user-is-admin');
+  } else {
+    document.body.classList.remove('user-is-admin');
+  }
+
+  // Toggle .admin-only elements (Add buttons, Quick Actions, Settings tab, Clear Data)
   document.querySelectorAll('.admin-only').forEach(el => {
-    el.style.display = isAdmin ? '' : 'none';
+    if (!isAdmin) {
+      el.style.setProperty('display', 'none', 'important');
+    } else {
+      el.style.removeProperty('display');
+    }
   });
 
   // Toggle table Actions TH headers if not admin

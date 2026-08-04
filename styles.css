@@ -1287,3 +1287,17 @@ a {
   font-weight: 600;
   margin-bottom: 12px;
 }
+
+/* Strict Role-Based Access Control (RBAC) Hide Rules */
+body:not(.user-is-admin) .admin-only {
+  display: none !important;
+}
+
+body.user-is-admin .admin-only {
+  display: inline-flex;
+}
+
+body.user-is-admin div.admin-only,
+body.user-is-admin li.admin-only {
+  display: block;
+}
