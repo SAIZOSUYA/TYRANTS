@@ -1326,6 +1326,33 @@ function updateRolePermissions() {
   }
 }
 
+const GOOGLE_CLIENT_ID = "842949964836-v9650tbm470mbpt17kj8fkkneju956kg.apps.googleusercontent.com";
+
+function initGoogleSignInButton() {
+  if (window.google && window.google.accounts && window.google.accounts.id) {
+    try {
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleCredentialResponse
+      });
+
+      const container = document.getElementById('google-button-container');
+      if (container) {
+        container.innerHTML = '';
+        window.google.accounts.id.renderButton(container, {
+          theme: 'outline',
+          size: 'large',
+          width: 320,
+          text: 'signin_with',
+          shape: 'rectangular'
+        });
+      }
+    } catch (e) {
+      console.warn("Google GIS Init error", e);
+    }
+  }
+}
+
 function switchAuthTab(tabType) {
   const btnAdmin = document.getElementById('tab-btn-admin');
   const btnCrew = document.getElementById('tab-btn-crew');
@@ -1344,6 +1371,7 @@ function switchAuthTab(tabType) {
   } else if (tabType === 'crew') {
     if (btnCrew) btnCrew.classList.add('active');
     if (formCrew) formCrew.classList.add('active');
+    setTimeout(initGoogleSignInButton, 100);
   } else if (tabType === 'client') {
     if (btnClient) btnClient.classList.add('active');
     if (formClient) formClient.classList.add('active');
@@ -1397,7 +1425,7 @@ function handleGoogleSignIn() {
   if (window.google && window.google.accounts && window.google.accounts.id) {
     try {
       window.google.accounts.id.initialize({
-        client_id: "1098273645123-demo.apps.googleusercontent.com", // Demo Client ID
+        client_id: GOOGLE_CLIENT_ID,
         callback: handleGoogleCredentialResponse
       });
       window.google.accounts.id.prompt();
