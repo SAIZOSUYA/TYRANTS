@@ -8,4 +8,6 @@ WHY DO WE NEED A CLIENT APPROVAL WORKFLOW SYSTEM?
    Through the use of a centralized workflow system, large enterprises which usually have more than one decision makers can come to a single non contradictory opinion about the product, without overcomplicating things and having multiple opinions.
 
 2. Legal Liability & Compliance Protection :
-   With a reliable workflow system in place, products that have been completed and approved by the
+   With a reliable workflow system in place, products that have been completed and approved by the client cannot be further changed due to legal complications and agreements.
+
+3.
