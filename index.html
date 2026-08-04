@@ -573,6 +573,11 @@
         </div>
 
         <div class="form-group">
+          <label>Recipient WhatsApp Phone Number</label>
+          <input type="text" id="wa-target-phone" required placeholder="e.g. +15550192834">
+        </div>
+
+        <div class="form-group">
           <label>WhatsApp Message Content</label>
           <textarea id="wa-message-text" rows="5" required></textarea>
         </div>
@@ -582,6 +587,151 @@
           <button type="submit" class="btn-primary-amber" style="background: #10b981; color: white;">
             <iconify-icon icon="tabler:brand-whatsapp"></iconify-icon> Send WhatsApp Message
           </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Client Modal -->
+  <div id="modal-edit-client" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Edit Client Details</h3>
+        <button class="btn-close" onclick="closeModal('modal-edit-client')">&times;</button>
+      </div>
+      <form onsubmit="handleSaveEditClient(event)">
+        <input type="hidden" id="edit-client-id">
+        <div class="form-group">
+          <label>Client Name</label>
+          <input type="text" id="edit-client-name" required>
+        </div>
+        <div class="form-group">
+          <label>Company / Brand</label>
+          <input type="text" id="edit-client-company" required>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="edit-client-email" required>
+        </div>
+        <div class="form-group">
+          <label>Phone (WhatsApp)</label>
+          <input type="text" id="edit-client-phone" required placeholder="+15550192834">
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="edit-client-status">
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+            <option value="Lead">Lead</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" onclick="closeModal('modal-edit-client')">Cancel</button>
+          <button type="submit" class="btn-primary-amber">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Crew Modal -->
+  <div id="modal-edit-crew" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Edit Crew Details</h3>
+        <button class="btn-close" onclick="closeModal('modal-edit-crew')">&times;</button>
+      </div>
+      <form onsubmit="handleSaveEditCrew(event)">
+        <input type="hidden" id="edit-crew-id">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="edit-crew-name" required>
+        </div>
+        <div class="form-group">
+          <label>Primary Role</label>
+          <select id="edit-crew-role" required>
+            <option value="Director">Director</option>
+            <option value="Director of Photography">Director of Photography (DP)</option>
+            <option value="Sound Engineer">Sound Engineer</option>
+            <option value="Gaffer / Lighting">Gaffer / Lighting</option>
+            <option value="Video Editor">Video Editor</option>
+            <option value="Talent / Actor">Talent / Actor</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="edit-crew-email" required>
+        </div>
+        <div class="form-group">
+          <label>Phone (WhatsApp)</label>
+          <input type="text" id="edit-crew-phone" required placeholder="+15554821000">
+        </div>
+        <div class="form-group">
+          <label>Day Rate ($)</label>
+          <input type="number" id="edit-crew-rate" required>
+        </div>
+        <div class="form-group">
+          <label>Availability / Status</label>
+          <select id="edit-crew-status">
+            <option value="Available">Available</option>
+            <option value="On Shoot">On Shoot</option>
+            <option value="Booked">Booked</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" onclick="closeModal('modal-edit-crew')">Cancel</button>
+          <button type="submit" class="btn-primary-amber">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Project Modal -->
+  <div id="modal-edit-project" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Edit Project Details</h3>
+        <button class="btn-close" onclick="closeModal('modal-edit-project')">&times;</button>
+      </div>
+      <form onsubmit="handleSaveEditProject(event)">
+        <input type="hidden" id="edit-project-id">
+        <div class="form-group">
+          <label>Project Title</label>
+          <input type="text" id="edit-project-title" required>
+        </div>
+        <div class="form-group">
+          <label>Client</label>
+          <input type="text" id="edit-project-client" required>
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select id="edit-project-category" required>
+            <option value="Commercial">Commercial</option>
+            <option value="Feature Film">Feature Film</option>
+            <option value="Music Video">Music Video</option>
+            <option value="Corporate">Corporate</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Shoot Date</label>
+          <input type="date" id="edit-project-date" required>
+        </div>
+        <div class="form-group">
+          <label>Assign Crew Members (Select Multiple)</label>
+          <div id="edit-project-crew-checkboxes" class="crew-checkbox-grid">
+            <!-- Dynamically populated in app.js -->
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="edit-project-status">
+            <option value="Active">Active</option>
+            <option value="Pending">Pending</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" onclick="closeModal('modal-edit-project')">Cancel</button>
+          <button type="submit" class="btn-primary-amber">Save Changes</button>
         </div>
       </form>
     </div>

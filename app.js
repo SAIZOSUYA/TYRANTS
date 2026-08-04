@@ -109,6 +109,9 @@ function renderDashboardProjects() {
             <td>${escapeHtml(p.date)}</td>
             <td><span class="status-tag ${p.status.toLowerCase()}">${escapeHtml(p.status)}</span></td>
             <td>
+              <button class="icon-btn" style="width:30px; height:30px; font-size:14px; margin-right:4px;" onclick="openEditProjectModal('${p.id}')" title="Edit Project">
+                <iconify-icon icon="tabler:pencil" style="color: var(--brand-cyan);"></iconify-icon>
+              </button>
               <button class="icon-btn" style="width:30px; height:30px; font-size:14px;" onclick="deleteProject('${p.id}')" title="Delete Project">
                 <iconify-icon icon="tabler:trash" style="color: var(--brand-red);"></iconify-icon>
               </button>
@@ -137,9 +140,12 @@ function renderClientsTable() {
       <td>${escapeHtml(c.company)}</td>
       <td>${escapeHtml(c.email)}</td>
       <td>${escapeHtml(c.phone)}</td>
-      <td>${c.projects} active</td>
-      <td><span class="status-tag active">${c.status}</span></td>
+      <td>${c.projects || 1} active</td>
+      <td><span class="status-tag active">${c.status || 'Active'}</span></td>
       <td>
+        <button class="icon-btn" style="width:30px; height:30px; font-size:14px; margin-right:4px;" onclick="openEditClientModal('${c.id}')" title="Edit Client">
+          <iconify-icon icon="tabler:pencil" style="color: var(--brand-cyan);"></iconify-icon>
+        </button>
         <button class="icon-btn" style="width:30px; height:30px; font-size:14px;" onclick="deleteClient('${c.id}')" title="Delete Client">
           <iconify-icon icon="tabler:trash" style="color: var(--brand-red);"></iconify-icon>
         </button>
@@ -154,7 +160,7 @@ function renderCrewTable() {
   if (!tbody) return;
 
   if (appState.crew.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 24px;">No crew members in roster. Click "Add Crew Member" to expand your crew.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 24px;">No crew members in roster. Click "Add Crew Member" to expand your crew.</td></tr>`;
     return;
   }
 
@@ -163,9 +169,13 @@ function renderCrewTable() {
       <td><strong>${escapeHtml(c.name)}</strong></td>
       <td><span class="status-tag" style="background: var(--brand-lime-light); color: var(--brand-lime);">${escapeHtml(c.role)}</span></td>
       <td>${escapeHtml(c.email)}</td>
+      <td>${escapeHtml(c.phone || 'N/A')}</td>
       <td><strong>$${c.rate}</strong>/day</td>
-      <td><span class="status-tag ${c.status === 'Available' ? 'active' : 'pending'}">${c.status}</span></td>
+      <td><span class="status-tag ${c.status === 'Available' ? 'active' : 'pending'}">${c.status || 'Available'}</span></td>
       <td>
+        <button class="icon-btn" style="width:30px; height:30px; font-size:14px; margin-right:4px;" onclick="openEditCrewModal('${c.id}')" title="Edit Crew Member">
+          <iconify-icon icon="tabler:pencil" style="color: var(--brand-cyan);"></iconify-icon>
+        </button>
         <button class="icon-btn" style="width:30px; height:30px; font-size:14px;" onclick="deleteCrew('${c.id}')" title="Remove Crew Member">
           <iconify-icon icon="tabler:trash" style="color: var(--brand-red);"></iconify-icon>
         </button>
@@ -442,6 +452,7 @@ function handleAddCrew(e) {
   const name = document.getElementById('input-crew-name').value;
   const role = document.getElementById('input-crew-role').value;
   const email = document.getElementById('input-crew-email').value;
+  const phone = document.getElementById('input-crew-phone').value || '';
   const rate = parseInt(document.getElementById('input-crew-rate').value) || 500;
 
   appState.crew.push({
@@ -449,6 +460,7 @@ function handleAddCrew(e) {
     name,
     role,
     email,
+    phone,
     rate,
     status: 'Available'
   });
@@ -502,6 +514,123 @@ function handleAddProject(e) {
 }
 
 /* ==========================================================================
+   EDIT DETAILS HANDLERS FOR CLIENTS, CREW & PROJECTS
+   ========================================================================== */
+
+// 1. Edit Client Handlers
+function openEditClientModal(id) {
+  const client = appState.clients.find(c => c.id === id);
+  if (!client) return;
+
+  document.getElementById('edit-client-id').value = client.id;
+  document.getElementById('edit-client-name').value = client.name;
+  document.getElementById('edit-client-company').value = client.company;
+  document.getElementById('edit-client-email').value = client.email;
+  document.getElementById('edit-client-phone').value = client.phone || '';
+  document.getElementById('edit-client-status').value = client.status || 'Active';
+
+  openModal('modal-edit-client');
+}
+
+function handleSaveEditClient(e) {
+  e.preventDefault();
+  const id = document.getElementById('edit-client-id').value;
+  const client = appState.clients.find(c => c.id === id);
+  if (!client) return;
+
+  client.name = document.getElementById('edit-client-name').value;
+  client.company = document.getElementById('edit-client-company').value;
+  client.email = document.getElementById('edit-client-email').value;
+  client.phone = document.getElementById('edit-client-phone').value;
+  client.status = document.getElementById('edit-client-status').value;
+
+  saveState();
+  closeModal('modal-edit-client');
+}
+
+// 2. Edit Crew Handlers
+function openEditCrewModal(id) {
+  const crew = appState.crew.find(c => c.id === id);
+  if (!crew) return;
+
+  document.getElementById('edit-crew-id').value = crew.id;
+  document.getElementById('edit-crew-name').value = crew.name;
+  document.getElementById('edit-crew-role').value = crew.role;
+  document.getElementById('edit-crew-email').value = crew.email;
+  document.getElementById('edit-crew-phone').value = crew.phone || '';
+  document.getElementById('edit-crew-rate').value = crew.rate;
+  document.getElementById('edit-crew-status').value = crew.status || 'Available';
+
+  openModal('modal-edit-crew');
+}
+
+function handleSaveEditCrew(e) {
+  e.preventDefault();
+  const id = document.getElementById('edit-crew-id').value;
+  const crew = appState.crew.find(c => c.id === id);
+  if (!crew) return;
+
+  crew.name = document.getElementById('edit-crew-name').value;
+  crew.role = document.getElementById('edit-crew-role').value;
+  crew.email = document.getElementById('edit-crew-email').value;
+  crew.phone = document.getElementById('edit-crew-phone').value;
+  crew.rate = parseInt(document.getElementById('edit-crew-rate').value) || 0;
+  crew.status = document.getElementById('edit-crew-status').value;
+
+  saveState();
+  closeModal('modal-edit-crew');
+}
+
+// 3. Edit Project Handlers
+function openEditProjectModal(id) {
+  const project = appState.projects.find(p => p.id === id);
+  if (!project) return;
+
+  document.getElementById('edit-project-id').value = project.id;
+  document.getElementById('edit-project-title').value = project.title;
+  document.getElementById('edit-project-client').value = project.client;
+  document.getElementById('edit-project-category').value = project.category;
+  document.getElementById('edit-project-date').value = project.date;
+  document.getElementById('edit-project-status').value = project.status || 'Active';
+
+  const container = document.getElementById('edit-project-crew-checkboxes');
+  if (container) {
+    if (appState.crew.length === 0) {
+      container.innerHTML = `<span style="font-size: 12px; color: var(--text-muted);">No crew members available. Add crew members first.</span>`;
+    } else {
+      const assignedSet = new Set(project.crew || []);
+      container.innerHTML = appState.crew.map(cr => `
+        <label class="crew-checkbox-item">
+          <input type="checkbox" value="${escapeHtml(cr.name)}" ${assignedSet.has(cr.name) ? 'checked' : ''}>
+          <span>${escapeHtml(cr.name)} (${escapeHtml(cr.role)})</span>
+        </label>
+      `).join('');
+    }
+  }
+
+  openModal('modal-edit-project');
+}
+
+function handleSaveEditProject(e) {
+  e.preventDefault();
+  const id = document.getElementById('edit-project-id').value;
+  const project = appState.projects.find(p => p.id === id);
+  if (!project) return;
+
+  project.title = document.getElementById('edit-project-title').value;
+  project.client = document.getElementById('edit-project-client').value;
+  project.category = document.getElementById('edit-project-category').value;
+  project.date = document.getElementById('edit-project-date').value;
+  project.status = document.getElementById('edit-project-status').value;
+
+  const checkedCrew = Array.from(document.querySelectorAll('#edit-project-crew-checkboxes input:checked')).map(cb => cb.value);
+  project.crew = checkedCrew.length > 0 ? checkedCrew : ['Unassigned'];
+
+  saveState();
+  closeModal('modal-edit-project');
+}
+
+/* ==========================================================================
    INTERACTIVE WHATSAPP & EMAIL DISPATCHERS
    ========================================================================== */
 
@@ -523,7 +652,7 @@ function handleWARecipientTypeChange() {
     ).join('');
   } else {
     select.innerHTML = appState.crew.map(cr => 
-      `<option value="${cr.id}" data-name="${escapeHtml(cr.name)}" data-phone="${cr.phone || '+15554821000'}">${escapeHtml(cr.name)} (${escapeHtml(cr.role)}) - ${cr.phone || '+15554821000'}</option>`
+      `<option value="${cr.id}" data-name="${escapeHtml(cr.name)}" data-phone="${cr.phone || ''}">${escapeHtml(cr.name)} (${escapeHtml(cr.role)}) ${cr.phone ? '- ' + cr.phone : ''}</option>`
     ).join('');
   }
 
@@ -547,12 +676,18 @@ function updateWAMessageTemplate() {
   const recipientSelect = document.getElementById('wa-recipient-select');
   const projectSelect = document.getElementById('wa-project-select');
   const messageTextarea = document.getElementById('wa-message-text');
+  const targetPhoneInput = document.getElementById('wa-target-phone');
 
   if (!recipientSelect || !messageTextarea) return;
 
   const selectedOpt = recipientSelect.options[recipientSelect.selectedIndex];
   const recipientName = selectedOpt ? selectedOpt.getAttribute('data-name') : 'there';
+  const recipientPhone = selectedOpt ? (selectedOpt.getAttribute('data-phone') || '') : '';
   const projectTitle = projectSelect ? projectSelect.value : 'your project';
+
+  if (targetPhoneInput && recipientPhone) {
+    targetPhoneInput.value = recipientPhone;
+  }
 
   if (category === 'client') {
     messageTextarea.value = `Hello ${recipientName}, here is an official project update regarding '${projectTitle}': The shoot & production deliverables are progressing smoothly according to our Pragati workflow schedule! Please let us know if you have any questions.`;
@@ -563,15 +698,19 @@ function updateWAMessageTemplate() {
 
 function handleSendWhatsApp(e) {
   e.preventDefault();
-  const recipientSelect = document.getElementById('wa-recipient-select');
+  const targetPhoneInput = document.getElementById('wa-target-phone');
   const messageTextarea = document.getElementById('wa-message-text');
   
-  if (!recipientSelect || !messageTextarea) return;
+  if (!messageTextarea) return;
 
-  const selectedOpt = recipientSelect.options[recipientSelect.selectedIndex];
-  const rawPhone = selectedOpt ? selectedOpt.getAttribute('data-phone') : '';
+  const rawPhone = targetPhoneInput ? targetPhoneInput.value : '';
   const cleanPhone = rawPhone.replace(/[^\d+]/g, '');
   const messageText = messageTextarea.value;
+
+  if (!cleanPhone) {
+    alert('Please enter a valid WhatsApp phone number for the recipient.');
+    return;
+  }
 
   const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(messageText)}`;
   window.open(waUrl, '_blank');
