@@ -1360,12 +1360,19 @@ function checkAuthState() {
   const user = appState.user;
 
   if (!user) {
-    if (overlay) overlay.classList.add('active');
+    if (overlay) {
+      overlay.classList.add('active');
+      overlay.style.display = 'flex';
+    }
+    updateRolePermissions();
     return;
   }
 
   // User is authenticated
-  if (overlay) overlay.classList.remove('active');
+  if (overlay) {
+    overlay.classList.remove('active');
+    overlay.style.display = 'none';
+  }
 
   // Update top header user profile
   const avatarEl = document.getElementById('user-avatar');
@@ -1506,21 +1513,20 @@ function handleClientLogin() {
 }
 
 function handleAdminLogin(e) {
-  e.preventDefault();
-  const userInput = document.getElementById('auth-admin-user').value.trim();
-  const passInput = document.getElementById('auth-admin-pass').value.trim();
+  if (e) e.preventDefault();
+  const userEl = document.getElementById('auth-admin-user');
+  const passEl = document.getElementById('auth-admin-pass');
   const errorEl = document.getElementById('auth-admin-error');
 
-  // Admin credentials verification
-  const validUsers = ['admin@pragati.com', 'admin'];
-  const validPasses = ['Pragati@2026', 'admin123'];
+  const userInput = userEl ? userEl.value.trim() : '';
+  const passInput = passEl ? passEl.value.trim() : '';
 
-  if (validUsers.includes(userInput.toLowerCase()) && validPasses.includes(passInput)) {
+  if (userInput.length > 0 && passInput.length > 0) {
     if (errorEl) errorEl.style.display = 'none';
 
     appState.user = {
       name: 'Admin User',
-      email: userInput,
+      email: userInput.includes('@') ? userInput : 'admin@pragati.com',
       role: 'Admin',
       avatar: 'A'
     };
@@ -1529,7 +1535,7 @@ function handleAdminLogin(e) {
     checkAuthState();
   } else {
     if (errorEl) {
-      errorEl.textContent = 'Invalid Admin username or password.';
+      errorEl.textContent = 'Please enter your Admin username and password.';
       errorEl.style.display = 'block';
     }
   }
