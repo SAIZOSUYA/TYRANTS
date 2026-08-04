@@ -18,3 +18,7 @@ WHY DO WE NEED A CLIENT APPROVAL WORKFLOW SYSTEM?
 
 4. Protection Against Client-Side Executive Turnover:
    In case the executive in charge of the project is changed or replaced, the workflow system provides the undeniable proof of all previous approval, brief, and sign-off, which prevents unpaid rework and complete redo of previously completed work.
+
+WORKING AND CODE OF THE PWS :
+
+
