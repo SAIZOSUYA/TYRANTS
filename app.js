@@ -77,10 +77,15 @@ function updateStats() {
   const totalClientsEl = document.getElementById('stat-total-clients');
   const activeProjectsEl = document.getElementById('stat-active-projects');
   const upcomingShootsEl = document.getElementById('stat-upcoming-shoots');
+  const revenueEl = document.getElementById('stat-revenue');
 
   if (totalClientsEl) totalClientsEl.textContent = appState.clients.length;
   if (activeProjectsEl) activeProjectsEl.textContent = appState.projects.filter(p => p.status === 'Active').length;
   if (upcomingShootsEl) upcomingShootsEl.textContent = appState.projects.length;
+  if (revenueEl) {
+    const rev = appState.revenue || 0;
+    revenueEl.textContent = rev > 0 ? '$' + (rev >= 1000 ? (rev / 1000).toFixed(1) + 'k' : rev) : '$0';
+  }
 }
 
 // Render Dashboard & Projects Directory Tables
