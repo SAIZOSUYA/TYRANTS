@@ -13,4 +13,5 @@ WHY DO WE NEED A CLIENT APPROVAL WORKFLOW SYSTEM?
 2. Legal Liability & Compliance Protection :
    With a reliable workflow system in place, products that have been completed and approved by the client cannot be further changed due to legal complications and agreements.
 
-3.
+3. Preventing High-Cost Pipeline Bottlenecks :
+   Workflow management system gives a wide overview of the entire project, including work responsibilities of employees, time allocation for each part of the project, completion rate, etc. which makes it easier for managers to prevent idle hours and extra expenses. 
