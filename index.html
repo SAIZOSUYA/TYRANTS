@@ -180,8 +180,8 @@
           <li class="nav-item active" id="nav-tab-dashboard">
             <a onclick="switchTab('tab-dashboard')">
               <div class="nav-item-content">
-                <iconify-icon icon="tabler:sparkles"></iconify-icon>
-                <span>For You Hub</span>
+                <iconify-icon icon="tabler:layout-dashboard"></iconify-icon>
+                <span>Dashboard</span>
               </div>
             </a>
           </li>
@@ -294,6 +294,12 @@
               New Workflow
             </button>
 
+            <!-- Unified Multi-Dept Project Intake CTA -->
+            <button class="btn-secondary" id="btn-header-multi-intake" onclick="openMultiIntakeModal()" style="font-size: 13px; font-weight: 700; color: var(--brand-navy); border-color: var(--brand-teal);">
+              <iconify-icon icon="tabler:category-2" style="color: var(--brand-teal);"></iconify-icon>
+              Unified Multi-Dept Intake
+            </button>
+
             <!-- Header Logout Button -->
             <button class="btn-secondary" style="color: var(--status-rejected); border-color: rgba(239, 68, 68, 0.3);" onclick="handleLogout()">
               <iconify-icon icon="tabler:power" style="font-size: 18px;"></iconify-icon>
@@ -307,24 +313,6 @@
              ========================================== -->
         <div id="tab-dashboard" class="dashboard-tab active">
           
-          <!-- Jira Atlassian "For You" Recommended Actions Widget -->
-          <div class="card-section" style="margin-bottom: 24px; background: linear-gradient(135deg, rgba(0, 82, 204, 0.04) 0%, rgba(14, 165, 233, 0.06) 100%); border: 1px solid rgba(0, 82, 204, 0.2);">
-            <div class="section-header">
-              <h2 class="section-title" style="display: flex; align-items: center; gap: 10px;">
-                <iconify-icon icon="tabler:sparkles" style="color: #0052CC; font-size: 24px;"></iconify-icon>
-                Recommended Actions For You
-              </h2>
-              <span class="status-badge" style="background: #0052CC; color: white;">3 ACTIONS REQUIRED</span>
-            </div>
-            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 18px;">
-              Prioritized deliverable reviews, client committee approvals, and legal seals requiring your immediate attention.
-            </p>
-
-            <div id="jira-recommended-actions-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px;">
-              <!-- Dynamically populated in app.js -->
-            </div>
-          </div>
-
           <!-- 4 Metric Cards (Admin Only View) -->
           <div class="metrics-grid" id="admin-dashboard-metrics">
             <div class="metric-card">
@@ -591,67 +579,7 @@
                 </div>
               </div>
 
-        </div>
-
-        <!-- ==========================================
-             TAB: JIRA AGILE KANBAN BOARD
-             ========================================== -->
-        <div id="tab-kanban" class="dashboard-tab">
-          <div class="card-section" style="margin-bottom: 20px;">
-            <div class="section-header">
-              <h2 class="section-title" style="display: flex; align-items: center; gap: 10px;">
-                <iconify-icon icon="tabler:columns" style="color: #0052CC; font-size: 24px;"></iconify-icon>
-                Agile Workflow Kanban Board
-              </h2>
-              <div style="display: flex; gap: 10px; align-items: center;">
-                <span class="status-badge" style="background: #e0f2fe; color: #0369a1;">PROJECT: PWS AGILE SPRINT</span>
-                <button class="btn-primary" onclick="openCreateModal()" style="font-size: 12px; padding: 6px 14px;">+ Create Issue</button>
-              </div>
             </div>
-            <p style="font-size: 13px; color: var(--text-muted);">
-              Track and transition deliverable workflows across 4 agile stages: Backlog, In Progress, Client Review, and Sealed.
-            </p>
-          </div>
-
-          <!-- 4 Kanban Columns Grid -->
-          <div class="jira-kanban-board">
-            
-            <!-- Column 1: To Do / Backlog -->
-            <div class="jira-column" id="col-todo">
-              <div class="jira-col-header">
-                <span class="jira-col-title">TO DO / BACKLOG</span>
-                <span class="jira-col-count" id="count-todo">0</span>
-              </div>
-              <div class="jira-col-cards" id="cards-todo"></div>
-            </div>
-
-            <!-- Column 2: In Progress -->
-            <div class="jira-column" id="col-in_progress">
-              <div class="jira-col-header">
-                <span class="jira-col-title">IN PROGRESS</span>
-                <span class="jira-col-count" id="count-in_progress">0</span>
-              </div>
-              <div class="jira-col-cards" id="cards-in_progress"></div>
-            </div>
-
-            <!-- Column 3: Client Review & Sign-Off -->
-            <div class="jira-column" id="col-client_review">
-              <div class="jira-col-header">
-                <span class="jira-col-title">CLIENT REVIEW</span>
-                <span class="jira-col-count" id="count-client_review">0</span>
-              </div>
-              <div class="jira-col-cards" id="cards-client_review"></div>
-            </div>
-
-            <!-- Column 4: Done & Sealed -->
-            <div class="jira-column" id="col-done">
-              <div class="jira-col-header">
-                <span class="jira-col-title">DONE & SEALED</span>
-                <span class="jira-col-count" id="count-done">0</span>
-              </div>
-              <div class="jira-col-cards" id="cards-done"></div>
-            </div>
-
           </div>
         </div>
 
@@ -1173,53 +1101,79 @@
         </div>
       </form>
     </div>
-  <!-- Modal 7: Jira Issue Detail & Transition Drawer -->
-  <div id="jira-issue-modal" class="modal-overlay" role="dialog" aria-modal="true">
+  </div>
+
+  <!-- Modal 7: Unified Multi-Department Project Intake -->
+  <div id="multi-intake-modal" class="modal-overlay">
     <div class="modal-card" style="max-width: 650px;">
       <div class="modal-header">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <span class="issue-key-badge" id="jira-modal-key">PWS-101</span>
-          <h3 id="jira-modal-title">Deliverable Summary</h3>
-        </div>
-        <button class="close-btn" onclick="closeModal('jira-issue-modal')">✕</button>
+        <h3><iconify-icon icon="tabler:category-2" style="color: var(--brand-teal); vertical-align: middle;"></iconify-icon> Unified Multi-Department Project Intake</h3>
+        <button class="close-btn" onclick="closeModal('multi-intake-modal')">✕</button>
       </div>
 
-      <div style="background: #f8fafc; border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-md); margin-bottom: 20px;">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; font-size: 13px;">
-          <div>
-            <div style="color: var(--text-muted); font-size: 11px; font-weight: 700;">CURRENT STAGE</div>
-            <span class="status-badge" id="jira-modal-status">In Progress</span>
-          </div>
-          <div>
-            <div style="color: var(--text-muted); font-size: 11px; font-weight: 700;">PRIORITY</div>
-            <span style="font-weight: 800; color: #dc2626;" id="jira-modal-priority">HIGH</span>
-          </div>
-          <div>
-            <div style="color: var(--text-muted); font-size: 11px; font-weight: 700;">CLIENT ENTERPRISE</div>
-            <strong id="jira-modal-client" style="color: var(--brand-navy);">Apex Global</strong>
-          </div>
-          <div>
-            <div style="color: var(--text-muted); font-size: 11px; font-weight: 700;">ASSIGNED LEAD</div>
-            <strong id="jira-modal-assignee" style="color: var(--brand-navy);">Sarah Jenkins</strong>
-          </div>
-        </div>
+      <div style="background: linear-gradient(135deg, rgba(14, 165, 233, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%); padding: 14px; border-radius: var(--radius-md); border: 1px solid var(--brand-teal); margin-bottom: 20px; font-size: 13px; color: var(--brand-navy);">
+        <iconify-icon icon="tabler:route-2" style="font-size: 18px; vertical-align: middle; margin-right: 6px; color: var(--brand-teal);"></iconify-icon>
+        <strong>Automated Category Router:</strong> Select multiple required departments for cross-functional client projects (e.g., Event needing Decoration + Digital Marketing + IT/AV Setup).
       </div>
 
-      <div style="margin-bottom: 20px;">
-        <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">AGILE STATUS TRANSITIONS</label>
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;" id="jira-modal-transitions">
-          <!-- Transition buttons populated in app.js -->
+      <form onsubmit="submitMultiIntake(event)">
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Enterprise Client Name</label>
+          <input type="text" id="multi-input-client" required placeholder="e.g. Apex Global Enterprise" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
         </div>
-      </div>
 
-      <div style="display: flex; gap: 12px; justify-content: flex-end;">
-        <button type="button" class="btn-secondary" onclick="closeModal('jira-issue-modal')">Close</button>
-      </div>
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Unified Project Title</label>
+          <input type="text" id="multi-input-title" required placeholder="e.g. Grand Expo 2026 Launch & Venue Install" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+        </div>
+
+        <!-- Checkbox selections for 4 verticals -->
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--brand-navy);">Select Required Departments (Multi-Route):</label>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; background: #f8fafc; padding: 10px 14px; border-radius: var(--radius-md); border: 1px solid var(--border-color); cursor: pointer;">
+              <input type="checkbox" name="multi-dept" value="marketing" checked>
+              <span>Digital Marketing (Copy & Ads)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; background: #f8fafc; padding: 10px 14px; border-radius: var(--radius-md); border: 1px solid var(--border-color); cursor: pointer;">
+              <input type="checkbox" name="multi-dept" value="production" checked>
+              <span>Production (Video & Film)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; background: #f8fafc; padding: 10px 14px; border-radius: var(--radius-md); border: 1px solid var(--border-color); cursor: pointer;">
+              <input type="checkbox" name="multi-dept" value="decoration" checked>
+              <span>Decoration (Installs & Decor)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; background: #f8fafc; padding: 10px 14px; border-radius: var(--radius-md); border: 1px solid var(--border-color); cursor: pointer;">
+              <input type="checkbox" name="multi-dept" value="it" checked>
+              <span>IT Services (AV & Infra)</span>
+            </label>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px;">
+          <div>
+            <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Project Total Budget ($)</label>
+            <input type="number" id="multi-input-budget" placeholder="45000" value="45000" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--brand-navy);">Client WhatsApp Phone</label>
+            <input type="tel" id="multi-input-phone" placeholder="+9779801234567" value="+9779801234567" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 14px;">
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button type="button" class="btn-secondary" onclick="closeModal('multi-intake-modal')">Cancel</button>
+          <button type="submit" class="btn-primary">
+            <iconify-icon icon="tabler:git-fork"></iconify-icon>
+            Auto-Route to Selected Departments
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 
   <!-- Live Toast Container -->
-  <div id="toast-container" class="toast-container" role="status" aria-live="polite"></div>
+  <div id="toast-container" class="toast-container"></div>
 
   <!-- JS App Script -->
   <script src="app.js"></script>
