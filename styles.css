@@ -971,3 +971,32 @@ a {
   align-items: center;
   justify-content: space-between;
 }
+
+/* Urgent Completion Deadline Red Alert Styles */
+.progress-card.urgent {
+  border-color: rgba(224, 86, 36, 0.4);
+  background: #fffcfb;
+}
+
+.progress-card.urgent::before {
+  background: linear-gradient(90deg, #e05624 0%, #ef4444 100%);
+}
+
+.urgent-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: #fef2f2;
+  color: var(--brand-red);
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 10px;
+  border: 1px solid rgba(224, 86, 36, 0.3);
+  animation: pulseWarning 2s infinite ease-in-out;
+}
+
+@keyframes pulseWarning {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.65; }
+}

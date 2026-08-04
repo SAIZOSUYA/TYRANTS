@@ -118,6 +118,47 @@ function updateStats() {
   }
 }
 
+// Helper: Calculate Completion Deadline Urgency
+function getDeadlineStatus(endDateStr, progress) {
+  if (progress >= 100) {
+    return { isNear: false, label: '', daysLeft: null };
+  }
+  if (!endDateStr) {
+    return { isNear: false, label: '', daysLeft: null };
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const parts = endDateStr.split('-');
+  let compDate;
+  if (parts.length === 3) {
+    compDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+  } else {
+    compDate = new Date(endDateStr);
+  }
+  compDate.setHours(0, 0, 0, 0);
+
+  const diffTime = compDate - today;
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays <= 3) {
+    let label = '';
+    if (diffDays < 0) {
+      label = `Overdue ${Math.abs(diffDays)}d!`;
+    } else if (diffDays === 0) {
+      label = 'Due Today!';
+    } else if (diffDays === 1) {
+      label = 'Due Tomorrow!';
+    } else {
+      label = `Due in ${diffDays}d!`;
+    }
+    return { isNear: true, label, daysLeft: diffDays };
+  }
+
+  return { isNear: false, label: '', daysLeft: diffDays };
+}
+
 // Render Dashboard & Projects Directory Tables
 function renderDashboardProjects(customList) {
   const tbodyDashboard = document.getElementById('table-dashboard-projects');
@@ -134,12 +175,17 @@ function renderDashboardProjects(customList) {
         const startDate = p.startDate || p.date;
         const shootDate = p.date;
         const endDate = p.endDate || p.date;
+        const deadline = getDeadlineStatus(endDate, p.progress || 0);
+
+        const endLineHtml = deadline.isNear
+          ? `<div><span style="color: var(--brand-red); font-weight: 800;">End: ${escapeHtml(endDate)}</span> <span class="urgent-badge"><iconify-icon icon="tabler:alert-triangle"></iconify-icon> ${escapeHtml(deadline.label)}</span></div>`
+          : `<div><span style="color: var(--brand-lime); font-weight: 700;">End:</span> ${escapeHtml(endDate)}</div>`;
 
         const datesHtml = `
           <div style="font-size: 11px; line-height: 1.4;">
             <div><span style="color: var(--brand-cyan); font-weight: 700;">Start:</span> ${escapeHtml(startDate)}</div>
             <div><span style="color: var(--brand-navy); font-weight: 700;">Shoot:</span> ${escapeHtml(shootDate)}</div>
-            <div><span style="color: var(--brand-lime); font-weight: 700;">End:</span> ${escapeHtml(endDate)}</div>
+            ${endLineHtml}
           </div>
         `;
 
@@ -708,19 +754,30 @@ function renderProgressTracker(customList) {
     const stage = p.stage || 'Pre-Production';
     const startDate = p.startDate || p.date;
     const endDate = p.endDate || p.date;
+    const deadline = getDeadlineStatus(endDate, percent);
+
     const crewPills = (p.crew && p.crew.length > 0)
       ? p.crew.map(cr => `<span class="crew-tag-pill">${escapeHtml(cr)}</span>`).join('')
       : `<span style="font-size: 11px; color: var(--text-muted);">Unassigned</span>`;
 
+    const cardClass = `progress-card ${deadline.isNear ? 'urgent' : ''}`;
+    const timelineHtml = deadline.isNear
+      ? `<div style="font-size: 11px; margin-top: 4px; display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
+           <span style="color: var(--text-muted);">Timeline: ${escapeHtml(startDate)} &rarr;</span>
+           <span style="color: var(--brand-red); font-weight: 800; text-decoration: underline;">${escapeHtml(endDate)}</span>
+           <span class="urgent-badge"><iconify-icon icon="tabler:alert-triangle"></iconify-icon> ${escapeHtml(deadline.label)}</span>
+         </div>`
+      : `<div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Timeline: ${escapeHtml(startDate)} &rarr; ${escapeHtml(endDate)}</div>`;
+
     return `
-      <div class="progress-card">
+      <div class="${cardClass}">
         <div class="progress-card-header">
           <div>
             <div class="progress-card-title">${escapeHtml(p.title)}</div>
             <div class="progress-card-client">Client: ${escapeHtml(p.client)}</div>
-            <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Timeline: ${escapeHtml(startDate)} &rarr; ${escapeHtml(endDate)}</div>
+            ${timelineHtml}
           </div>
-          <span class="progress-stage-badge">${escapeHtml(stage)}</span>
+          <span class="progress-stage-badge" style="${deadline.isNear ? 'background: #fef2f2; color: var(--brand-red);' : ''}">${escapeHtml(stage)}</span>
         </div>
 
         <div class="progress-bar-container">
