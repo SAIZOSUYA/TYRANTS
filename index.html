@@ -420,8 +420,11 @@
                 <input type="email" id="setting-email" value="admin@pragatisystem.com">
               </div>
 
-              <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border-color);">
-                <button class="btn-primary-amber" onclick="saveSettings()">Save Configuration</button>
+              <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border-color); display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                <button type="button" class="btn-primary-amber" onclick="saveSettings()">Save Configuration</button>
+                <button type="button" class="btn-secondary admin-only" style="color: var(--brand-red); border-color: rgba(224, 86, 36, 0.4);" onclick="openModal('modal-clear-data')">
+                  <iconify-icon icon="tabler:trash"></iconify-icon> Clear All Studio Data
+                </button>
               </div>
             </div>
           </div>

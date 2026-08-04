@@ -647,6 +647,9 @@ function handleAddCrew(e) {
     status: 'Available'
   });
 
+  // Dispatch notification from Admin to newly added crew member
+  sendAdminNotificationToCrew(name, 'Welcome to Studio Roster', `Welcome ${name}! Admin added your profile to the Pragati Studio Crew Roster.`);
+
   saveState();
   closeModal('modal-add-crew');
   e.target.reset();
@@ -700,6 +703,13 @@ function handleAddProject(e) {
     status: 'Active',
     stage: 'Pre-Production',
     progress: 25
+  });
+
+  // Dispatch work assignment notifications from Admin to assigned crew
+  checkedCrew.forEach(crName => {
+    if (crName !== 'Unassigned') {
+      sendAdminNotificationToCrew(crName, 'New Work Assignment', `Admin assigned you to project "${title}" (Shoot Date: ${date})`);
+    }
   });
 
   saveState();
@@ -831,6 +841,13 @@ function handleSaveEditProject(e) {
 
   const checkedCrew = Array.from(document.querySelectorAll('#edit-project-crew-checkboxes input:checked')).map(cb => cb.value);
   project.crew = checkedCrew.length > 0 ? checkedCrew : ['Unassigned'];
+
+  // Dispatch work assignment notifications from Admin to assigned crew
+  checkedCrew.forEach(crName => {
+    if (crName !== 'Unassigned') {
+      sendAdminNotificationToCrew(crName, 'Work Assignment Update', `Admin updated your assignment on project "${project.title}"`);
+    }
+  });
 
   saveState();
   closeModal('modal-edit-project');
@@ -1296,6 +1313,20 @@ function saveSettings() {
   alert('Studio settings updated successfully!');
 }
 
+function confirmClearAllData() {
+  const user = appState.user;
+  if (!user || user.role !== 'Admin') {
+    alert('Permission Denied: Only Studio Admins can clear system data.');
+    closeModal('modal-clear-data');
+    return;
+  }
+
+  appState = JSON.parse(JSON.stringify(DEFAULT_STATE));
+  saveState();
+  closeModal('modal-clear-data');
+  alert('All studio data reset successfully.');
+}
+
 /* ==========================================================================
    AUTHENTICATION & USER SESSION MANAGEMENT
    ========================================================================== */
@@ -1553,6 +1584,9 @@ function approveCrewMember(id) {
   crewMember.approvalStatus = 'Approved';
   crewMember.status = 'Available';
 
+  // Notify approved crew member
+  sendAdminNotificationToCrew(crewMember.name, 'Account Approved', `Welcome ${crewMember.name}! Admin has approved your Crew access.`);
+
   saveState();
   alert(`Approved crew member ${crewMember.name}!`);
 }
@@ -1569,11 +1603,25 @@ function rejectCrewMember(id) {
    IN-APP REAL-TIME ACTIVITY NOTIFICATIONS SYSTEM
    ========================================================================== */
 
+function sendAdminNotificationToCrew(recipientCrew, title, message) {
+  if (!appState.notifications) appState.notifications = [];
+  appState.notifications.unshift({
+    id: 'notif_' + Date.now(),
+    title: title || 'Work Assignment',
+    message: message,
+    recipientCrew: recipientCrew,
+    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    read: false
+  });
+  saveState();
+  renderNotifications();
+}
+
 function addNotification(data) {
   // "notify every action except for admin's"
   const currentUserRole = appState.user ? appState.user.role : null;
   if (currentUserRole === 'Admin') {
-    return; // Admin actions do not create self-notifications!
+    return; // Admin self-actions do not create self-notifications!
   }
 
   if (!appState.notifications) appState.notifications = [];
@@ -1595,7 +1643,20 @@ function renderNotifications() {
   const list = document.getElementById('notifications-list');
 
   const notifs = appState.notifications || [];
-  const unreadCount = notifs.filter(n => !n.read).length;
+  const currentUser = appState.user;
+
+  // Filter notifications for active user
+  const userNotifs = notifs.filter(n => {
+    if (!currentUser) return false;
+    if (currentUser.role === 'Admin') return true; // Admin sees all notifications
+    // Crew members see notifications assigned to them or broadcast notifications
+    if (currentUser.role === 'Crew Member' || currentUser.role === 'Crew') {
+      return !n.recipientCrew || n.recipientCrew === currentUser.name || n.recipientCrew === currentUser.email;
+    }
+    return !n.recipientCrew;
+  });
+
+  const unreadCount = userNotifs.filter(n => !n.read).length;
 
   if (badge) {
     if (unreadCount > 0) {
@@ -1607,10 +1668,10 @@ function renderNotifications() {
   }
 
   if (list) {
-    if (notifs.length === 0) {
+    if (userNotifs.length === 0) {
       list.innerHTML = `<div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 12px;">No activity notifications yet</div>`;
     } else {
-      list.innerHTML = notifs.map(n => `
+      list.innerHTML = userNotifs.map(n => `
         <div style="padding: 10px 14px; border-bottom: 1px solid var(--border-color); ${!n.read ? 'background: rgba(2, 132, 199, 0.04);' : ''}">
           <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
             <strong style="font-size: 12px; color: var(--brand-navy);">${escapeHtml(n.title)}</strong>
@@ -1620,6 +1681,14 @@ function renderNotifications() {
         </div>
       `).join('');
     }
+  }
+}
+
+function clearNotifications() {
+  if (appState.user && appState.user.role === 'Admin') {
+    appState.notifications = [];
+    saveState();
+    renderNotifications();
   }
 }
 
