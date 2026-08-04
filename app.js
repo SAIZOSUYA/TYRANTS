@@ -260,6 +260,22 @@ function renderClientsTable(customList) {
   }).join('');
 }
 
+// Helper: Get active projects assigned to a specific crew member
+function getCrewAssignedProjects(crewName) {
+  if (!crewName || !appState.projects) return [];
+  return appState.projects.filter(p => {
+    const status = (p.status || '').toLowerCase();
+    const stage = (p.stage || '').toLowerCase();
+    const progress = p.progress !== undefined ? p.progress : 0;
+
+    // Active project check
+    const isActive = status !== 'completed' && status !== 'delivered' && stage !== 'delivered & completed' && progress < 100;
+    if (!isActive) return false;
+
+    return p.crew && Array.isArray(p.crew) && p.crew.some(cr => cr.trim().toLowerCase() === crewName.trim().toLowerCase());
+  });
+}
+
 // Render Crew & Talent Table
 function renderCrewTable(customList) {
   const tbody = document.getElementById('table-crew');
@@ -278,6 +294,23 @@ function renderCrewTable(customList) {
   const isAdmin = appState.user && appState.user.role === 'Admin';
 
   tbody.innerHTML = list.map(c => {
+    const assignedProjects = getCrewAssignedProjects(c.name);
+    const isBooked = assignedProjects.length > 0;
+    c.status = isBooked ? 'Unavailable' : 'Available';
+
+    const statusHtml = isBooked
+      ? `<span class="status-tag pending" style="background: #fef2f2; color: var(--brand-red); font-weight: 800; border: 1px solid rgba(224,86,36,0.3);">Unavailable</span>`
+      : `<span class="status-tag active">Available</span>`;
+
+    const nameCellHtml = isBooked
+      ? `<div>
+           <strong>${escapeHtml(c.name)}</strong>
+           <div style="font-size: 11px; color: var(--brand-red); margin-top: 2px; font-weight: 600;">
+             <iconify-icon icon="tabler:movie" style="vertical-align: -1px;"></iconify-icon> Booked: ${escapeHtml(assignedProjects.map(p => p.title).join(', '))}
+           </div>
+         </div>`
+      : `<strong>${escapeHtml(c.name)}</strong>`;
+
     const actionCell = isAdmin ? `
       <td>
         <button class="icon-btn" style="width:30px; height:30px; font-size:14px; margin-right:4px;" onclick="openEditCrewModal('${c.id}')" title="Edit Crew Member">
@@ -291,12 +324,12 @@ function renderCrewTable(customList) {
 
     return `
       <tr>
-        <td><strong>${escapeHtml(c.name)}</strong></td>
+        <td>${nameCellHtml}</td>
         <td><span class="status-tag" style="background: var(--brand-lime-light); color: var(--brand-lime);">${escapeHtml(c.role)}</span></td>
         <td>${escapeHtml(c.email)}</td>
         <td>${escapeHtml(c.phone || 'N/A')}</td>
         <td><strong>${symbol}${c.rate ? c.rate.toLocaleString() : '0'}</strong>/day</td>
-        <td><span class="status-tag ${c.status === 'Available' ? 'active' : 'pending'}">${c.status || 'Available'}</span></td>
+        <td>${statusHtml}</td>
         ${actionCell}
       </tr>
     `;
@@ -596,12 +629,18 @@ function openAddProjectModal() {
     if (appState.crew.length === 0) {
       container.innerHTML = `<span style="font-size: 12px; color: var(--text-muted);">No crew members available in roster. Add crew members first.</span>`;
     } else {
-      container.innerHTML = appState.crew.map((cr, idx) => `
-        <label class="crew-checkbox-item">
-          <input type="checkbox" value="${escapeHtml(cr.name)}" ${idx === 0 ? 'checked' : ''}>
-          <span>${escapeHtml(cr.name)} (${escapeHtml(cr.role)})</span>
-        </label>
-      `).join('');
+      container.innerHTML = appState.crew.map((cr, idx) => {
+        const assigned = getCrewAssignedProjects(cr.name);
+        const isBooked = assigned.length > 0;
+        const bookedTag = isBooked ? `<span style="color: var(--brand-red); font-size: 11px; font-weight: 700; margin-left: 4px;">(Unavailable - ${escapeHtml(assigned[0].title)})</span>` : '';
+
+        return `
+          <label class="crew-checkbox-item" style="${isBooked ? 'opacity: 0.85;' : ''}">
+            <input type="checkbox" value="${escapeHtml(cr.name)}" ${idx === 0 && !isBooked ? 'checked' : ''}>
+            <span>${escapeHtml(cr.name)} (${escapeHtml(cr.role)}) ${bookedTag}</span>
+          </label>
+        `;
+      }).join('');
     }
   }
   openModal('modal-add-project');
@@ -726,12 +765,20 @@ function openEditProjectModal(id) {
       container.innerHTML = `<span style="font-size: 12px; color: var(--text-muted);">No crew members available. Add crew members first.</span>`;
     } else {
       const assignedSet = new Set(project.crew || []);
-      container.innerHTML = appState.crew.map(cr => `
-        <label class="crew-checkbox-item">
-          <input type="checkbox" value="${escapeHtml(cr.name)}" ${assignedSet.has(cr.name) ? 'checked' : ''}>
-          <span>${escapeHtml(cr.name)} (${escapeHtml(cr.role)})</span>
-        </label>
-      `).join('');
+      container.innerHTML = appState.crew.map(cr => {
+        const assignedProjects = getCrewAssignedProjects(cr.name);
+        // Exclude current project from booked check
+        const otherBooked = assignedProjects.filter(p => p.id !== project.id);
+        const isBooked = otherBooked.length > 0;
+        const bookedTag = isBooked ? `<span style="color: var(--brand-red); font-size: 11px; font-weight: 700; margin-left: 4px;">(Unavailable - ${escapeHtml(otherBooked[0].title)})</span>` : '';
+
+        return `
+          <label class="crew-checkbox-item" style="${isBooked ? 'opacity: 0.85;' : ''}">
+            <input type="checkbox" value="${escapeHtml(cr.name)}" ${assignedSet.has(cr.name) ? 'checked' : ''}>
+            <span>${escapeHtml(cr.name)} (${escapeHtml(cr.role)}) ${bookedTag}</span>
+          </label>
+        `;
+      }).join('');
     }
   }
 
