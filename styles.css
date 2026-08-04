@@ -1486,3 +1486,56 @@ a {
     width: 100%;
   }
 }
+
+@media (max-width: 768px) {
+  .app-container {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+    padding: 16px;
+  }
+  .main-content {
+    padding: 16px;
+  }
+  .top-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+  .top-actions {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  .search-box {
+    width: 100%;
+  }
+  .search-box input {
+    width: 100%;
+  }
+  .user-type-selector {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-card-header h2 {
+    font-size: 20px;
+  }
+  .card-section {
+    padding: 16px;
+  }
+  .btn-primary, .btn-secondary, .btn-google {
+    width: 100%;
+  }
+}
+
+/* Accessibility Focus States */
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible {
+  outline: 2px solid var(--brand-teal);
+  outline-offset: 2px;
+}

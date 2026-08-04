@@ -7,8 +7,27 @@
   
   <!-- SEO & Meta -->
   <meta name="description" content="Pragati Workflow System eliminates friction between clients and creative agencies with legally secure, streamlined approval workflows.">
-  
-  <!-- CSS & Fonts -->
+  <meta name="keywords" content="Pragati Workflow, Client Approval Platform, Agency Workflow, Legal Compliance, Cryptographic Seal">
+  <meta name="author" content="Pragati Enterprise Team">
+  <meta name="theme-color" content="#0f2942">
+
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Pragati Workflow System (PWS) | Client Approval Platform">
+  <meta property="og:description" content="Streamline agency deliverables, multi-layer HR reviews, and instant WhatsApp client approvals with cryptographic seals.">
+  <meta property="og:image" content="pragati-logo.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Pragati Workflow System (PWS)">
+  <meta name="twitter:description" content="Legally secure, streamlined client approval workflows for agencies, IT, production, and decoration companies.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230ea5e9'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>">
+
+  <!-- Performance & Fonts Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="styles.css">
   <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 </head>
@@ -266,7 +285,7 @@
             <!-- Search input -->
             <div class="search-box">
               <iconify-icon icon="tabler:search" class="search-icon"></iconify-icon>
-              <input type="text" placeholder="Search workflows, clients...">
+              <input type="text" id="top-search-input" placeholder="Search workflows, clients..." aria-label="Search workflows and clients" oninput="handleSearchInput(this.value)">
             </div>
 
             <!-- Create New Workflow CTA (Admin Only) -->

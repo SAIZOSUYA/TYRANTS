@@ -1187,7 +1187,61 @@ function copyApprovalLink(wfId) {
   showToast(`📋 Client Approval Link copied for ${wfId}`);
 }
 
-function setupEventListeners() {}
+// Security Helper: HTML Input Sanitization
+function escapeHTML(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+// Live Workflow Search Handler
+function handleSearchInput(query) {
+  const q = (query || '').toLowerCase().trim();
+  const rows = document.querySelectorAll('#workflow-table-body tr');
+
+  rows.forEach(row => {
+    const text = row.innerText.toLowerCase();
+    row.style.display = text.includes(q) ? '' : 'none';
+  });
+
+  if (currentState.activeTab === 'tab-workflows') {
+    const cards = document.querySelectorAll('#full-workflows-container .card-section');
+    cards.forEach(card => {
+      const cardText = card.innerText.toLowerCase();
+      card.style.display = cardText.includes(q) ? '' : 'none';
+    });
+  }
+}
+
+function filterWorkflows(filter, btn) {
+  if (btn) {
+    const parent = btn.parentElement;
+    if (parent) {
+      parent.querySelectorAll('button').forEach(b => {
+        b.style.background = 'white';
+        b.style.color = 'var(--brand-navy)';
+      });
+      btn.style.background = 'var(--brand-navy)';
+      btn.style.color = 'white';
+    }
+  }
+  renderWorkflowsTab(filter);
+}
+
+function setupEventListeners() {
+  // Global modal backdrop click handler
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) {
+        overlay.classList.remove('active');
+      }
+    });
+  });
+}
 
 // 14. TOAST NOTIFICATIONS
 function showToast(message) {
@@ -1198,7 +1252,7 @@ function showToast(message) {
   toast.className = 'toast';
   toast.innerHTML = `
     <iconify-icon icon="tabler:info-circle-filled" style="color: var(--brand-teal); font-size: 16px; flex-shrink: 0;"></iconify-icon>
-    <span style="line-height: 1.3;">${message}</span>
+    <span style="line-height: 1.3;">${escapeHTML(message)}</span>
   `;
 
   container.appendChild(toast);
