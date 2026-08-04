@@ -414,13 +414,45 @@
             <div class="section-header">
               <h2 class="section-title">
                 <iconify-icon icon="tabler:chart-arrows" style="color: var(--brand-teal);"></iconify-icon>
-                Active Project Progress Tracking
+                Active Project Progress Tracking & Wheel
               </h2>
               <span class="status-badge pending">3 ACTIVE PROJECTS</span>
             </div>
-            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">
-              Real-time milestone progress tracking across active deliverables and client sign-offs.
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+              Real-time project completion wheel & milestone tracking across active deliverables and client sign-offs.
             </p>
+
+            <!-- Selected Project Progress Wheel Widget Card -->
+            <div class="progress-wheel-card" id="project-progress-wheel-card" style="margin-bottom: 20px; background: #f8fafc; border: 1px solid var(--border-color);">
+              <div class="wheel-container">
+                <svg class="wheel-svg" viewBox="0 0 140 140">
+                  <circle class="wheel-bg-circle" cx="70" cy="70" r="60"></circle>
+                  <circle class="wheel-progress-circle" id="project-wheel-circle" cx="70" cy="70" r="60" style="stroke-dashoffset: 94;"></circle>
+                </svg>
+                <div class="wheel-center-text">
+                  <div class="wheel-percentage" id="project-wheel-percent">75%</div>
+                  <div class="wheel-label">Completed</div>
+                </div>
+              </div>
+
+              <div style="flex: 1;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+                  <h3 style="font-size: 18px; color: var(--brand-navy);" id="project-wheel-name">Q3 Brand Rebrand Campaign</h3>
+                  <span class="status-badge pending" id="project-wheel-status">IN PROGRESS</span>
+                </div>
+                <p style="font-size: 13px; color: var(--text-muted); line-height: 1.4; margin-bottom: 12px;" id="project-wheel-desc">
+                  Current Stage: Phase 3 • Client Committee Sign-off & Milestone Review
+                </p>
+
+                <!-- Phase Stepper Badges -->
+                <div style="display: flex; gap: 8px; font-size: 11px; font-weight: 700; flex-wrap: wrap;" id="project-wheel-phases">
+                  <span style="color: var(--brand-green); background: #dcfce7; padding: 4px 10px; border-radius: 12px;">✓ Phase 1: Drafts</span>
+                  <span style="color: var(--brand-green); background: #dcfce7; padding: 4px 10px; border-radius: 12px;">✓ Phase 2: Internal HR</span>
+                  <span style="color: var(--brand-teal); background: #e0f2fe; padding: 4px 10px; border-radius: 12px;">⚡ Phase 3: Client Review</span>
+                  <span style="color: var(--text-muted); background: #f1f5f9; padding: 4px 10px; border-radius: 12px;">🔒 Phase 4: Legal SHA</span>
+                </div>
+              </div>
+            </div>
 
             <div style="display: flex; flex-direction: column; gap: 16px;">
               

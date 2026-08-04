@@ -924,9 +924,82 @@ function dispatchWhatsAppDirect() {
 }
 
 function switchClientProject(wfId) {
+  const circle = document.getElementById('project-wheel-circle');
+  const percentText = document.getElementById('project-wheel-percent');
+  const nameText = document.getElementById('project-wheel-name');
+  const statusTag = document.getElementById('project-wheel-status');
+  const descText = document.getElementById('project-wheel-desc');
+  const phasesContainer = document.getElementById('project-wheel-phases');
+
+  const projectMap = {
+    'WF-101': {
+      name: 'Q3 Brand Rebrand Campaign',
+      percent: 75,
+      offset: 94,
+      statusClass: 'pending',
+      statusText: 'IN PROGRESS',
+      desc: 'Current Stage: Phase 3 • Client Committee Sign-off & Milestone Review',
+      phases: `
+        <span style="color: var(--brand-green); background: #dcfce7; padding: 4px 10px; border-radius: 12px;">✓ Phase 1: Drafts</span>
+        <span style="color: var(--brand-green); background: #dcfce7; padding: 4px 10px; border-radius: 12px;">✓ Phase 2: Internal HR</span>
+        <span style="color: var(--brand-teal); background: #e0f2fe; padding: 4px 10px; border-radius: 12px;">⚡ Phase 3: Client Review</span>
+        <span style="color: var(--text-muted); background: #f1f5f9; padding: 4px 10px; border-radius: 12px;">🔒 Phase 4: Legal SHA</span>
+      `
+    },
+    'WF-102': {
+      name: 'Social Media Banner Sets',
+      percent: 100,
+      offset: 0,
+      statusClass: 'approved',
+      statusText: '100% COMPLETED',
+      desc: 'Current Stage: Phase 4 • Legally Approved & Cryptographically Sealed',
+      phases: `
+        <span style="color: var(--brand-green); background: #dcfce7; padding: 4px 10px; border-radius: 12px;">✓ Phase 1: Drafts</span>
+        <span style="color: var(--brand-green); background: #dcfce7; padding: 4px 10px; border-radius: 12px;">✓ Phase 2: Internal HR</span>
+        <span style="color: var(--brand-green); background: #dcfce7; padding: 4px 10px; border-radius: 12px;">✓ Phase 3: Client Sign-off</span>
+        <span style="color: var(--brand-green); background: #dcfce7; padding: 4px 10px; border-radius: 12px;">✓ Phase 4: Legal SHA Sealed</span>
+      `
+    },
+    'WF-103': {
+      name: 'SEO Content Pitch Deck',
+      percent: 45,
+      offset: 207,
+      statusClass: 'review',
+      statusText: 'INTERNAL REVIEW',
+      desc: 'Current Stage: Phase 2 • Content Team & HR Review',
+      phases: `
+        <span style="color: var(--brand-green); background: #dcfce7; padding: 4px 10px; border-radius: 12px;">✓ Phase 1: Drafts</span>
+        <span style="color: #f59e0b; background: #fef3c7; padding: 4px 10px; border-radius: 12px;">⚡ Phase 2: Internal HR Review</span>
+        <span style="color: var(--text-muted); background: #f1f5f9; padding: 4px 10px; border-radius: 12px;">🔒 Phase 3: Client Sign-off</span>
+        <span style="color: var(--text-muted); background: #f1f5f9; padding: 4px 10px; border-radius: 12px;">🔒 Phase 4: Legal SHA</span>
+      `
+    }
+  };
+
   const wf = currentState.workflows.find(w => w.id === wfId);
-  const projName = wf ? (wf.projectName || wf.title) : 'Selected Project';
-  showToast(`📂 Loaded Project: ${projName}. Progress view updated!`);
+  const fallbackName = wf ? (wf.projectName || wf.title) : 'Selected Project';
+
+  const data = projectMap[wfId] || {
+    name: fallbackName,
+    percent: 60,
+    offset: 150,
+    statusClass: 'pending',
+    statusText: 'IN PROGRESS',
+    desc: 'Current Stage: Active Milestone Review',
+    phases: `<span style="color: var(--brand-teal); background: #e0f2fe; padding: 4px 10px; border-radius: 12px;">⚡ Active Milestone</span>`
+  };
+
+  if (circle) circle.style.strokeDashoffset = data.offset;
+  if (percentText) percentText.innerText = `${data.percent}%`;
+  if (nameText) nameText.innerText = data.name;
+  if (statusTag) {
+    statusTag.className = `status-badge ${data.statusClass}`;
+    statusTag.innerText = data.statusText;
+  }
+  if (descText) descText.innerText = data.desc;
+  if (phasesContainer) phasesContainer.innerHTML = data.phases;
+
+  showToast(`📂 Progress Wheel loaded for project: "${data.name}" (${data.percent}% Completed)`);
 }
 
 function rejectWorkflow(wfId) {
