@@ -132,6 +132,8 @@ function selectUserType(type) {
   const companySectorLabel = document.querySelector('.company-categories-label');
   const companyGrid = document.getElementById('company-grid-container');
   const hrRolesBox = document.querySelector('.hr-roles-box');
+  const adminDivider = document.querySelector('.divider');
+  const adminBtnLink = document.querySelector('.btn-admin-link');
 
   if (type === 'client') {
     if (btnCompany) btnCompany.classList.remove('active');
@@ -142,6 +144,10 @@ function selectUserType(type) {
     if (companySectorLabel) companySectorLabel.style.display = 'none';
     if (companyGrid) companyGrid.style.display = 'none';
     if (hrRolesBox) hrRolesBox.style.display = 'none';
+
+    // Hide Admin access elements completely in Client Login
+    if (adminDivider) adminDivider.style.display = 'none';
+    if (adminBtnLink) adminBtnLink.style.display = 'none';
 
     googleBtn.style.display = 'block';
     adminNotice.style.display = 'none';
@@ -156,6 +162,9 @@ function selectUserType(type) {
     if (companyGrid) companyGrid.style.display = 'grid';
     if (hrRolesBox) hrRolesBox.style.display = 'block';
 
+    if (adminDivider) adminDivider.style.display = 'flex';
+    if (adminBtnLink) adminBtnLink.style.display = 'flex';
+
     googleBtn.style.display = 'none';
     adminNotice.style.display = 'block';
     showToast('🔒 Google Login disabled for Admin. Security Link required.');
@@ -167,6 +176,9 @@ function selectUserType(type) {
     if (companySectorLabel) companySectorLabel.style.display = 'block';
     if (companyGrid) companyGrid.style.display = 'grid';
     if (hrRolesBox) hrRolesBox.style.display = 'block';
+
+    if (adminDivider) adminDivider.style.display = 'flex';
+    if (adminBtnLink) adminBtnLink.style.display = 'flex';
 
     googleBtn.style.display = 'block';
     adminNotice.style.display = 'none';
