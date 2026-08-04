@@ -95,10 +95,21 @@
             <iconify-icon icon="tabler:plus"></iconify-icon> Add Project
           </button>
 
-          <button class="icon-btn" title="Notifications" onclick="toggleNotifications()">
-            <iconify-icon icon="tabler:bell"></iconify-icon>
-            <span class="notification-badge"></span>
-          </button>
+          <div class="user-profile-widget">
+            <button class="icon-btn" title="Notifications" onclick="toggleNotifications(event)">
+              <iconify-icon icon="tabler:bell"></iconify-icon>
+              <span id="notification-badge" class="notification-badge" style="display: none;"></span>
+            </button>
+            <div id="notifications-dropdown-menu" class="user-dropdown" style="width: 320px; padding: 0;">
+              <div style="padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: var(--bg-main);">
+                <strong style="font-size: 13px; color: var(--brand-navy);">Notifications</strong>
+                <button type="button" style="background: none; border: none; font-size: 11px; color: var(--brand-cyan); font-weight: 700; cursor: pointer;" onclick="clearNotifications()">Clear All</button>
+              </div>
+              <div id="notifications-list" style="max-height: 280px; overflow-y: auto;">
+                <div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 12px;">No new notifications</div>
+              </div>
+            </div>
+          </div>
           
           <div class="user-profile-widget">
             <div id="user-profile-display" class="user-profile-info" onclick="toggleUserDropdown(event)">
@@ -929,6 +940,20 @@
 
           <button type="button" class="btn-primary-amber" style="width: 100%; padding: 12px; font-weight: 700; font-size: 14px;" onclick="handleClientLogin()">
             <iconify-icon icon="tabler:eye"></iconify-icon> Enter Client Portal (View Only)
+          </button>
+        </div>
+      </div>
+
+      <!-- Pending Admin Approval View -->
+      <div id="auth-form-pending" class="auth-form">
+        <div style="text-align: center; padding: 16px 0;">
+          <iconify-icon icon="tabler:clock-hour-4" style="font-size: 48px; color: #f59e0b; margin-bottom: 12px;"></iconify-icon>
+          <h3 style="font-size: 18px; color: var(--brand-navy); margin-bottom: 8px; font-weight: 800;">Pending Admin Approval</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5;">
+            Your Google Crew account registration has been submitted to the Admin for approval. You will receive access as soon as Admin approves your account.
+          </p>
+          <button type="button" class="btn-secondary" style="width: 100%; padding: 10px;" onclick="handleLogout()">
+            Back to Login
           </button>
         </div>
       </div>

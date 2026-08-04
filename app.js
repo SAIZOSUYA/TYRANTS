@@ -24,6 +24,7 @@ const DEFAULT_STATE = {
   clients: [],
   crew: [],
   projects: [],
+  notifications: [],
   revenue: 0,
   upcomingShoots: 0,
   currency: 'INR'
@@ -39,6 +40,7 @@ function loadState() {
       const parsed = JSON.parse(saved);
       if (parsed && typeof parsed === 'object') {
         if (!parsed.currency) parsed.currency = 'INR';
+        if (!parsed.notifications) parsed.notifications = [];
         return parsed;
       }
     } catch (e) { console.error('Failed to parse state', e); }
@@ -68,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderClientsTable();
   renderCrewTable();
   renderProgressTracker();
+  renderNotifications();
   checkAuthState();
   
   // Render Canvas Charts with resize listener
@@ -292,15 +295,39 @@ function renderCrewTable(customList) {
   }
 
   const isAdmin = appState.user && appState.user.role === 'Admin';
+  const pendingCrew = list.filter(c => c.approvalStatus === 'Pending');
 
-  tbody.innerHTML = list.map(c => {
+  const pendingBannerHtml = (isAdmin && pendingCrew.length > 0) ? `
+    <div style="background: #fffbebf; border: 1px solid #fcd34d; border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 20px;">
+      <div style="font-weight: 700; color: #b45309; font-size: 14px; margin-bottom: 8px;">
+        <iconify-icon icon="tabler:user-check" style="vertical-align: -2px;"></iconify-icon> Pending Crew Access Approvals (${pendingCrew.length})
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        ${pendingCrew.map(cr => `
+          <div style="display: flex; justify-content: space-between; align-items: center; background: white; padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid #fde68a;">
+            <div>
+              <strong style="color: var(--brand-navy);">${escapeHtml(cr.name)}</strong> (${escapeHtml(cr.email)})
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn-primary-amber" style="padding: 4px 12px; font-size: 12px; background: #10b981; color: white;" onclick="approveCrewMember('${cr.id}')">Approve Access</button>
+              <button class="btn-secondary" style="padding: 4px 12px; font-size: 12px; color: var(--brand-red);" onclick="rejectCrewMember('${cr.id}')">Reject</button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  ` : '';
+
+  const tableRowsHtml = list.map(c => {
     const assignedProjects = getCrewAssignedProjects(c.name);
     const isBooked = assignedProjects.length > 0;
-    c.status = isBooked ? 'Unavailable' : 'Available';
+    c.status = isBooked ? 'Unavailable' : (c.approvalStatus === 'Pending' ? 'Pending Approval' : 'Available');
 
-    const statusHtml = isBooked
-      ? `<span class="status-tag pending" style="background: #fef2f2; color: var(--brand-red); font-weight: 800; border: 1px solid rgba(224,86,36,0.3);">Unavailable</span>`
-      : `<span class="status-tag active">Available</span>`;
+    const statusHtml = c.approvalStatus === 'Pending'
+      ? `<span class="status-tag pending" style="background: #fef3c7; color: #b45309; font-weight: 800;">Pending Approval</span>`
+      : (isBooked
+        ? `<span class="status-tag pending" style="background: #fef2f2; color: var(--brand-red); font-weight: 800; border: 1px solid rgba(224,86,36,0.3);">Unavailable</span>`
+        : `<span class="status-tag active">Available</span>`);
 
     const nameCellHtml = isBooked
       ? `<div>
@@ -334,6 +361,9 @@ function renderCrewTable(customList) {
       </tr>
     `;
   }).join('');
+
+  tbody.parentElement.insertAdjacentHTML('beforebegin', pendingBannerHtml);
+  tbody.innerHTML = tableRowsHtml;
 }
 
 /* ==========================================================================
@@ -918,6 +948,12 @@ function handleSaveProjectProgress(e) {
 
   saveState();
   closeModal('modal-update-progress');
+
+  // Trigger Notification for Non-Admin Activity
+  addNotification({
+    title: 'Project Progress Update',
+    message: `${appState.user ? appState.user.name : 'Crew'} updated ${project.title} progress to ${project.progress}% (${project.stage})`
+  });
 }
 
 /* ==========================================================================
@@ -1361,9 +1397,10 @@ function switchAuthTab(tabType) {
   const formAdmin = document.getElementById('auth-form-admin');
   const formCrew = document.getElementById('auth-form-crew');
   const formClient = document.getElementById('auth-form-client');
+  const formPending = document.getElementById('auth-form-pending');
 
   [btnAdmin, btnCrew, btnClient].forEach(btn => btn && btn.classList.remove('active'));
-  [formAdmin, formCrew, formClient].forEach(form => form && form.classList.remove('active'));
+  [formAdmin, formCrew, formClient, formPending].forEach(form => form && form.classList.remove('active'));
 
   if (tabType === 'admin') {
     if (btnAdmin) btnAdmin.classList.add('active');
@@ -1375,6 +1412,8 @@ function switchAuthTab(tabType) {
   } else if (tabType === 'client') {
     if (btnClient) btnClient.classList.add('active');
     if (formClient) formClient.classList.add('active');
+  } else if (tabType === 'pending') {
+    if (formPending) formPending.classList.add('active');
   }
 }
 
@@ -1467,31 +1506,153 @@ function simulateGoogleOAuth() {
 }
 
 function completeGoogleAuth(name, email, picture) {
-  appState.user = {
-    name: name || 'Crew Member',
-    email: email || 'crew@gmail.com',
-    role: 'Crew Member',
-    avatar: (name || 'C').charAt(0).toUpperCase(),
-    picture: picture || ''
-  };
+  let crewMember = appState.crew.find(c => c.email.toLowerCase() === email.toLowerCase());
 
-  // Add crew member to state roster if not present
-  const exists = appState.crew.some(c => c.email.toLowerCase() === email.toLowerCase());
-  if (!exists) {
-    appState.crew.push({
+  if (!crewMember) {
+    crewMember = {
       id: 'cr_' + Date.now(),
       name: name || 'Crew Member',
       role: 'Production Crew',
       email: email,
       phone: '',
       rate: 500,
-      status: 'Available'
+      status: 'Available',
+      approvalStatus: 'Pending' // New crew members require Admin approval
+    };
+    appState.crew.push(crewMember);
+
+    // Trigger notification for Admin regarding new pending approval
+    addNotification({
+      title: 'New Crew Registration',
+      message: `Crew member ${name} (${email}) requested registration. Pending Admin approval.`
     });
   }
+
+  if (crewMember.approvalStatus === 'Pending') {
+    // Show Pending Approval view
+    switchAuthTab('pending');
+    return;
+  }
+
+  appState.user = {
+    name: crewMember.name,
+    email: crewMember.email,
+    role: 'Crew Member',
+    avatar: (crewMember.name || 'C').charAt(0).toUpperCase(),
+    picture: picture || ''
+  };
 
   saveState();
   checkAuthState();
 }
+
+function approveCrewMember(id) {
+  const crewMember = appState.crew.find(c => c.id === id);
+  if (!crewMember) return;
+
+  crewMember.approvalStatus = 'Approved';
+  crewMember.status = 'Available';
+
+  saveState();
+  alert(`Approved crew member ${crewMember.name}!`);
+}
+
+function rejectCrewMember(id) {
+  const idx = appState.crew.findIndex(c => c.id === id);
+  if (idx !== -1) {
+    appState.crew.splice(idx, 1);
+    saveState();
+  }
+}
+
+/* ==========================================================================
+   IN-APP REAL-TIME ACTIVITY NOTIFICATIONS SYSTEM
+   ========================================================================== */
+
+function addNotification(data) {
+  // "notify every action except for admin's"
+  const currentUserRole = appState.user ? appState.user.role : null;
+  if (currentUserRole === 'Admin') {
+    return; // Admin actions do not create self-notifications!
+  }
+
+  if (!appState.notifications) appState.notifications = [];
+  const notif = {
+    id: 'notif_' + Date.now(),
+    title: data.title || 'System Activity',
+    message: data.message,
+    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    read: false
+  };
+
+  appState.notifications.unshift(notif);
+  saveState();
+  renderNotifications();
+}
+
+function renderNotifications() {
+  const badge = document.getElementById('notification-badge');
+  const list = document.getElementById('notifications-list');
+
+  const notifs = appState.notifications || [];
+  const unreadCount = notifs.filter(n => !n.read).length;
+
+  if (badge) {
+    if (unreadCount > 0) {
+      badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+      badge.style.display = 'inline-flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  if (list) {
+    if (notifs.length === 0) {
+      list.innerHTML = `<div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 12px;">No activity notifications yet</div>`;
+    } else {
+      list.innerHTML = notifs.map(n => `
+        <div style="padding: 10px 14px; border-bottom: 1px solid var(--border-color); ${!n.read ? 'background: rgba(2, 132, 199, 0.04);' : ''}">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+            <strong style="font-size: 12px; color: var(--brand-navy);">${escapeHtml(n.title)}</strong>
+            <span style="font-size: 10px; color: var(--text-muted);">${escapeHtml(n.time)}</span>
+          </div>
+          <p style="font-size: 12px; color: var(--text-main); margin: 0; line-height: 1.3;">${escapeHtml(n.message)}</p>
+        </div>
+      `).join('');
+    }
+  }
+}
+
+function toggleNotifications(e) {
+  if (e) e.stopPropagation();
+  const menu = document.getElementById('notifications-dropdown-menu');
+  if (menu) {
+    menu.classList.toggle('active');
+    if (menu.classList.contains('active')) {
+      if (appState.notifications) {
+        appState.notifications.forEach(n => n.read = true);
+        saveState();
+      }
+    }
+  }
+}
+
+function clearNotifications() {
+  appState.notifications = [];
+  saveState();
+  renderNotifications();
+}
+
+// Close notifications dropdown on click outside
+document.addEventListener('click', (e) => {
+  const notifMenu = document.getElementById('notifications-dropdown-menu');
+  const notifBtn = document.querySelector('button[title="Notifications"]');
+  if (notifMenu && notifMenu.classList.contains('active')) {
+    if (!notifMenu.contains(e.target) && notifBtn && !notifBtn.contains(e.target)) {
+      notifMenu.classList.remove('active');
+    }
+  }
+});
 
 function toggleUserDropdown(e) {
   if (e) e.stopPropagation();
