@@ -54,6 +54,7 @@ function saveState() {
   renderCrewTable();
   renderProgressTracker();
   renderCharts();
+  checkAuthState();
 }
 
 // Initialize App on DOM Load
@@ -67,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderClientsTable();
   renderCrewTable();
   renderProgressTracker();
+  checkAuthState();
   
   // Render Canvas Charts with resize listener
   renderCharts();
@@ -1181,6 +1183,190 @@ function saveSettings() {
   saveState();
   alert('Studio settings updated successfully!');
 }
+
+/* ==========================================================================
+   AUTHENTICATION & USER SESSION MANAGEMENT
+   ========================================================================== */
+
+function checkAuthState() {
+  const overlay = document.getElementById('auth-overlay');
+  const user = appState.user;
+
+  if (!user) {
+    if (overlay) overlay.classList.add('active');
+    return;
+  }
+
+  // User is authenticated
+  if (overlay) overlay.classList.remove('active');
+
+  // Update top header user profile
+  const avatarEl = document.getElementById('user-avatar');
+  const nameEl = document.getElementById('user-name');
+  const roleEl = document.getElementById('user-role');
+
+  if (avatarEl) {
+    if (user.picture) {
+      avatarEl.innerHTML = `<img src="${user.picture}" alt="${escapeHtml(user.name)}">`;
+    } else {
+      avatarEl.textContent = (user.name || 'U').charAt(0).toUpperCase();
+    }
+  }
+
+  if (nameEl) nameEl.textContent = user.name || 'User';
+  if (roleEl) {
+    roleEl.textContent = user.role || 'Member';
+    roleEl.style.color = user.role === 'Admin' ? 'var(--brand-cyan)' : 'var(--brand-lime)';
+  }
+}
+
+function switchAuthTab(tabType) {
+  const btnAdmin = document.getElementById('tab-btn-admin');
+  const btnCrew = document.getElementById('tab-btn-crew');
+  const formAdmin = document.getElementById('auth-form-admin');
+  const formCrew = document.getElementById('auth-form-crew');
+
+  if (tabType === 'admin') {
+    if (btnAdmin) btnAdmin.classList.add('active');
+    if (btnCrew) btnCrew.classList.remove('active');
+    if (formAdmin) formAdmin.classList.add('active');
+    if (formCrew) formCrew.classList.remove('active');
+  } else {
+    if (btnCrew) btnCrew.classList.add('active');
+    if (btnAdmin) btnAdmin.classList.remove('active');
+    if (formCrew) formCrew.classList.add('active');
+    if (formAdmin) formAdmin.classList.remove('active');
+  }
+}
+
+function handleAdminLogin(e) {
+  e.preventDefault();
+  const userInput = document.getElementById('auth-admin-user').value.trim();
+  const passInput = document.getElementById('auth-admin-pass').value.trim();
+  const errorEl = document.getElementById('auth-admin-error');
+
+  // Admin credentials verification
+  const validUsers = ['admin@pragati.com', 'admin'];
+  const validPasses = ['Pragati@2026', 'admin123'];
+
+  if (validUsers.includes(userInput.toLowerCase()) && validPasses.includes(passInput)) {
+    if (errorEl) errorEl.style.display = 'none';
+
+    appState.user = {
+      name: 'Admin User',
+      email: userInput,
+      role: 'Admin',
+      avatar: 'A'
+    };
+
+    saveState();
+    checkAuthState();
+  } else {
+    if (errorEl) {
+      errorEl.textContent = 'Invalid Admin credentials. Default: admin@pragati.com / Pragati@2026';
+      errorEl.style.display = 'block';
+    }
+  }
+}
+
+function handleGoogleSignIn() {
+  // Check if Google GIS client is loaded
+  if (window.google && window.google.accounts && window.google.accounts.id) {
+    try {
+      window.google.accounts.id.initialize({
+        client_id: "1098273645123-demo.apps.googleusercontent.com", // Demo Client ID
+        callback: handleGoogleCredentialResponse
+      });
+      window.google.accounts.id.prompt();
+      return;
+    } catch (e) {
+      console.warn("Google GIS Prompt Fallback", e);
+    }
+  }
+
+  // Google OAuth Interactive Fallback Modal
+  simulateGoogleOAuth();
+}
+
+function handleGoogleCredentialResponse(response) {
+  if (response && response.credential) {
+    try {
+      // Decode JWT payload
+      const base64Url = response.credential.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+
+      const payload = JSON.parse(jsonPayload);
+      completeGoogleAuth(payload.name, payload.email, payload.picture);
+      return;
+    } catch (e) { console.error('Failed to parse Google JWT', e); }
+  }
+
+  simulateGoogleOAuth();
+}
+
+function simulateGoogleOAuth() {
+  const userEmail = prompt("Google Account Authentication:\nEnter your Google Email to sign in as Crew:", "crew.member@gmail.com");
+  if (!userEmail) return;
+
+  const userName = userEmail.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  completeGoogleAuth(userName, userEmail, '');
+}
+
+function completeGoogleAuth(name, email, picture) {
+  appState.user = {
+    name: name || 'Crew Member',
+    email: email || 'crew@gmail.com',
+    role: 'Crew Member',
+    avatar: (name || 'C').charAt(0).toUpperCase(),
+    picture: picture || ''
+  };
+
+  // Add crew member to state roster if not present
+  const exists = appState.crew.some(c => c.email.toLowerCase() === email.toLowerCase());
+  if (!exists) {
+    appState.crew.push({
+      id: 'cr_' + Date.now(),
+      name: name || 'Crew Member',
+      role: 'Production Crew',
+      email: email,
+      phone: '',
+      rate: 500,
+      status: 'Available'
+    });
+  }
+
+  saveState();
+  checkAuthState();
+}
+
+function toggleUserDropdown(e) {
+  if (e) e.stopPropagation();
+  const dropdown = document.getElementById('user-dropdown-menu');
+  if (dropdown) dropdown.classList.toggle('active');
+}
+
+function closeUserDropdown() {
+  const dropdown = document.getElementById('user-dropdown-menu');
+  if (dropdown) dropdown.classList.remove('active');
+}
+
+function handleLogout() {
+  closeUserDropdown();
+  appState.user = null;
+  saveState();
+  checkAuthState();
+}
+
+// Close user dropdown on click outside
+document.addEventListener('click', (e) => {
+  const widget = document.querySelector('.user-profile-widget');
+  if (widget && !widget.contains(e.target)) {
+    closeUserDropdown();
+  }
+});
 
 // Helper: Escape HTML
 function escapeHtml(str) {

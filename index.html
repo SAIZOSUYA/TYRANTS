@@ -14,6 +14,7 @@
 
   <link rel="stylesheet" href="styles.css">
   <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 
@@ -99,8 +100,23 @@
             <span class="notification-badge"></span>
           </button>
           
-          <div class="user-profile" onclick="switchTab('view-settings')">
-            <div class="user-avatar-img">FC</div>
+          <div class="user-profile-widget">
+            <div id="user-profile-display" class="user-profile-info" onclick="toggleUserDropdown(event)">
+              <div id="user-avatar" class="user-avatar-img">A</div>
+              <div class="user-details">
+                <span id="user-name" class="user-name-label">Admin User</span>
+                <span id="user-role" class="user-role-badge">Admin</span>
+              </div>
+              <iconify-icon icon="tabler:chevron-down" style="font-size: 14px; color: var(--text-muted);"></iconify-icon>
+            </div>
+            <div id="user-dropdown-menu" class="user-dropdown">
+              <div class="user-dropdown-item" onclick="switchTab('view-settings'); closeUserDropdown();">
+                <iconify-icon icon="tabler:settings"></iconify-icon> Studio Settings
+              </div>
+              <div class="user-dropdown-item logout" onclick="handleLogout()">
+                <iconify-icon icon="tabler:logout"></iconify-icon> Log Out
+              </div>
+            </div>
           </div>
         </div>
       </header>
@@ -846,5 +862,59 @@
   </div>
 
   <script src="app.js"></script>
+  <!-- Mandatory Authentication Screen Overlay -->
+  <div id="auth-overlay" class="auth-overlay active">
+    <div class="auth-card">
+      <div class="auth-header">
+        <img src="pragati-logo.png" alt="Pragati Logo" class="auth-logo">
+        <h2>Studio Command Center</h2>
+        <p>Production Workflow & Asset System</p>
+      </div>
+
+      <!-- Auth Tab Toggle Buttons -->
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab-btn active" id="tab-btn-admin" onclick="switchAuthTab('admin')">
+          <iconify-icon icon="tabler:shield-lock"></iconify-icon> Admin Login
+        </button>
+        <button type="button" class="auth-tab-btn" id="tab-btn-crew" onclick="switchAuthTab('crew')">
+          <iconify-icon icon="logos:google-icon"></iconify-icon> Crew Google Sign-In
+        </button>
+      </div>
+
+      <!-- Admin Login Form -->
+      <form id="auth-form-admin" class="auth-form active" onsubmit="handleAdminLogin(event)">
+        <div class="form-group">
+          <label>Admin Username / Email</label>
+          <input type="text" id="auth-admin-user" required placeholder="admin@pragati.com" value="admin@pragati.com">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="auth-admin-pass" required placeholder="Enter password" value="Pragati@2026">
+        </div>
+        <div id="auth-admin-error" class="auth-error-msg" style="display: none;"></div>
+        <button type="submit" class="btn-primary-amber" style="width: 100%; padding: 12px; font-weight: 700; margin-top: 10px; font-size: 14px;">
+          <iconify-icon icon="tabler:login"></iconify-icon> Log In as Admin
+        </button>
+        <div style="font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 12px;">
+          Credentials: <strong>admin@pragati.com</strong> / <strong>Pragati@2026</strong>
+        </div>
+      </form>
+
+      <!-- Crew Google Authentication View -->
+      <div id="auth-form-crew" class="auth-form">
+        <div style="text-align: center; padding: 12px 0;">
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5;">
+            Crew members and roster talent can authenticate using your registered Google account.
+          </p>
+
+          <button type="button" class="btn-google-login" onclick="handleGoogleSignIn()">
+            <iconify-icon icon="logos:google-icon" style="font-size: 20px;"></iconify-icon>
+            Sign in with Google
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
