@@ -806,15 +806,18 @@ function renderTeamTab() {
         <span class="status-badge approved" style="font-size: 11px;">${squadsMap[squadName].length} ACTIVE MEMBERS</span>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px;">
         ${squadsMap[squadName].map(m => `
           <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; display: flex; align-items: center; gap: 14px;">
-            <div class="hr-avatar" style="width: 44px; height: 44px; font-size: 16px; flex-shrink: 0; background: var(--brand-navy); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800;">${m.avatar || 'EM'}</div>
+            <div class="hr-avatar" style="width: 46px; height: 46px; font-size: 16px; flex-shrink: 0; background: var(--brand-navy); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800;">${m.avatar || 'EM'}</div>
             <div style="flex: 1;">
-              <h4 style="font-size: 15px; color: var(--brand-navy); font-weight: 700; margin-bottom: 2px;">${m.name}</h4>
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 2px;">
+                <h4 style="font-size: 15px; color: var(--brand-navy); font-weight: 700;">${m.name}</h4>
+                <span class="permission-pill" style="font-size: 10px; padding: 2px 8px; font-weight: 800; background: #e0f2fe; color: #0369a1;">${m.authority || 'Reviewer'}</span>
+              </div>
               <div style="font-size: 12px; font-weight: 700; color: var(--brand-teal); margin-bottom: 4px;">${m.role}</div>
               <div style="font-size: 11px; color: var(--text-muted);">${m.email}</div>
-              <div style="font-size: 11px; color: var(--brand-navy); font-weight: 600; margin-top: 4px;">Assigned Project: ${m.project || 'Active Workflow'}</div>
+              <div style="font-size: 11px; color: var(--brand-navy); font-weight: 600; margin-top: 4px;">Project: ${m.project || 'Active Workflow'}</div>
             </div>
             ${isAdmin ? `
               <button class="btn-secondary" style="padding: 6px 8px; font-size: 12px; color: var(--status-rejected); border-color: rgba(239, 68, 68, 0.3);" onclick="removeTeamMember('${m.id}')" title="Remove member">
@@ -856,6 +859,7 @@ function submitNewTeamMember(e) {
   const name = document.getElementById('input-team-name').value;
   const squad = document.getElementById('input-team-squad').value;
   const role = document.getElementById('input-team-role').value;
+  const authority = document.getElementById('input-team-authority')?.value || 'Reviewer';
   const email = document.getElementById('input-team-email').value;
   const project = document.getElementById('input-team-project').value || 'Assigned Workflow';
 
@@ -866,6 +870,7 @@ function submitNewTeamMember(e) {
     squad: squad,
     name: name,
     role: role,
+    authority: authority,
     email: email,
     project: project,
     avatar: initials
@@ -876,7 +881,7 @@ function submitNewTeamMember(e) {
 
   renderTeamTab();
   closeModal('team-modal');
-  showToast(`🎉 New Team Member "${name}" registered into ${squad}!`);
+  showToast(`🎉 New Team Member "${name}" registered as "${role}" (${authority})!`);
 }
 
 function removeTeamMember(id) {
