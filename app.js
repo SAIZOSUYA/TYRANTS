@@ -123,21 +123,35 @@ function selectUserType(type) {
   currentState.selectedUserType = type;
 
   const btnCompany = document.getElementById('btn-type-company');
+  const btnClient = document.getElementById('btn-type-client');
   const btnAdmin = document.getElementById('btn-type-admin');
   const googleBtn = document.getElementById('google-auth-container');
   const adminNotice = document.getElementById('admin-security-notice');
+  const googleLabel = document.getElementById('google-btn-label');
 
   if (type === 'admin') {
-    btnCompany.classList.remove('active');
-    btnAdmin.classList.add('active');
+    if (btnCompany) btnCompany.classList.remove('active');
+    if (btnClient) btnClient.classList.remove('active');
+    if (btnAdmin) btnAdmin.classList.add('active');
     googleBtn.style.display = 'none';
     adminNotice.style.display = 'block';
     showToast('🔒 Google Login disabled for Admin. Security Link required.');
-  } else {
-    btnAdmin.classList.remove('active');
-    btnCompany.classList.add('active');
+  } else if (type === 'client') {
+    if (btnCompany) btnCompany.classList.remove('active');
+    if (btnAdmin) btnAdmin.classList.remove('active');
+    if (btnClient) btnClient.classList.add('active');
     googleBtn.style.display = 'block';
     adminNotice.style.display = 'none';
+    if (googleLabel) googleLabel.innerText = 'Sign in with Google as Client Approver';
+    showToast('🏢 Client Account Selected. Sign in with Google to access Approval Queue.');
+  } else {
+    if (btnAdmin) btnAdmin.classList.remove('active');
+    if (btnClient) btnClient.classList.remove('active');
+    if (btnCompany) btnCompany.classList.add('active');
+    googleBtn.style.display = 'block';
+    adminNotice.style.display = 'none';
+    const roleName = currentState.selectedRole || 'Company User';
+    if (googleLabel) googleLabel.innerText = `Sign in with Google as ${roleName}`;
   }
 }
 
@@ -253,6 +267,23 @@ function renderHrRoles() {
 // 5. LOGIN HANDLERS
 function handleGoogleLogin() {
   const company = COMPANY_CONFIG[currentState.selectedCompanyType];
+  
+  if (currentState.selectedUserType === 'client') {
+    currentState.user = {
+      name: 'Apex Global Client Lead',
+      email: `approver@apexglobal.com`,
+      role: `Client Approver (${company.name})`,
+      isAdmin: false,
+      avatar: 'AG'
+    };
+
+    showToast(`Welcome! Signed in via Google as Client Approver for ${company.name}.`);
+    switchScreen('dashboard-screen');
+    renderDashboard();
+    switchTab('tab-approvals');
+    return;
+  }
+
   const roleName = currentState.selectedRole || 'Company User';
   const roleObj = currentState.hrList.find(r => r.name === roleName);
 
@@ -264,7 +295,7 @@ function handleGoogleLogin() {
     avatar: roleObj ? roleObj.avatar : 'KP'
   };
 
-  showToast(`Welcome back, ${currentState.user.name}! Signed in as ${roleName}.`);
+  showToast(`Welcome back, ${currentState.user.name}! Signed in via Google as ${roleName}.`);
   switchScreen('dashboard-screen');
   renderDashboard();
 }

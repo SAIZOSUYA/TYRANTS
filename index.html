@@ -62,15 +62,19 @@
           <p>Configure your company type & sign in to launch your workflow</p>
         </div>
 
-        <!-- User Type Switcher -->
+        <!-- User Type Switcher (Company, Client, Admin) -->
         <div class="user-type-selector">
           <button id="btn-type-company" class="user-type-btn active" onclick="selectUserType('company')">
             <iconify-icon icon="tabler:building"></iconify-icon>
-            Company Account
+            Company
+          </button>
+          <button id="btn-type-client" class="user-type-btn" onclick="selectUserType('client')">
+            <iconify-icon icon="tabler:user-check"></iconify-icon>
+            Client Login
           </button>
           <button id="btn-type-admin" class="user-type-btn" onclick="selectUserType('admin')">
             <iconify-icon icon="tabler:shield-lock"></iconify-icon>
-            Admin Security Portal
+            Admin Portal
           </button>
         </div>
 
